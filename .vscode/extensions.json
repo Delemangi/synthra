@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "ardenivanov.svelte-intellisense",
+    "charliermarsh.ruff",
+    "dbaeumer.vscode-eslint",
+    "donjayamanne.python-extension-pack",
+    "esbenp.prettier-vscode",
+    "htmlhint.vscode-htmlhint",
+    "meganrogge.template-string-converter",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "sonarsource.sonarlint-vscode",
+    "stylelint.vscode-stylelint",
+    "svelte.svelte-vscode",
+    "tamasfe.even-better-toml",
+    "yoavbls.pretty-ts-errors"
+  ]
+}
