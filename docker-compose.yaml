@@ -1,47 +1,40 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # PostgreSQL Database
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+  database:
+    image: postgres:16
+    container_name: synthra-database
+    restart: unless-stopped
+    env_file:
+      - .env
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-    networks:
-      - mynetwork
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  # FastAPI Backend
-  fastapi-backend:
+  backend:
     build:
-        context: ./backend
-        dockerfile: Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: synthra-backend
+    restart: unless-stopped
     depends_on:
-      - db
-    environment:
-      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+      - database
+    env_file:
+      - .env
     ports:
-      - "80:80"
-    networks:
-      - mynetwork
+      - "81:80"
 
-  # Svelte Frontend
-  svelte-frontend:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: synthra-frontend
+    restart: unless-stopped
     ports:
-      - "5001:5000"
-    networks:
-      - mynetwork
-
-networks:
-  mynetwork:
-    driver: bridge
-
-volumes:
-  pg_data:
+      - "80:5000"

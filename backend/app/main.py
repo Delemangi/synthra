@@ -1,14 +1,19 @@
-# app/main.py
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
 from app.database.session import create_db_and_tables
 
-app = FastAPI()
 
-# Create database tables
-@app.on_event("startup")
-async def on_startup():
-    print("STARTUP", flush=True)
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     await create_db_and_tables()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
 
 # Include API routes
 # app.include_router(api_main.router)
