@@ -3,3 +3,6 @@
 
 # Database
 pg_data
+
+# pgAdmin
+pgadmin_data
