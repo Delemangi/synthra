@@ -10,6 +10,8 @@ For running the application in production mode, it's highly recommended to use D
 
 ### Installation (Docker Setup)
 
+The project contains two Docker Compose configurations. `docker-compose.yaml` is for the development environment, and `docker-compose.prod.yaml` is for the production environment.
+
 1. Run `git clone git@github.com:Delemangi/synthra.git` (or `git clone https://github.com/Delemangi/synthra.git`)
 2. Run `docker compose build`
    - If you need the Docker image built for a machine running ARM architecture, then use the `PLATFORM` build argument as such: `docker compose build --build-arg PLATFORM=linux/arm64`
@@ -43,7 +45,7 @@ Once you have all these dependencies installed, then:
 
 ### Running (Docker Setup)
 
-1. Copy or rename the `.env.schema` file to `.env`, and edit it to your liking, or leave it as is
+1. Copy or rename the `.env.sample` file to `.env`, and edit it to your liking, or leave it as is
 2. Run `docker compose up`
 
 ### Running (Manual Setup)
