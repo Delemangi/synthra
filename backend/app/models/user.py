@@ -1,4 +1,3 @@
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -6,7 +5,7 @@ from sqlalchemy.orm import relationship
 from .base import Base
 
 
-class User(SQLAlchemyBaseUserTableUUID, Base):
+class User(Base):
     __tablename__ = "user"
 
     username = Column(String, nullable=False)
