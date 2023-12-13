@@ -54,7 +54,7 @@ Once you have all these dependencies installed, then:
 2. Start the backend service
    1. Open the project in your terminal
    2. Run `cd backend`
-   3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80`
+   3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 [--reload]` - the last parameter is optional, in case you want hot reloading
 3. Start the frontend service
    1. Open the project in your terminal
    2. Run `cd frontend`
