@@ -3,9 +3,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from .routers import auth, file_transfer
-
 from app.database.database import initialize_database
+
+from .routers import auth, file_transfer
 
 
 @asynccontextmanager

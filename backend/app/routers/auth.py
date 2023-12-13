@@ -4,16 +4,15 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login")
-def login():
-    pass
+def login() -> None:
+    ...
 
 
 @router.post("/logout")
-def logout():
-
-    pass
+def logout() -> None:
+    ...
 
 
 @router.post("/register")
-def register():
+def register() -> dict[str, str]:
     return {"message": "Register"}
