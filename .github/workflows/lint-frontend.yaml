@@ -23,7 +23,7 @@ jobs:
           cd frontend
           npm i
 
-      - name: Run ESLint
+      - name: Run Prettier
         run: |
           cd frontend
           npm run lint
