@@ -23,6 +23,7 @@
   },
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
+  "files.eol": "\n",
   "mypy-type-checker.importStrategy": "fromEnvironment",
   "mypy-type-checker.preferDaemon": true,
   "python.analysis.typeCheckingMode": "basic",

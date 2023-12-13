@@ -1,0 +1,29 @@
+name: Lint Frontend
+
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+
+jobs:
+  lint_frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm i
+
+      - name: Run Prettier
+        run: |
+          cd frontend
+          npm run lint

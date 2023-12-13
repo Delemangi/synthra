@@ -17,6 +17,7 @@ uvicorn = { version = "^0.24.0.post1", extras = ["standard"] }
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.7.1"
 ruff = "^0.1.6"
+pre-commit = "^3.6.0"
 
 [build-system]
 requires = ["poetry-core"]
