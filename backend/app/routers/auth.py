@@ -1,16 +1,14 @@
-from passlib.context import CryptContext
-from datetime import datetime, timedelta
-from typing import Annotated, Union
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from .models.auth.token import Token
-from .models.auth.user import User, UserInDB
 
 from .helpers.auth_helpers import authenticate_user, create_access_token
 
 router = APIRouter(tags=["auth"])
+
 
 @router.post("/login", response_model=Token)
 async def login_for_access_token(
@@ -23,10 +21,8 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(
-        data={"sub": user.username})
+    access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
-
 
 
 @router.post("/logout")
@@ -37,5 +33,3 @@ def logout() -> None:
 @router.post("/register")
 def register() -> dict[str, str]:
     return {"message": "Register"}
-
-
