@@ -8,6 +8,13 @@ This repository contains both the frontend and the backend of the project in the
 
 For running the application in production mode, it's highly recommended to use Docker. Otherwise, the manual setup is also available for those who wish to test the application in a development environment.
 
+### Development
+
+To setup your environment and the project for development:
+
+1. Run `poetry install`
+2. Run `pre-commit install`
+
 ### Installation (Docker Setup)
 
 The project contains two Docker Compose configurations. `docker-compose.yaml` is for the development environment, and `docker-compose.prod.yaml` is for the production environment.
@@ -54,7 +61,7 @@ Once you have all these dependencies installed, then:
 2. Start the backend service
    1. Open the project in your terminal
    2. Run `cd backend`
-   3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80`
+   3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 [--reload]` - the last parameter is optional, in case you want hot reloading
 3. Start the frontend service
    1. Open the project in your terminal
    2. Run `cd frontend`
