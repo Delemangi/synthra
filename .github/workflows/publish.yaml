@@ -21,12 +21,12 @@ jobs:
       - name: Build and Push Backend
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: "{{defaultContext}}:backend"
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-backend:latest
       - name: Build and Push Frontend
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
+          context: "{{defaultContext}}:frontend"
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-frontend:latest
