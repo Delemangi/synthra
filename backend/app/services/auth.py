@@ -22,14 +22,17 @@ fake_db = {
     }
 }
 
+
 def verify_password(plain_password: str, password: str) -> bool:
     return pwd_context.verify(plain_password, password)
+
 
 def get_user(db: dict, username: str) -> UserInDB | None:
     if username in db:
         user_dict = db[username]
         return UserInDB(**user_dict)
     return None
+
 
 def authenticate_user(username: str, password: str) -> bool:
     user = get_user(fake_db, username)
@@ -39,9 +42,11 @@ def authenticate_user(username: str, password: str) -> bool:
         return False
     return user
 
-def create_access_token(data: dict,
-                        expires_delta: timedelta | None =
-                        timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)) -> str:
+
+def create_access_token(
+    data: dict,
+    expires_delta: timedelta | None = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
