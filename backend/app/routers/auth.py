@@ -8,6 +8,7 @@ from ..services.auth import authenticate_user, create_access_token
 
 router = APIRouter(tags=["auth"])
 
+
 @router.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
@@ -30,5 +31,3 @@ def logout() -> None:
 @router.post("/register")
 def register() -> dict[str, str]:
     return {"message": "Register"}
-
-

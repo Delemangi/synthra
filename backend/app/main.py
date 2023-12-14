@@ -19,6 +19,7 @@ app = FastAPI(lifespan=lifespan, root_path="/api/")
 
 app.include_router(auth.router, prefix="/auth")
 
+
 @app.get("/")
 async def root() -> str:
     return "Hello World"
