@@ -12,8 +12,7 @@ class File(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # noqa: A003
 
-    name = Column(
-        String, nullable=False)
+    name = Column(String, nullable=False)
     path = Column(String, nullable=False)
     size = Column(Integer, nullable=False)
     encrypted = Column(Boolean, nullable=False)
