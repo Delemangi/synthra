@@ -17,5 +17,3 @@ repos:
     hooks:
       - id: ruff
       - id: ruff-format
-ci:
-  autoupdate_commit_msg: ⬆ [pre-commit.ci] pre-commit autoupdate
