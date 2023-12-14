@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from typing import Union
+
 
 class User(BaseModel):
     username: str
-    email: Union[str, None] = None
-    full_name: Union[str, None] = None
-    disabled: Union[bool, None] = None
-    
+    email: str | None = None
+    full_name: str | None = None
+    disabled: bool | None = None
+
 class UserInDB(User):
-    hashed_password: str
+    password: str
