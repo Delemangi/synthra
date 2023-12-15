@@ -7,7 +7,6 @@ from fastapi.security import OAuth2PasswordBearer
 
 from ..repos.users import get_user_by_filter, add_user
 from ..models.user import User
-from ..schemas.auth.user import User as SchemaUser
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_
