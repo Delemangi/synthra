@@ -2,7 +2,7 @@
 from ..models.user import User
 
 from uuid import UUID
-from typing import Callable
+from collections.abc import Callable
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
