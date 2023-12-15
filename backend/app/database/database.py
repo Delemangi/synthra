@@ -12,8 +12,7 @@ if SQLALCHEMY_DATABASE_URL is None:
     raise ValueError("DATABASE_URL environment variable is not set")
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
-async_session_maker = async_sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+async_session_maker = async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 async def initialize_database() -> None:
