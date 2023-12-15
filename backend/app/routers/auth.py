@@ -17,7 +17,7 @@ router = APIRouter(tags=["auth"])
 @router.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: Annotated[AsyncSession, Depends(get_async_session)]
+    session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> dict:
     user = await authenticate_user(form_data.username, form_data.password, session)
     if not user:
@@ -36,7 +36,8 @@ def logout() -> None:
 
 
 @router.post("/register")
-async def register(user: User,
-        session: Annotated[AsyncSession, Depends(get_async_session)]) -> dict[str, str]:
+async def register(
+    user: User, session: Annotated[AsyncSession, Depends(get_async_session)]
+) -> dict[str, str]:
     user = await create_user(user.username, user.password, 30, session)
     return {"message": "Registered user"}
