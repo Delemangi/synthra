@@ -1,43 +1,48 @@
 from datetime import datetime, timedelta
+
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordBearer
-from ..routers.models.auth.user import UserInDB
 from jose import jwt
+
+from fastapi.security import OAuth2PasswordBearer
+
+from ..repos.users import get_user_by_filter, add_user
+from ..models.user import User
+from ..schemas.auth.user import User as SchemaUser
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import and_
 import os
 
 SECRET_KEY = str(os.getenv("JWT_SECRET_KEY"))
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-fake_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+
+async def create_user(username: str, plain_password: str,
+                      quota: int, session: AsyncSession) -> User:
+    password = pwd_context.hash(plain_password)
+    user = User(username = username, password = password, quota = quota)
+    await add_user(user, session)
+    return user
+
 
 def verify_password(plain_password: str, password: str) -> bool:
     return pwd_context.verify(plain_password, password)
 
-def get_user(db: dict, username: str) -> UserInDB | None:
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-    return None
 
-def authenticate_user(username: str, password: str) -> bool:
-    user = get_user(fake_db, username)
+async def authenticate_user(username:str, password: str,
+                            session: AsyncSession) -> User | None:
+    user = await get_user_by_filter(lambda u: and_(u.username==username,
+                                    verify_password(password,str(u.password)))
+                              ,session)
     if not user:
-        return False
-    if not verify_password(password, user.password):
-        return False
+        return None
     return user
+
 
 def create_access_token(data: dict,
                         expires_delta: timedelta | None =
@@ -47,5 +52,7 @@ def create_access_token(data: dict,
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
+
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+

@@ -2,6 +2,7 @@ import uuid
 
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 from .base import Base
 
@@ -15,3 +16,5 @@ class Role(Base):
     quota_size = Column(Integer, nullable=False)
     quota_files = Column(Integer, nullable=True)
     timestamp = Column(DateTime, nullable=False)
+
+    users = relationship("User", back_populates="role")

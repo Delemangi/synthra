@@ -14,8 +14,11 @@ class User(Base):
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     avatar = Column(String, nullable=True)
-    quota = Column(Integer, nullable=False)
-    timestamp = Column(DateTime, nullable=False)
+    quota = Column(Integer, nullable=True)
+    timestamp = Column(DateTime, nullable=True)
 
-    role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=False)
+    role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=True)
     role = relationship("Role", back_populates="users")
+
+    files = relationship("File", back_populates="user")
+    webhooks = relationship("Webhook", back_populates="user")
