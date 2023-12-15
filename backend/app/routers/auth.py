@@ -26,13 +26,14 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(
-        data={"sub": "abc"})
+    access_token = create_access_token(data={"sub": user.username})  # type: ignore
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/logout")
 def logout() -> None:
     ...
+
 
 @router.post("/register")
 async def register(user: User,
