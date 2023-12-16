@@ -1,14 +1,13 @@
-from fastapi import File, UploadFile
-
 from app.auth.models import User
 from .constants import FILE_PATH
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import uuid
 from datetime import datetime, timedelta
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, UploadFile
 from .schemas import MetadataFileResponse
 from pathlib import Path
+from .models import File
 
 quota_exception = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
