@@ -5,12 +5,15 @@ from jose import jwt
 
 from fastapi.security import OAuth2PasswordBearer
 
-from ..repos.users import get_user_by_filter, add_user
-from ..models.user import User
+from .models import User
+
+from uuid import UUID
+from collections.abc import Callable
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_
+from sqlalchemy import and_, select
 import os
+
 
 SECRET_KEY = str(os.getenv("JWT_SECRET_KEY"))
 ALGORITHM = "HS256"
@@ -60,3 +63,28 @@ def create_access_token(
 
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+async def add_user(user: User, session: AsyncSession) -> None:
+    session.add(user)
+    await session.commit()
+
+
+async def get_user_by_filter(user_filter: Callable, session: AsyncSession) -> User:
+    users = await session.execute(select(User).filter(lambda: user_filter(User)))
+
+    return users.first()
+
+
+async def get_user_by_id(user_id: UUID, session: AsyncSession) -> User:
+    users = await session.execute(select(User).filter(User.id == user_id))
+
+    return users.first()
+
+
+async def get_user_by_username(username: str, session: AsyncSession) -> User:
+    users = await session.execute(
+        select(User).filter(User.username == username and User.password)
+    )
+
+    return users.first()

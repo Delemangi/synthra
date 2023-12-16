@@ -2,12 +2,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from ..schemas.auth.token import Token
-from ..schemas.auth.user import User
+from .schemas import Token, User
 
-from ..database.database import get_async_session
+from app.database import get_async_session
 
-from ..services.auth import authenticate_user, create_access_token, create_user
+from .service import authenticate_user, create_access_token, create_user
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
