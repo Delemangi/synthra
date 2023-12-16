@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.database import initialize_database
+
 from .auth.router import router as auth_router
 
 

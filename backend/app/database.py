@@ -1,11 +1,10 @@
 import os
 from collections.abc import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.auth.models import Role  # noqa: F401
 from app.file_transfer.models import File, Webhook  # noqa: F401
-
 from app.models import Base
 
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")

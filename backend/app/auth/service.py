@@ -1,19 +1,15 @@
+import os
+from collections.abc import Callable
 from datetime import datetime, timedelta
-
-from passlib.context import CryptContext
-from jose import jwt
+from uuid import UUID
 
 from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from passlib.context import CryptContext
+from sqlalchemy import and_, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import User
-
-from uuid import UUID
-from collections.abc import Callable
-
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_, select
-import os
-
 
 SECRET_KEY = str(os.getenv("JWT_SECRET_KEY"))
 ALGORITHM = "HS256"
