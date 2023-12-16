@@ -9,12 +9,10 @@ from passlib.context import CryptContext
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 from .models import User
 
 SECRET_KEY = str(os.getenv("JWT_SECRET_KEY"))
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
