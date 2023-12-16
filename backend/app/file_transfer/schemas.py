@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 
+
 class FileUploaded(BaseModel):
     filename: str
     username: str
+
 
 class MetadataFileResponse(BaseModel):
     name: str

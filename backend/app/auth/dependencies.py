@@ -4,11 +4,14 @@ from .service import oauth2_scheme, SECRET_KEY, ALGORITHM, get_user_by_username
 from app.database import get_async_session
 from .schemas import TokenData
 from jose import JWTError, jwt
+from .models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], session: Annotated[AsyncSession, Depends(get_async_session)]):
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -20,9 +23,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], sessio
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
+    except JWTError as err:
+        raise credentials_exception from err
     user = get_user_by_username(username=token_data.username, session=session)
     if user is None:
         raise credentials_exception
-    return user
+    return await user

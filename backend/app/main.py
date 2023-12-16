@@ -2,8 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-import os
-import glob
+from pathlib import Path
 
 from app.database import initialize_database
 
@@ -12,16 +11,17 @@ from .file_transfer.router import router as file_router
 
 from .file_transfer.constants import FILE_PATH
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Application is starting up")
     await initialize_database()
-    os.mkdir(FILE_PATH)
+    Path.mkdir(Path(FILE_PATH))
     yield
     print("Application is shutting down")
-    files = glob.glob(FILE_PATH)
+    files = Path.rglob(Path(FILE_PATH), "*")
     for f in files:
-        os.remove(f)
+        Path.unlink(f)
 
 
 app = FastAPI(lifespan=lifespan)
