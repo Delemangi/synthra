@@ -3,8 +3,9 @@ from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.models import file, role, user, webhook  # noqa: F401
-from app.models.base import Base
+from app.auth.models import Role  # noqa: F401
+from app.file_transfer.models import File, Webhook  # noqa: F401
+from app.models import Base
 
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -17,6 +18,7 @@ async_session_maker = async_sessionmaker(autocommit=False, autoflush=False, bind
 
 async def initialize_database() -> None:
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
 
