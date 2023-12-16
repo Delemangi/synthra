@@ -21,7 +21,7 @@ class User(Base):
     role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=True)
     role = relationship("Role", back_populates="users")
 
-    files = relationship("File", back_populates="user")
+    files = relationship("File", back_populates="user", lazy="selectin")
     webhooks = relationship("Webhook", back_populates="user")
 
 
