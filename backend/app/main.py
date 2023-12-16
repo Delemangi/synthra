@@ -12,6 +12,7 @@ from .file_transfer.router import router as file_router
 
 from .file_transfer.constants import FILE_PATH
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Application is starting up")

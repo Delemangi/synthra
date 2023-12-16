@@ -15,15 +15,17 @@ from .constants import FILE_PATH
 
 router = APIRouter(tags=["file_transfer"])
 
+
 @router.post("/", response_model=FileUploaded)
 async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-    file: UploadFile
+    file: UploadFile,
 ) -> dict:
     user = await current_user
     await upload_file_unencrypted(user, session, file)
     return {"filename": file.filename, "username": user.username}
+
 
 @router.get("/", response_model=List[MetadataFileResponse])
 async def get_all_files(
@@ -33,12 +35,14 @@ async def get_all_files(
     user = await current_user
     return await get_all_files_user(user, session)
 
+
 @router.get("/download/{path}")
 async def get_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
-    session: Annotated[AsyncSession, Depends(get_async_session)]):
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+):
     user = await current_user
     filename = await verify_file(path, user, session)
     # Return the file using FileResponse
-    return FileResponse(FILE_PATH+path, filename=filename)
+    return FileResponse(FILE_PATH + path, filename=filename)
