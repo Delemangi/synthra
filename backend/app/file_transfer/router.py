@@ -44,6 +44,7 @@ async def get_file(
     # Return the file using FileResponse
     return FileResponse(FILE_PATH + path, filename=filename)
 
+
 @router.get("/test")
 async def test() -> str:
     return "Endpoint works"

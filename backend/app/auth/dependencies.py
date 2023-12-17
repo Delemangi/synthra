@@ -24,7 +24,7 @@ async def get_current_user(
             raise credentials_exception
     except JWTError as err:
         raise credentials_exception from err
-    user =  await get_user_by_username(username=username, session=session)
+    user = await get_user_by_username(username=username, session=session)
     if user is None:
         raise credentials_exception
     return user
