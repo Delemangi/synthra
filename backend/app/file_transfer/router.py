@@ -43,3 +43,7 @@ async def get_file(
     filename = await verify_file(path, current_user, session)
     # Return the file using FileResponse
     return FileResponse(FILE_PATH + path, filename=filename)
+
+@router.get("/test")
+async def test() -> str:
+    return "Endpoint works"

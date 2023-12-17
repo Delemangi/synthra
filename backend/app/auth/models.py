@@ -24,6 +24,9 @@ class User(Base):
     files = relationship("File", back_populates="user", lazy="selectin")
     webhooks = relationship("Webhook", back_populates="user")
 
+    def has_remaining_quota(self) -> bool:
+        return bool(self.quota != 0)
+
 
 class Role(Base):
     __tablename__ = "role"
