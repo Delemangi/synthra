@@ -11,6 +11,7 @@ from .models import File
 from typing import Annotated
 from app.auth.dependencies import get_current_user
 from .exceptions import quota_exception, no_access_exception
+from app.exceptions import internal_server_error
 
 
 async def upload_file_unencrypted(
@@ -68,8 +69,8 @@ async def verify_file(
 ) -> str:
     file = await session.execute(select(File).filter(File.path == path))
     file = file.scalar_one_or_none()
-    if file == None:
-        raise
+    if file is None:
+        raise internal_server_error
     if file.user.id == current_user.id:
         return file.name
     raise no_access_exception
