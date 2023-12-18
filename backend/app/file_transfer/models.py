@@ -21,7 +21,7 @@ class File(Base):
     timestamp = Column(DateTime, nullable=False)
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
-    user = relationship("User", back_populates="files")
+    user = relationship("User", back_populates="files", lazy="selectin")
 
 
 class Webhook(Base):

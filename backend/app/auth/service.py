@@ -15,7 +15,7 @@ from .models import User
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 async def create_user(

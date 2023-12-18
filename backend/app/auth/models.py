@@ -1,4 +1,5 @@
 import uuid
+from typing import Self
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
@@ -21,8 +22,11 @@ class User(Base):
     role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=True)
     role = relationship("Role", back_populates="users")
 
-    files = relationship("File", back_populates="user")
+    files = relationship("File", back_populates="user", lazy="selectin")
     webhooks = relationship("Webhook", back_populates="user")
+
+    def has_remaining_quota(self: Self) -> bool:
+        return bool(self.quota != 0)
 
 
 class Role(Base):
