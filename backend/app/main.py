@@ -15,7 +15,7 @@ from .file_transfer.router import router as file_router
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Application is starting up")
     await initialize_database()
-    Path.mkdir(Path(FILE_PATH))
+    Path.mkdir(Path(FILE_PATH), exist_ok=True)
 
     yield
 
