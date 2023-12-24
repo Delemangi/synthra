@@ -53,17 +53,20 @@ async def upload_file_unencrypted(
 async def get_all_files_user(
     current_user: Annotated[User, Depends(get_current_user)], session: AsyncSession
 ) -> list[MetadataFileResponse]:
-    files = await session.execute(select(File).filter(File.user_id == current_user.id))
-
-    return [
-        MetadataFileResponse(
-            name=str(file.name),
-            path=str(file.path),
-            size=int(file.size),  # type: ignore
-            encrypted=bool(file.encrypted),
+    async with session:
+        files = await session.execute(
+            select(File).filter(File.user_id == current_user.id)
         )
-        for file in files.scalars()
-    ]
+
+        return [
+            MetadataFileResponse(
+                name=str(file.name),
+                path=str(file.path),
+                size=int(file.size),  # type: ignore
+                encrypted=bool(file.encrypted),
+            )
+            for file in files.scalars()
+        ]
 
 
 async def verify_file(
@@ -71,13 +74,14 @@ async def verify_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: AsyncSession,
 ) -> str:
-    files = await session.execute(select(File).filter(File.path == path))
-    file = files.scalar_one_or_none()
+    async with session:
+        files = await session.execute(select(File).filter(File.path == path))
+        file = files.scalar_one_or_none()
 
-    if file is None:
-        raise internal_server_error
+        if file is None:
+            raise internal_server_error
 
-    if file.user.id == current_user.id:
-        return str(file.name)
+        if file.user.id == current_user.id:
+            return str(file.name)
 
-    raise no_access_exception
+        raise no_access_exception
