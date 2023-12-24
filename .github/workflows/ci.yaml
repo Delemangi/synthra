@@ -122,3 +122,25 @@ jobs:
           context: "{{defaultContext}}:frontend"
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-frontend:latest
+
+  gitlab-mirror:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - docker-frontend
+      - docker-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Push to GitLab
+        env:
+          GITLAB_URL: ${{ secrets.GITLAB_URL }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
+          GITLAB_ORG: ${{ secrets.GITLAB_ORG }}
+          GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git remote add gitlab "${GITLAB_URL}/${GITLAB_ORG}/${GITLAB_REPO}.git"
+          git push gitlab HEAD:master --force
