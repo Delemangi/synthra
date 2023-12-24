@@ -150,4 +150,4 @@ jobs:
 
           git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.finki.ukim.mk/ioss/synthra.git"
 
-          git push --mirror gitlab
+          git push gitlab main:main --force
