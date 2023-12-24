@@ -1,21 +1,29 @@
 ARG PLATFORM="linux/amd64"
 
-FROM --platform=${PLATFORM} python:3.11-alpine AS requirements
-WORKDIR /tmp
+# Development stage
+FROM python:3.11-alpine AS development
+WORKDIR /synthra
+
+RUN apk add --no-cache postgresql-client git openjdk17 nodejs
 
 RUN pip install poetry
 
-COPY ./pyproject.toml ./poetry.lock* /tmp/
-
+COPY ./pyproject.toml ./poetry.lock* /synthra/
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM --platform=${PLATFORM} python:3.11-alpine AS base
-WORKDIR /code
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
 
-RUN apk update && apk add --no-cache build-base && apk cache clean
+# Production stage
+FROM --platform=${PLATFORM} python:3.11-alpine AS production
+WORKDIR /synthra
 
-COPY --from=requirements /tmp/requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN apk add --no-cache postgresql-client build-base
 
-COPY ./app /code/app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY ./start.sh /synthra/start.sh
+
+COPY --from=development /synthra/requirements.txt /synthra/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /synthra/requirements.txt
+
+COPY ./app /synthra/app
+
+CMD ["sh", "./start.sh"]

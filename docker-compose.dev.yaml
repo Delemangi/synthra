@@ -9,25 +9,43 @@ services:
       - .env
     volumes:
       - ./pg_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: delemangi/synthra-backend:latest
+      target: development
     container_name: synthra-backend
     restart: unless-stopped
     depends_on:
       - database
     env_file:
       - .env
+    ports:
+      - "81:80"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: delemangi/synthra-frontend:latest
+      target: development
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
       - "80:5000"
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: synthra-pgadmin
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "82:80"

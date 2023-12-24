@@ -1,0 +1,13 @@
+{
+  "dockerComposeFile": "../docker-compose.dev.yml",
+  "forwardPorts": [
+    80,
+    81,
+    82,
+    5432
+  ],
+  "name": "synthra",
+  "service": "backend",
+  "shutdownAction": "stopCompose",
+  "workspaceFolder": "/synthra"
+}

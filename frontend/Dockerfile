@@ -1,29 +1,29 @@
 ARG PLATFORM="linux/amd64"
 
-FROM --platform=${PLATFORM} node:20-alpine AS build
+# Development stage
+FROM node:20-alpine AS development
 WORKDIR /app
 
-COPY package*.json ./
+RUN apk add --no-cache postgresql-client git openjdk17 nodejs
+
+COPY package.json package-lock.json ./
 RUN npm i
 
-COPY src ./src
-COPY static ./static
+COPY . ./
 
-COPY tsconfig.json ./
-COPY svelte.config.js ./
-COPY vite.config.ts ./
+CMD ["npm", "run", "dev"]
 
-RUN npm run build
-RUN npm prune --production
-
-FROM --platform=${PLATFORM} node:20-alpine AS release
+# Production stage
+FROM --platform=${PLATFORM} node:20-alpine AS production
 WORKDIR /app
 
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.svelte-kit ./.svelte-kit
-COPY --from=build /app/static ./static
-COPY --from=build /app/package.json ./
+RUN apk add --no-cache postgresql-client
 
-RUN npm i vite
+COPY package.json ./
+COPY --from=development /app/node_modules ./node_modules
+RUN npm prune --production && npm i vite
+
+COPY . ./
+RUN npm run build
 
 CMD ["npm", "run", "preview"]
