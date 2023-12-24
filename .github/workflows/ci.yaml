@@ -133,10 +133,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Push to GitLab
         env:
           GITLAB_URL: ${{ secrets.GITLAB_URL }}
+          GITLAB_MAIL: ${{ secrets.GITLAB_MAIL }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
           GITLAB_ORG: ${{ secrets.GITLAB_ORG }}
           GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
@@ -147,4 +150,4 @@ jobs:
 
           git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_URL}/${GITLAB_ORG}/${GITLAB_REPO}.git"
 
-          git push gitlab HEAD:main --force
+          git push --mirror gitlab
