@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [sveltekit()],
   server: {
     watch: {
-      usePolling: true,
+      usePolling: true
     },
     host: true,
     strictPort: true,
