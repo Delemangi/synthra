@@ -34,7 +34,7 @@ services:
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
-      - "80:5000"
+      - "80:5173"
 
   pgadmin:
     image: dpage/pgadmin4:8

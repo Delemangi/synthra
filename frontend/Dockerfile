@@ -21,7 +21,7 @@ RUN apk add --no-cache postgresql-client
 
 COPY package.json ./
 COPY --from=development /app/node_modules ./node_modules
-RUN npm prune --production && npm i vite
+RUN npm prune --production && npm i --ignore-scripts vite
 
 COPY . ./
 RUN npm run build

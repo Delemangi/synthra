@@ -6,4 +6,9 @@ until PGPASSWORD="$POSTGRES_PASSWORD" pg_isready --host="$POSTGRES_HOST" --port=
 done
 
 echo "Starting..."
-uvicorn app.main:app --host "0.0.0.0" --port 80
+
+if [ -z "$1" ]; then
+  poetry run uvicorn app.main:app --host "0.0.0.0" --port 80
+else
+  poetry run uvicorn app.main:app --host "0.0.0.0" --port 80 --reload
+fi
