@@ -3,11 +3,11 @@ updates:
   - package-ecosystem: "pip"
     directory: "/backend"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     ignore:
       - dependency-name: "python"
 
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "daily"
+      interval: "weekly"
