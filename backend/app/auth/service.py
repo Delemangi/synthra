@@ -73,15 +73,18 @@ async def add_user(user: User, session: AsyncSession) -> None:
 async def get_user_by_filter(
     user_filter: Callable, session: AsyncSession
 ) -> User | None:
-    users = await session.execute(select(User).filter(lambda: user_filter(User)))
-    return users.scalar_one_or_none()
+    async with session:
+        users = await session.execute(select(User).filter(lambda: user_filter(User)))
+        return users.scalar_one_or_none()
 
 
 async def get_user_by_id(user_id: UUID, session: AsyncSession) -> User | None:
-    users = await session.execute(select(User).filter(User.id == user_id))
-    return users.scalar_one_or_none()
+    async with session:
+        users = await session.execute(select(User).filter(User.id == user_id))
+        return users.scalar_one_or_none()
 
 
 async def get_user_by_username(username: str, session: AsyncSession) -> User | None:
-    users = await session.execute(select(User).filter(User.username == username))
-    return users.scalar_one_or_none()
+    async with session:
+        users = await session.execute(select(User).filter(User.username == username))
+        return users.scalar_one_or_none()
