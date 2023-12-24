@@ -148,6 +148,6 @@ jobs:
           git config --global user.email "${GITLAB_MAIL}"
           git config --global user.name "${GITLAB_USERNAME}"
 
-          git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_URL}/${GITLAB_ORG}/${GITLAB_REPO}.git"
+          git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.finki.ukim.mk/ioss/synthra.git"
 
           git push --mirror gitlab
