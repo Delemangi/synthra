@@ -9,5 +9,5 @@
   "name": "Synthra - Backend",
   "service": "backend",
   "shutdownAction": "none",
-  "workspaceFolder": "/synthra"
+  "workspaceFolder": "/workspace/backend"
 }

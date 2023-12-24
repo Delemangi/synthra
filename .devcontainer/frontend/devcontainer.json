@@ -9,5 +9,5 @@
   "name": "Synthra - Frontend",
   "service": "frontend",
   "shutdownAction": "none",
-  "workspaceFolder": "/app"
+  "workspaceFolder": "/workspace/frontend"
 }
