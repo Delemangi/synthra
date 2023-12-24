@@ -1,0 +1,17 @@
+# Node
+node_modules
+.npmrc
+
+# Environment
+.env*
+
+# ESLint
+.eslintcache
+.eslintrc*
+
+# Prettier
+.prettierignore
+.prettierrc*
+
+# Git
+.gitignore

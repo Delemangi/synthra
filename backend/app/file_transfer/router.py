@@ -21,7 +21,7 @@ async def create_upload_file(
     file: UploadFile,
 ) -> dict:
     await upload_file_unencrypted(session, file, current_user)
-    return {"filename": file.filename, "username": current_user.username}
+    return {"filename": file.filename}
 
 
 @router.get("/", response_model=list[MetadataFileResponse])
