@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 from .models import User
+from .exceptions import username_taken_exception
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
 
@@ -23,6 +24,12 @@ async def create_user(
 ) -> User:
     password = pwd_context.hash(plain_password)
     user = User(username=username, password=password, quota=quota)
+
+    existing_user = await get_user_by_username(username, session)
+
+    if existing_user:
+        raise username_taken_exception
+
     await add_user(user, session)
     return user
 
