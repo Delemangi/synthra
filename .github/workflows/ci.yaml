@@ -142,5 +142,9 @@ jobs:
           GITLAB_USERNAME: ${{ secrets.GITLAB_USERNAME }}
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
+          git config --global user.email "${GITLAB_MAIL}"
+          git config --global user.name "${GITLAB_USERNAME}"
+
           git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${GITLAB_URL}/${GITLAB_ORG}/${GITLAB_REPO}.git"
+
           git push gitlab HEAD:main --force
