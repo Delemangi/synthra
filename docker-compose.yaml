@@ -9,46 +9,25 @@ services:
       - .env
     volumes:
       - ./pg_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: delemangi/synthra-backend:latest
     container_name: synthra-backend
     restart: unless-stopped
     depends_on:
       - database
     env_file:
       - .env
-    ports:
-      - "81:80"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: delemangi/synthra-frontend:latest
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
       - "80:5000"
-
-  pgadmin:
-    image: dpage/pgadmin4:8
-    container_name: synthra-pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: test@test.com
-      PGADMIN_DEFAULT_PASSWORD: test
-    ports:
-      - "8080:80"
-    volumes:
-      - ./pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - database

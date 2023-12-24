@@ -1,8 +1,13 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/"
+    directory: "/backend"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     ignore:
       - dependency-name: "python"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "daily"

@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:16
+    container_name: synthra-database
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development
+    container_name: synthra-backend
+    restart: unless-stopped
+    depends_on:
+      - database
+    env_file:
+      - .env
+    volumes:
+      - .:/workspace
+    ports:
+      - "81:80"
+    command: sleep infinity
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: synthra-frontend
+    restart: unless-stopped
+    volumes:
+      - .:/workspace
+    ports:
+      - "80:5173"
+    command: sleep infinity
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: synthra-pgadmin
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@test.com
+      PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "82:80"

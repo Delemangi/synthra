@@ -9,16 +9,9 @@ services:
       - .env
     volumes:
       - ./pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: delemangi/synthra-backend:latest
     container_name: synthra-backend
     restart: unless-stopped
     depends_on:
@@ -27,9 +20,7 @@ services:
       - .env
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: delemangi/synthra-frontend:latest
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
