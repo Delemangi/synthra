@@ -1036,13 +1036,13 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 
 [[package]]
 name = "types-passlib"
-version = "1.7.7.13"
+version = "1.7.7.20240106"
 description = "Typing stubs for passlib"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "types-passlib-1.7.7.13.tar.gz", hash = "sha256:f152639f1f2103d7f59a56e2aec5f9398a75a80830991d0d68aac5c2b9c32a77"},
-    {file = "types_passlib-1.7.7.13-py3-none-any.whl", hash = "sha256:414b5ee9c88313357c9261cfcf816509b1e8e4673f0796bd61e9ef249f6fe076"},
+    {file = "types-passlib-1.7.7.20240106.tar.gz", hash = "sha256:2231ae83d1dd9e485b7ec6041d81b4f9c66403d1767360e860605a90db48ea27"},
+    {file = "types_passlib-1.7.7.20240106-py3-none-any.whl", hash = "sha256:347aa64d4c2bc239f3765fe38fc79dad3d67f9def7b3ea721daaaaa835a91dad"},
 ]
 
 [[package]]
@@ -1341,4 +1341,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d7f4171d067bb866678206965b43e7f71e94f10ae8d5f2cbf8d5373fbb034409"
+content-hash = "dc366933f4cfc337f7fb21b0939c1076b6df1d231b0487619ccb4000e3f44f7d"
