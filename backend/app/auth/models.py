@@ -11,7 +11,7 @@ from app.models import Base
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # noqa: A003
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
@@ -32,7 +32,7 @@ class User(Base):
 class Role(Base):
     __tablename__ = "role"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # noqa: A003
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     name = Column(String, nullable=False)
     quota_size = Column(Integer, nullable=False)

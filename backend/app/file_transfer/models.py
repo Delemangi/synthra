@@ -10,7 +10,7 @@ from app.models import Base
 class File(Base):
     __tablename__ = "file"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # noqa: A003
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     name = Column(String, nullable=False)
     path = Column(String, nullable=False)
@@ -27,7 +27,7 @@ class File(Base):
 class Webhook(Base):
     __tablename__ = "webhook"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # noqa: A003
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
     url = Column(String, nullable=False)
     platform = Column(String, nullable=False)
