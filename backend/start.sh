@@ -8,7 +8,7 @@ done
 echo "Starting..."
 
 if [ -z "$1" ]; then
-  poetry run uvicorn app.main:app --host "0.0.0.0" --port 80
+  uvicorn app.main:app --host "0.0.0.0" --port 80
 else
   poetry run uvicorn app.main:app --host "0.0.0.0" --port 80 --reload
 fi
