@@ -9,19 +9,19 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.109.2"
-sqlalchemy = "2.0.26"
-asyncpg = "0.29.0"
+sqlalchemy = "^2.0.26"
+asyncpg = "^0.29.0"
 uvicorn = { version = "^0.27.1", extras = ["standard"] }
-python-jose = { version = "3.3.0", extras = ["cryptography"] }
-passlib = "1.7.4"
-python-multipart = "0.0.6"
+python-jose = { version = "^3.3.0", extras = ["cryptography"] }
+passlib = "^1.7.4"
+python-multipart = "^0.0.9"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.7.1"
-ruff = "^0.1.13"
-pre-commit = "^3.6.0"
-types-python-jose = "^3.3.4.8"
-types-passlib = "^1.7.7.13"
+mypy = "^1.8.0"
+ruff = "^0.2.1"
+pre-commit = "^3.6.1"
+types-python-jose = "^3.3.4.20240106"
+types-passlib = "^1.7.7.20240106"
 
 [build-system]
 requires = ["poetry-core"]
