@@ -5,9 +5,8 @@ WORKDIR /workspace/frontend
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 
-RUN npm run build
-
 COPY . ./
+RUN npm run build
 
 # Production stage
 FROM --platform=${TARGETPLATFORM} node:20 AS production
