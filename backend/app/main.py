@@ -14,6 +14,7 @@ from .file_transfer.router import router as file_router
 
 from app.settings import APISettings
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Application is starting up")
@@ -41,15 +42,19 @@ def make_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     app.include_router(auth_router, prefix="/auth")
     app.include_router(file_router, prefix="/files")
+
     @app.get("/")
     async def root() -> str:
         return "Hello World"
+
     return app
+
 
 def run() -> None:
     app = make_app()
     settings = APISettings()
     uvicorn.run(app, host=settings.host, port=settings.port, log_level="info")
+
 
 if __name__ == "__main__":
     run()
