@@ -1,29 +1,20 @@
-ARG PLATFORM="linux/amd64"
-
 # Development stage
-FROM node:20-alpine AS development
+FROM --platform=${BUILDPLATFORM} node:20 AS development
 WORKDIR /workspace/frontend
-
-RUN apk add --no-cache postgresql-client git openjdk17 nodejs
 
 COPY package.json package-lock.json ./
-RUN npm i
+RUN npm ci --ignore-scripts
 
-COPY . ./
-
-CMD ["npm", "run", "dev"]
-
-# Production stage
-FROM --platform=${PLATFORM} node:20-alpine AS production
-WORKDIR /workspace/frontend
-
-RUN apk add --no-cache postgresql-client
-
-COPY package.json ./
-COPY --from=development /workspace/frontend/node_modules ./node_modules
-RUN npm prune --production && npm i --ignore-scripts vite
-
-COPY . ./
 RUN npm run build
 
-CMD ["npm", "run", "preview"]
+COPY . ./
+
+# Production stage
+FROM --platform=${TARGETPLATFORM} node:20 AS production
+WORKDIR /workspace/frontend
+
+COPY --from=development /workspace/frontend .
+
+RUN npm prune --production
+
+CMD [ "npm", "run", "preview" ]
