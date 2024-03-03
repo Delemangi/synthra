@@ -14,6 +14,6 @@ WORKDIR /workspace/frontend
 
 COPY --from=development /workspace/frontend .
 
-RUN npm prune --production && npm i vite --ignore-scripts && npm cache clean --force
+RUN npm prune --production && npm i --ignore-scripts vite && npm cache clean --force
 
 CMD [ "npm", "run", "preview" ]
