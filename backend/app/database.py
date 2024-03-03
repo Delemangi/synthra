@@ -17,7 +17,7 @@ SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 def get_engine() -> AsyncEngine:
-    global engine
+    global engine  # noqa: PLW0603
 
     if SQLALCHEMY_DATABASE_URL is None:
         raise ValueError("DATABASE_URL environment variable is not set")
@@ -30,8 +30,8 @@ def get_engine() -> AsyncEngine:
 async_session_maker: None | async_sessionmaker = None
 
 
-def get_session_maker():
-    global async_session_maker
+def get_session_maker() -> async_sessionmaker:
+    global async_session_maker  # noqa: PLW0603
     if async_session_maker is None:
         async_session_maker = async_sessionmaker(
             autocommit=False, autoflush=False, bind=get_engine(), expire_on_commit=False

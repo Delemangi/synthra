@@ -14,6 +14,8 @@ from .file_transfer.router import router as file_router
 
 from app.settings import APISettings
 
+MAX_CONNECTION_ATTEMPTS = 10
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
@@ -25,7 +27,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
         except Exception as ex:
             print(ex)
             time.sleep(1)
-        if i == 9:
+        if i == MAX_CONNECTION_ATTEMPTS - 1:
             sys.exit()
 
     Path.mkdir(Path(FILE_PATH), exist_ok=True)
