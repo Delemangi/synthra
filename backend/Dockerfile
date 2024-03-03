@@ -13,7 +13,7 @@ COPY . ./
 FROM --platform=${TARGETPLATFORM} python:3.11 AS production
 WORKDIR /workspace/backend
 
-COPY --from=development ./requirements.txt ./requirements.txt
+COPY --from=development /workspace/backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
 COPY ./app ./app
