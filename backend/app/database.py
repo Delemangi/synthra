@@ -1,7 +1,12 @@
 import os
 from collections.abc import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine, AsyncEngine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+    AsyncEngine,
+)
 
 from app.auth.models import Role  # noqa: F401
 from app.file_transfer.models import File, Webhook  # noqa: F401
@@ -9,6 +14,7 @@ from app.models import Base
 
 engine: AsyncEngine | None = None
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 def get_engine() -> AsyncEngine:
     global engine
@@ -22,6 +28,8 @@ def get_engine() -> AsyncEngine:
 
 
 async_session_maker: None | async_sessionmaker = None
+
+
 def get_session_maker():
     global async_session_maker
     if async_session_maker is None:
@@ -30,6 +38,7 @@ def get_session_maker():
         )
     return async_session_maker
 
+
 async def initialize_database() -> None:
     async with get_engine().begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -37,5 +46,5 @@ async def initialize_database() -> None:
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with get_session_maker() as session: # type: ignore
+    async with get_session_maker() as session:  # type: ignore
         yield session
