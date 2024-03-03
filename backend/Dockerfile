@@ -1,32 +1,21 @@
-ARG PLATFORM="linux/amd64"
-
 # Development stage
-FROM python:3.11-alpine AS development
+FROM --platform=${BUILDPLATFORM} python:3.11 AS development
 WORKDIR /workspace/backend
 
-RUN apk add --no-cache postgresql-client git openjdk17 nodejs
-
-RUN pip install poetry
 COPY ./pyproject.toml ./poetry.lock ./
+RUN pip install poetry
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN poetry install
+RUN poetry install && poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 COPY . ./
 
-CMD ["sh", "./start.sh", "reload"]
-
 # Production stage
-FROM --platform=${PLATFORM} python:3.11-alpine AS production
+FROM --platform=${TARGETPLATFORM} python:3.11 AS production
 WORKDIR /workspace/backend
 
-RUN apk add --no-cache postgresql-client build-base
+COPY --from=development ./requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
-COPY ./start.sh ./start.sh
+COPY ./app ./app
 
-COPY --from=development /workspace/backend/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /workspace/backend/requirements.txt
-
-COPY ./app /workspace/backend/app
-
-CMD ["sh", "./start.sh"]
+CMD [ "python", "-m", "app.main" ]
