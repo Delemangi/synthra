@@ -1,13 +1,15 @@
 {
-  "dockerComposeFile": "../../docker-compose.dev.yaml",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
   "forwardPorts": [
+    5432,
     80,
     81,
-    82,
-    5432
+    82
   ],
-  "name": "Synthra - Backend",
-  "service": "backend",
-  "shutdownAction": "none",
-  "workspaceFolder": "/workspace/backend"
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "name": "Synthra"
 }
