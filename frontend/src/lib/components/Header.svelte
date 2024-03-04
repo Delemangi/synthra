@@ -9,7 +9,7 @@
     text-align: start;
     margin: 5;
     border-bottom: 1px solid gray;
-    padding: 10px
+    padding: 10px;
   }
 
   h1 {

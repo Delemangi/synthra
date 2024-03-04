@@ -33,11 +33,13 @@
   }
 </script>
 
-<Header/>
+<Header />
 
-<div style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding:10px; border-radius:5px">
-  <TextInput label='Email' bind:value={email} />
-  <TextInput type='password' label='Password' bind:value={password} />
-  <br/>
+<div
+  style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding:10px; border-radius:5px"
+>
+  <TextInput label="Email" bind:value={email} />
+  <TextInput type="password" label="Password" bind:value={password} />
+  <br />
   <Button on:click={handleSubmit}>Login</Button>
 </div>
