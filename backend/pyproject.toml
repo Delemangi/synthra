@@ -16,6 +16,7 @@ python-jose = { version = "^3.3.0", extras = ["cryptography"] }
 passlib = "^1.7.4"
 python-multipart = "^0.0.9"
 pydantic-settings = "^2.2.1"
+fastapi-utilities = "0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.8.0"

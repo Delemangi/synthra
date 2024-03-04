@@ -40,3 +40,10 @@ class Role(Base):
     timestamp = Column(DateTime, nullable=False)
 
     users = relationship("User", back_populates="role")
+
+
+class LoggedInTokens(Base):
+    __tablename__ = "logged_in_tokens"
+
+    token = Column(String, primary_key=True, nullable=False)
+    expiration = Column(DateTime, nullable=False)

@@ -6,11 +6,11 @@ from uuid import UUID
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
-from sqlalchemy import and_, select
+from sqlalchemy import and_, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
-from .models import User
+from .models import LoggedInTokens, User
 from .exceptions import username_taken_exception
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
@@ -58,7 +58,8 @@ async def authenticate_user(
     )
 
 
-def create_access_token(
+async def create_access_token(
+    session: AsyncSession,
     data: dict,
     expires_delta: timedelta | None = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
 ) -> str:
@@ -69,7 +70,27 @@ def create_access_token(
         expire = datetime.utcnow() + timedelta(minutes=15)
 
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    session.add(LoggedInTokens(token=token, expiration=expire))
+    await session.commit()
+
+    return token
+
+
+async def remove_token(token: str, session: AsyncSession) -> None:
+    await session.execute(delete(LoggedInTokens).where(LoggedInTokens.token == token))
+    await session.commit()
+
+
+async def validate_token(token: str, session: AsyncSession) -> bool:
+    async with session:
+        valid_token = await session.execute(
+            select(LoggedInTokens).filter(LoggedInTokens.token == token)
+        )
+        print(valid_token)
+        return valid_token.scalar_one_or_none() is not None
 
 
 async def add_user(user: User, session: AsyncSession) -> None:
