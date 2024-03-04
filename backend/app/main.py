@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import initialize_database
 import uvicorn
@@ -42,6 +43,15 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
 def make_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     app.include_router(auth_router, prefix="/auth")
     app.include_router(file_router, prefix="/files")
 
