@@ -32,4 +32,4 @@ services:
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
-      - "5002:5000"
+      - "4173:4173"
