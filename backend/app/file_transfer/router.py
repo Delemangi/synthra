@@ -14,6 +14,7 @@ from .service import get_all_files_user, upload_file_unencrypted, verify_file
 router = APIRouter(tags=["file_transfer"])
 
 
+# /files/..
 @router.post("/", response_model=FileUploaded)
 async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
