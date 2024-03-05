@@ -32,6 +32,34 @@ test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypo
 trio = ["trio (>=0.23)"]
 
 [[package]]
+name = "apscheduler"
+version = "3.10.4"
+description = "In-process task scheduler with Cron-like capabilities"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "APScheduler-3.10.4-py3-none-any.whl", hash = "sha256:fb91e8a768632a4756a585f79ec834e0e27aad5860bac7eaa523d9ccefd87661"},
+    {file = "APScheduler-3.10.4.tar.gz", hash = "sha256:e6df071b27d9be898e486bc7940a7be50b4af2e9da7c08f0744a96d4bd4cef4a"},
+]
+
+[package.dependencies]
+pytz = "*"
+six = ">=1.4.0"
+tzlocal = ">=2.0,<3.dev0 || >=4.dev0"
+
+[package.extras]
+doc = ["sphinx", "sphinx-rtd-theme"]
+gevent = ["gevent"]
+mongodb = ["pymongo (>=3.0)"]
+redis = ["redis (>=3.0)"]
+rethinkdb = ["rethinkdb (>=2.4.0)"]
+sqlalchemy = ["sqlalchemy (>=1.4)"]
+testing = ["pytest", "pytest-asyncio", "pytest-cov", "pytest-tornado5"]
+tornado = ["tornado (>=4.3)"]
+twisted = ["twisted"]
+zookeeper = ["kazoo"]
+
+[[package]]
 name = "async-timeout"
 version = "4.0.3"
 description = "Timeout context manager for asyncio programs"
@@ -189,20 +217,6 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
-name = "click-spinner"
-version = "0.1.10"
-description = "Spinner for Click"
-optional = false
-python-versions = "*"
-files = [
-    {file = "click-spinner-0.1.10.tar.gz", hash = "sha256:87eacf9d7298973a25d7615ef57d4782aebf913a532bba4b28a37e366e975daf"},
-    {file = "click_spinner-0.1.10-py2.py3-none-any.whl", hash = "sha256:d1ffcff1fdad9882396367f15fb957bcf7f5c64ab91927dee2127e0d2991ee84"},
-]
-
-[package.extras]
-test = ["click", "pytest", "six"]
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -212,20 +226,6 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
-
-[[package]]
-name = "croniter"
-version = "1.4.1"
-description = "croniter provides iteration for datetime object with cron like format"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "croniter-1.4.1-py2.py3-none-any.whl", hash = "sha256:9595da48af37ea06ec3a9f899738f1b2c1c13da3c38cea606ef7cd03ea421128"},
-    {file = "croniter-1.4.1.tar.gz", hash = "sha256:1a6df60eacec3b7a0aa52a8f2ef251ae3dd2a7c7c8b9874e73e791636d55a361"},
-]
-
-[package.dependencies]
-python-dateutil = "*"
 
 [[package]]
 name = "cryptography"
@@ -328,24 +328,6 @@ typing-extensions = ">=4.8.0"
 
 [package.extras]
 all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=2.11.2)", "orjson (>=3.2.1)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.7)", "pyyaml (>=5.3.1)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0)", "uvicorn[standard] (>=0.12.0)"]
-
-[[package]]
-name = "fastapi-utilities"
-version = "0.2.0"
-description = "Reusable utilities for FastAPI"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "fastapi_utilities-0.2.0-py3-none-any.whl", hash = "sha256:f2f0c91a279141185ed8de10f2d4c30dd85f80a983c09cb5535302ad6299444f"},
-    {file = "fastapi_utilities-0.2.0.tar.gz", hash = "sha256:8932db04060cdd55c2630065865b43f61647125368405500732cd26d125af73c"},
-]
-
-[package.dependencies]
-click-spinner = ">=0.1.10,<0.2.0"
-croniter = ">=1.0.13,<2.0.0"
-fastapi = "*"
-pydantic = "*"
-sqlalchemy = "*"
 
 [[package]]
 name = "filelock"
@@ -791,20 +773,6 @@ toml = ["tomli (>=2.0.1)"]
 yaml = ["pyyaml (>=6.0.1)"]
 
 [[package]]
-name = "python-dateutil"
-version = "2.9.0.post0"
-description = "Extensions to the standard Python datetime module"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-files = [
-    {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
-    {file = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"},
-]
-
-[package.dependencies]
-six = ">=1.5"
-
-[[package]]
 name = "python-dotenv"
 version = "1.0.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -853,6 +821,17 @@ files = [
 
 [package.extras]
 dev = ["atomicwrites (==1.4.1)", "attrs (==23.2.0)", "coverage (==7.4.1)", "hatch", "invoke (==2.2.0)", "more-itertools (==10.2.0)", "pbr (==6.0.0)", "pluggy (==1.4.0)", "py (==1.11.0)", "pytest (==8.0.0)", "pytest-cov (==4.1.0)", "pytest-timeout (==2.2.0)", "pyyaml (==6.0.1)", "ruff (==0.2.1)"]
+
+[[package]]
+name = "pytz"
+version = "2024.1"
+description = "World timezone definitions, modern and historical"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319"},
+    {file = "pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812"},
+]
 
 [[package]]
 name = "pyyaml"
@@ -1143,6 +1122,34 @@ files = [
 ]
 
 [[package]]
+name = "tzdata"
+version = "2024.1"
+description = "Provider of IANA time zone data"
+optional = false
+python-versions = ">=2"
+files = [
+    {file = "tzdata-2024.1-py2.py3-none-any.whl", hash = "sha256:9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252"},
+    {file = "tzdata-2024.1.tar.gz", hash = "sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd"},
+]
+
+[[package]]
+name = "tzlocal"
+version = "5.2"
+description = "tzinfo object for the local timezone"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "tzlocal-5.2-py3-none-any.whl", hash = "sha256:49816ef2fe65ea8ac19d19aa7a1ae0551c834303d5014c6d5a62e4cbda8047b8"},
+    {file = "tzlocal-5.2.tar.gz", hash = "sha256:8d399205578f1a9342816409cc1e46a93ebd5755e39ea2d85334bea911bf0e6e"},
+]
+
+[package.dependencies]
+tzdata = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+devenv = ["check-manifest", "pytest (>=4.3)", "pytest-cov", "pytest-mock (>=3.3)", "zest.releaser"]
+
+[[package]]
 name = "uvicorn"
 version = "0.27.1"
 description = "The lightning-fast ASGI server."
@@ -1402,4 +1409,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.x"
-content-hash = "daccc08425bcc24628e91229cc06c2f4a4aff446eeede3be36c8e222bbfbeb49"
+content-hash = "e7f34e050cc628ae7f813cd15e4044c3bf813bdbb4594e37ab5f07c31eaca906"

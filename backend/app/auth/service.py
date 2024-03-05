@@ -9,6 +9,8 @@ from passlib.context import CryptContext
 from sqlalchemy import and_, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..database import async_session_maker
+
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 from .models import LoggedInTokens, User
 from .exceptions import username_taken_exception
@@ -116,3 +118,11 @@ async def get_user_by_username(username: str, session: AsyncSession) -> User | N
     async with session:
         users = await session.execute(select(User).filter(User.username == username))
         return users.scalar_one_or_none()
+
+
+async def delete_inactive_tokens() -> None:
+    async with async_session_maker() as session:
+        await session.execute(
+            delete(LoggedInTokens).where(LoggedInTokens.expiration < datetime.utcnow())
+        )
+        await session.commit()
