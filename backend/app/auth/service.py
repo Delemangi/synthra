@@ -9,11 +9,13 @@ from passlib.context import CryptContext
 from sqlalchemy import and_, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..database import async_session_maker
+from ..database import get_async_session
 
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 from .models import LoggedInTokens, User
 from .exceptions import username_taken_exception
+
+import hashlib
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
 
@@ -69,13 +71,14 @@ async def create_access_token(
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expire})
 
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-    session.add(LoggedInTokens(token=token, expiration=expire))
+    encrypted_token = hashlib.sha256(token.encode()).hexdigest()
+    session.add(LoggedInTokens(token=encrypted_token, expiration=expire))
     await session.commit()
 
     return token
@@ -88,10 +91,11 @@ async def remove_token(token: str, session: AsyncSession) -> None:
 
 async def validate_token(token: str, session: AsyncSession) -> bool:
     async with session:
+        encrypted_token = hashlib.sha256(token.encode()).hexdigest()
+
         valid_token = await session.execute(
-            select(LoggedInTokens).filter(LoggedInTokens.token == token)
+            select(LoggedInTokens).filter(LoggedInTokens.token == encrypted_token)
         )
-        print(valid_token)
         return valid_token.scalar_one_or_none() is not None
 
 
@@ -121,7 +125,7 @@ async def get_user_by_username(username: str, session: AsyncSession) -> User | N
 
 
 async def delete_inactive_tokens() -> None:
-    async with async_session_maker() as session:
+    async for session in get_async_session():
         await session.execute(
             delete(LoggedInTokens).where(LoggedInTokens.expiration < datetime.utcnow())
         )
