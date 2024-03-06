@@ -22,7 +22,7 @@ from .jobs import schedule_jobs
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    print("Application is starting up 1")
+    print("Application is starting up")
     for i in range(10):
         try:
             await initialize_database()
