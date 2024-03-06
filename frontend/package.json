@@ -28,5 +28,9 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@svelteuidev/composables": "^0.15.4",
+    "@svelteuidev/core": "^0.15.4"
+  }
 }
