@@ -7,8 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_async_session
 
 from .schemas import Token, User
-from .service import authenticate_user, create_access_token, create_user
+from .service import authenticate_user, create_access_token, create_user, remove_token
 from .exceptions import credentials_exception
+
+from .service import oauth2_scheme
 
 router = APIRouter(tags=["auth"])
 
@@ -23,13 +25,17 @@ async def login_for_access_token(
     if not user:
         raise credentials_exception
 
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = await create_access_token(session, data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/logout")
-def logout() -> None:
-    ...
+async def logout(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> dict:
+    await remove_token(token, session)
+    return {"message": "Logged out"}
 
 
 @router.post("/register")
