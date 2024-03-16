@@ -37,7 +37,7 @@
 </script>
 
 
-<Header class={getStyles()} slot="header" >
+<Header class={getStyles()} slot="header" height="50">
   <Flex class={classes.flex} justify="space-between" align="center" style="height: 100%;">
 
     <a class={classes.leftOptions}

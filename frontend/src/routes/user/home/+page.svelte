@@ -1,9 +1,23 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  import { createStyles, Button, Box, Flex, Text, Overlay, Title } from "@svelteuidev/core";
+  import { createStyles, Button, Box, Flex, Text, Overlay, Title, type DefaultTheme } from "@svelteuidev/core";
   import FileRow from "$lib/components/user/FileRow.svelte";
+  import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from "../../../axios/axios-request";
 
-  const useStyles = createStyles((theme) => {
+  let files : FileList | null = null;
+
+  function sendData() {
+    if (files != null) {
+      console.log(files);
+      sendFileForSpecifiedUser(localStorage.getItem('accessToken'), files[0]);
+    }
+    else
+    {
+      console.log("No file selected");
+
+    }
+  }
+  const useStyles = createStyles((theme : DefaultTheme) => {
       return {
         root: {
           [`${theme.dark} &`]: {
@@ -30,20 +44,8 @@
 
   onMount(async function () {
     let accessToken = localStorage.getItem('accessToken');
-
-    const response = await fetch('http://localhost:8002/files', {
-      method: 'GET',
-      headers: {
-        authorization: `Bearer ${accessToken}`
-      }
-    });
-
-    if (response.ok) {
-      console.log('success'+ (await response.json()));
-    }
-    else {
-      console.log('error');
-    }
+    const response = await getFilesForSpecifiedUser(accessToken);
+    console.log(response);
   });
   let visible = false;
 </script>
@@ -56,10 +58,11 @@
   <Box class={getStyles()}>
     <Flex direction="column" align="space-evenly" gap="md" justify="center">
       <Title order={3}>Upload your file</Title>
-      <input type="file" id="myFile" name="filename">
+
+      <input type="file" id="myFile" name="filename" bind:files>
 
       <Flex justify="space-around" align="center">
-        <Button variant='filled' type="submit">Submit</Button>
+        <Button variant='filled' on:click={sendData}>Submit</Button>
         <Button variant='light' on:click={() => visible = false}>Close</Button>
       </Flex>
     </Flex>
