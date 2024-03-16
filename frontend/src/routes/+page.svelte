@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createStyles, Badge, Button, Group, Grid, Text, Title, type DefaultTheme } from '@svelteuidev/core';
+  import { createStyles, Button, Flex, Grid, type DefaultTheme } from '@svelteuidev/core';
   import Card from '$lib/components/homepage/Card.svelte';
   import { HomeScreenInfo } from '$lib/types/HomeScreenInfo';
 
@@ -9,7 +9,7 @@
           },
           mainText: {
             textAlign: 'center',
-            fontSize: 50,
+            fontSize: 100,
             padding: 20,
             backgroundImage: "linear-gradient(to right, #ff6600, #ff66cc)",
             backgroundClip: "text",
@@ -74,35 +74,36 @@
     ]
 
 </script>
-
-<Grid>
-    <Grid.Col span={12}>
-      <div
-        class={classes.mainText}
-        >
-          Welcome to Synthra
-    </div>
-    </Grid.Col>
-    {#each items as item}
-      <Grid.Col span={4}>
-        <Card
-          classes={classes.card}
-          groupCardClasses={classes.groupCard}
-          title={item.title}
-          badgeTitle={item.badgeTitle}
-          badgeColor={item.badgeColor}
-          badgeVariant={item.badgeVariant}
-          description={item.description}
-        />
+<Flex justify="center" direction="column" align="center" style="height:100%">
+  <Grid>
+      <Grid.Col span={12}>
+        <div class={classes.mainText}>
+            Welcome to Synthra
+        </div>
       </Grid.Col>
-    {/each}
-    <Grid.Col span={12}>
-      <Button
-        variant="light"
-        ripple
-        radius="md"
-        style="width:100%">
-        Register Now!
-      </Button>
-    </Grid.Col>
-</Grid>
+      {#each items as item}
+        <Grid.Col span={4} style="margin-bottom:2rem">
+          <Card
+            classes={classes.card}
+            groupCardClasses={classes.groupCard}
+            title={item.title}
+            badgeTitle={item.badgeTitle}
+            badgeColor={item.badgeColor}
+            badgeVariant={item.badgeVariant}
+            description={item.description}
+          />
+        </Grid.Col>
+      {/each}
+      <Grid.Col span={12}>
+        <a href="/auth/register">
+          <Button
+            variant="light"
+            ripple
+            radius="md"
+            style="width:100%">
+            Register Now!
+          </Button>
+        </a>
+      </Grid.Col>
+  </Grid>
+</Flex>
