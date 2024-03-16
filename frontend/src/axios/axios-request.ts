@@ -13,12 +13,12 @@ export async function getFilesForSpecifiedUser(accessToken: string | null) : Pro
     });
 }
 
-export function sendFileForSpecifiedUser(accessToken: string | null, file: File) : void
+export async function sendFileForSpecifiedUser(accessToken: string | null, file: File) : void
 {
     const formData = new FormData();
     formData.append('file', file);
 
-    axios.post('http://localhost:8002/files', formData, {
+    await axios.post('http://localhost:8002/files', formData, {
       headers: {
         authorization: `Bearer ${accessToken}`
       }

@@ -3,7 +3,7 @@
   import { File } from '../../types/File';
   import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
 
-  let file: File = new File('test', 'test', 1, 'test', new Date(2021, 1, 1), new Date(2021, 1, 1));
+  export let file: File = new File('test', 'test', 1, 'test', new Date(2021, 1, 1), new Date(2021, 1, 1),'test');
 
   const useStyles = createStyles((theme : DefaultTheme) => {
         return {
@@ -35,7 +35,7 @@
             {file.name}
         </Text>
         <Text size="sm" css={{ flex: 1 }}>
-            {file.isEncrypted}
+            {file.encrypted}
         </Text>
         <Text size="sm" css={{ flex: 1 }}>
             {file.size}
@@ -46,7 +46,7 @@
         <Text size="sm" css={{ flex: 1 }}>
           {file.expiration}
         </Text>
-        <Flex justify="space-evenly" gap="xs">
+        <Flex justify="left" gap="xs" css={{ flex: 1 }}>
             <Tooltip openDelay={10} label="Preview">
               <Anchor href="/">
                 <ActionIcon variant="filled"
