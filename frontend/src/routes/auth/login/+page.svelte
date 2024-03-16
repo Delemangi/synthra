@@ -1,6 +1,5 @@
 <script>
   import { TextInput, Button } from '@svelteuidev/core';
-  import { Header } from '$lib';
 
   let email = '';
   let password = '';
@@ -32,8 +31,6 @@
     }
   }
 </script>
-
-<Header />
 
 <div
   style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding:10px; border-radius:5px"

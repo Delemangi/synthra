@@ -1,18 +1,32 @@
 <!-- Header.svelte -->
+<script>
+    import { Switch, Header, Flex, Title } from '@svelteuidev/core';
 
-<header>
-  <h1>Synthra</h1>
-</header>
+    export let toggleTheme = () => {};
+    export let currentTheme = 'light';
+</script>
 
-<style>
-  header {
-    text-align: start;
-    margin: 5;
-    border-bottom: 1px solid gray;
-    padding: 10px;
-  }
 
-  h1 {
-    margin: 0;
-  }
-</style>
+<Header slot="header" height="50px">
+  <Flex justify="space-between" align="center" style="height: 100%;">
+
+    <a
+        href="/">
+          <Title order={1}>
+            Synthra
+          </Title>
+    </a>
+    <Flex justify="space-between">
+      <a
+          href="/auth/login">
+            <Title order={3}>
+                Log In
+            </Title>
+      </a>
+
+      <Switch
+        on:change={toggleTheme}
+        checked={currentTheme == 'dark'} />
+    </Flex>
+  </Flex>
+</Header>
