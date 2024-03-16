@@ -60,10 +60,13 @@ async def get_all_files_user(
 
         return [
             MetadataFileResponse(
+                id=file.id,
                 name=str(file.name),
                 path=str(file.path),
                 size=int(file.size),  # type: ignore
                 encrypted=bool(file.encrypted),
+                timestamp=file.timestamp,
+                expiration=file.expiration,
             )
             for file in files.scalars()
         ]

@@ -38,7 +38,7 @@
             {file.encrypted}
         </Text>
         <Text size="sm" css={{ flex: 1 }}>
-            {file.size}
+            {Math.round(file.size/1024)}
         </Text>
         <Text size="sm" css={{ flex: 1 }}>
             {file.timestamp}

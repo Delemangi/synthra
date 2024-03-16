@@ -4,6 +4,7 @@
     export let toggleTheme = () => {};
     export let currentTheme = 'light';
 
+
     const useStyles = createStyles((theme) => {
         return {
           root: {
