@@ -20,6 +20,15 @@
           },
           leftOptions: {
             padding: 30
+          },
+          logo : {
+            fontSize: 30,
+            [`${theme.dark} &`]: {
+            backgroundImage: "linear-gradient(to right, pink, lightblue)",
+            },
+            backgroundImage: "linear-gradient(to right, red, cyan)",
+            backgroundClip: "text",
+            color: "transparent"
           }
         }}
     );
@@ -33,9 +42,9 @@
 
     <a class={classes.leftOptions}
         href="/">
-          <Title order={1}>
+          <div class={classes.logo}>
             Synthra
-          </Title>
+          </div>
     </a>
     <Flex justify="space-between">
       <a class={classes.leftOptions}
