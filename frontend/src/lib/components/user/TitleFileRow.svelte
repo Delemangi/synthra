@@ -1,57 +1,58 @@
 <script lang="ts">
-  import { createStyles, type DefaultTheme, ActionIcon, Box, Flex, Text, Tooltip, Anchor } from '@svelteuidev/core';
+  import {
+    createStyles,
+    type DefaultTheme,
+    ActionIcon,
+    Box,
+    Flex,
+    Text,
+    Tooltip,
+    Anchor
+  } from '@svelteuidev/core';
   import { File } from '../../types/File';
   import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
 
-  export let file: File = new File('test', 'test', 1, 'test', new Date(2021, 1, 1), new Date(2021, 1, 1),'test');
+  export let file: File = new File(
+    'test',
+    'test',
+    1,
+    'test',
+    new Date(2021, 1, 1),
+    new Date(2021, 1, 1),
+    'test'
+  );
 
-  const useStyles = createStyles((theme : DefaultTheme) => {
-        return {
-          root: {
-            [`${theme.dark} &`]: {
-              bc: theme.fn.themeColor('dark', 5),
-              color: 'white'
-            },
-            backgroundColor: '$gray20',
-            textAlign: 'center',
-            padding: '$10',
-            borderRadius: '$md',
-            '&:hover': {
-                backgroundColor: '$gray50',
-            },
-          },
-          textStyle: {
-            flex: 1
-          }
+  const useStyles = createStyles((theme: DefaultTheme) => {
+    return {
+      root: {
+        [`${theme.dark} &`]: {
+          bc: theme.fn.themeColor('dark', 5),
+          color: 'white'
+        },
+        backgroundColor: '$gray20',
+        textAlign: 'center',
+        padding: '$10',
+        borderRadius: '$md',
+        '&:hover': {
+          backgroundColor: '$gray50'
+        }
+      },
+      textStyle: {
+        flex: 1
+      }
+    };
+  });
 
-        }}
-    );
-
-    $: ({ classes, getStyles } = useStyles());
-
+  $: ({ classes, getStyles } = useStyles());
 </script>
 
-<Box
-    class={getStyles()}
->
-    <Flex align="center" justify="space-evenly" style="height: 100%;">
-        <Text size="sm" class={classes.textStyle}>
-            File name
-        </Text>
-        <Text size="sm" class={classes.textStyle}>
-            Encrypted
-        </Text>
-        <Text size="sm" class={classes.textStyle}>
-            Size (MB)
-        </Text>
-        <Text size="sm" class={classes.textStyle}>
-            Upload date
-        </Text>
-        <Text size="sm" class={classes.textStyle}>
-            Expiration date
-        </Text>
-        <Text size="sm" class={classes.textStyle}>
-          Actions
-        </Text>
-    </Flex>
+<Box class={getStyles()}>
+  <Flex align="center" justify="space-evenly" style="height: 100%;">
+    <Text size="sm" class={classes.textStyle}>File name</Text>
+    <Text size="sm" class={classes.textStyle}>Encrypted</Text>
+    <Text size="sm" class={classes.textStyle}>Size (MB)</Text>
+    <Text size="sm" class={classes.textStyle}>Upload date</Text>
+    <Text size="sm" class={classes.textStyle}>Expiration date</Text>
+    <Text size="sm" class={classes.textStyle}>Actions</Text>
+  </Flex>
 </Box>
