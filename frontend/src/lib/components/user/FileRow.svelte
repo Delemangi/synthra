@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     createStyles,
-    type DefaultTheme,
+    type theme,
     ActionIcon,
     Box,
     Flex,
@@ -22,7 +22,7 @@
     'test'
   );
 
-  const useStyles = createStyles((theme: DefaultTheme) => {
+  const useStyles = createStyles((theme: theme) => {
     return {
       root: {
         [`${theme.dark} &`]: {
@@ -40,7 +40,7 @@
     };
   });
 
-  $: ({ classes, getStyles } = useStyles());
+  $: ({ _, getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>

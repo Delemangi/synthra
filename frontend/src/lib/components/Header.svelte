@@ -1,10 +1,10 @@
 <!-- Header.svelte -->
-<script>
-  import { createStyles, Switch, Header, Flex, Title } from '@svelteuidev/core';
+<script lang="ts">
+  import { createStyles, Switch, Header, Flex, Title, type theme} from '@svelteuidev/core';
   export let toggleTheme = () => {};
   export let currentTheme = 'light';
 
-  const useStyles = createStyles((theme) => {
+  const useStyles = createStyles((theme : theme) => {
     return {
       root: {
         height: 80

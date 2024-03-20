@@ -2,25 +2,10 @@
   import {
     createStyles,
     type DefaultTheme,
-    ActionIcon,
     Box,
     Flex,
     Text,
-    Tooltip,
-    Anchor
   } from '@svelteuidev/core';
-  import { File } from '../../types/File';
-  import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
-
-  export let file: File = new File(
-    'test',
-    'test',
-    1,
-    'test',
-    new Date(2021, 1, 1),
-    new Date(2021, 1, 1),
-    'test'
-  );
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {

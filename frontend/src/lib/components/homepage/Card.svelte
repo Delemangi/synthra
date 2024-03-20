@@ -6,8 +6,8 @@
   export let badgeVariant: BadgeVariant = 'light';
   export let title: string = '';
   export let description: string = '';
-  export let classes: any = [];
-  export let groupCardClasses: any = [];
+  export let classes: string = '';
+  export let groupCardClasses: string = '';
 </script>
 
 <Card shadow="sm" padding="lg" class={classes}>
