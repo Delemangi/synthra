@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    createStyles,
-    type DefaultTheme,
-    Box,
-    Flex,
-    Text,
-  } from '@svelteuidev/core';
+  import { createStyles, type DefaultTheme, Box, Flex, Text } from '@svelteuidev/core';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {

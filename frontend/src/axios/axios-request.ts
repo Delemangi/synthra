@@ -15,7 +15,10 @@ export async function getFilesForSpecifiedUser(accessToken: string | null): Prom
     });
 }
 
-export async function sendFileForSpecifiedUser(accessToken: string | null, file: File) : Promise<void> {
+export async function sendFileForSpecifiedUser(
+  accessToken: string | null,
+  file: File
+): Promise<void> {
   const formData = new FormData();
   formData.append('file', file);
 
