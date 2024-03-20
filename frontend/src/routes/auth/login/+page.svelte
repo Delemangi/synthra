@@ -21,7 +21,7 @@
         accessToken = data.access_token;
         // Save the token to localStorage or sessionStorage
         localStorage.setItem('accessToken', accessToken);
-        window.location.href = '/';
+        window.location.href = '/user/home';
       } else {
         alert('Login failed. Please check your credentials.');
       }

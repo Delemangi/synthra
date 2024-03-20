@@ -58,3 +58,18 @@ export async function getCertainFileByPath(
       throw error;
     });
 }
+
+export async function deleteFileByPath(accessToken: string | null, path: string): Promise<void> {
+  await axios
+    .delete(`${BASE_URL}/files/${path}`, {
+      headers: {
+        authorization: `Bearer ${accessToken}`
+      }
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}

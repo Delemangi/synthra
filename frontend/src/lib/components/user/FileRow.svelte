@@ -6,12 +6,11 @@
     Box,
     Flex,
     Text,
-    Tooltip,
-    Anchor
+    Tooltip
   } from '@svelteuidev/core';
   import { File } from '../../types/File';
   import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
-  import { getCertainFileByPath } from '../../../axios/axios-request';
+  import { deleteFileByPath, getCertainFileByPath } from '../../../axios/axios-request';
 
   export let file: File = new File(
     'test',
@@ -60,6 +59,18 @@
     }
   }
 
+  async function deleteFile(): Promise<void> {
+    try {
+      const confirmed = confirm('Are you sure you want to delete this file?');
+      if (confirmed) {
+        await deleteFileByPath(localStorage.getItem('accessToken'), file.path);
+        window.location.reload();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   $: ({ getStyles } = useStyles());
 </script>
 
@@ -97,7 +108,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Delete">
-        <ActionIcon color="red" variant="filled">
+        <ActionIcon color="red" variant="filled" on:click={deleteFile}>
           <Trash size={20} />
         </ActionIcon>
       </Tooltip>

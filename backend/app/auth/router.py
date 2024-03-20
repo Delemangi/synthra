@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
+from ..schemas import RequestStatus
 
 from .schemas import Token, User
 from .service import authenticate_user, create_access_token, create_user, remove_token
@@ -33,14 +34,14 @@ async def login_for_access_token(
 async def logout(
     token: Annotated[str, Depends(oauth2_scheme)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-) -> dict:
+) -> RequestStatus:
     await remove_token(token, session)
-    return {"message": "Logged out"}
+    return RequestStatus(message="Logged out")
 
 
 @router.post("/register")
 async def register(
     user: User, session: Annotated[AsyncSession, Depends(get_async_session)]
-) -> dict[str, str]:
+) -> RequestStatus:
     user = await create_user(user.username, user.password, 30, session)
-    return {"message": "Registered user"}
+    return RequestStatus(message=f"User {user.username} registered successfully")

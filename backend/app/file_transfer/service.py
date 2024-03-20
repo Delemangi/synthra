@@ -4,14 +4,14 @@ from pathlib import Path
 from typing import Annotated
 
 from fastapi import Depends, UploadFile
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
-from ..exceptions import internal_server_error
+
 from .constants import FILE_PATH
-from .exceptions import no_access_exception, quota_exception
+from .exceptions import no_access_exception, quota_exception, not_found_exception
 from .models import File
 from .schemas import MetadataFileResponse
 
@@ -82,9 +82,23 @@ async def verify_file(
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise internal_server_error
+            raise not_found_exception
 
         if file.user.id == current_user.id:
             return str(file.name)
 
         raise no_access_exception
+
+
+async def delete_file(
+    path: str,
+    session: AsyncSession,
+) -> None:
+    async with session.begin():
+        await session.execute(delete(File).where(File.path == path))
+
+    path_to_delete = Path(FILE_PATH) / path
+    if path_to_delete.exists():
+        path_to_delete.unlink()
+    else:
+        raise not_found_exception

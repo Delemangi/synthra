@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class FileUploaded(BaseModel):
-    filename: str
+    filename: str | None
     username: str
 
 
