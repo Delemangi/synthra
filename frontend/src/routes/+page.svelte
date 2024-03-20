@@ -66,6 +66,7 @@
     new HomeScreenInfo('ShareX support', 'Full ShareX support!', 'ShareX', 'light', 'cyan')
   ];
 </script>
+
 <Flex justify="center" direction="column" align="center" style="height:100%">
   <Grid>
     <Grid.Col span={12}>

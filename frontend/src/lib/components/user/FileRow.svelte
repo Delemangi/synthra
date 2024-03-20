@@ -42,6 +42,7 @@
 
   async function getFile(): Promise<void> {
     try {
+      // eslint-disable-next-line no-undef
       let retrievedFile: void | globalThis.File = await getCertainFileByPath(
         localStorage.getItem('accessToken'),
         file.path
