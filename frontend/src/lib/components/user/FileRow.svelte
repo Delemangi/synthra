@@ -11,6 +11,7 @@
   } from '@svelteuidev/core';
   import { File } from '../../types/File';
   import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
+  import { getCertainFileByPath } from '../../../axios/axios-request';
 
   export let file: File = new File(
     'test',
@@ -40,6 +41,27 @@
     };
   });
 
+  async function getFile() : Promise<void>
+  {
+    try
+    {
+      let retrievedFile : void | globalThis.File = await getCertainFileByPath(localStorage.getItem('accessToken'), file.path);
+      if(retrievedFile)
+      {
+        const url = URL.createObjectURL(retrievedFile);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
+    catch(e)
+    {
+      console.log(e);
+    }
+  }
+
   $: ({ getStyles } = useStyles());
 </script>
 
@@ -62,32 +84,24 @@
     </Text>
     <Flex justify="left" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Preview">
-        <Anchor href="/">
           <ActionIcon variant="filled" color="blue">
             <EyeOpen size={20} />
           </ActionIcon>
-        </Anchor>
       </Tooltip>
       <Tooltip openDelay={10} label="Share">
-        <Anchor href="/">
-          <ActionIcon variant="filled" color="cyan">
-            <ExternalLink size={20} />
-          </ActionIcon>
-        </Anchor>
+        <ActionIcon variant="filled" color="cyan">
+          <ExternalLink size={20} />
+        </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Download">
-        <Anchor href="/">
-          <ActionIcon variant="filled">
-            <Download size={20} />
-          </ActionIcon>
-        </Anchor>
+        <ActionIcon variant="filled" on:click={getFile}>
+          <Download size={20} />
+        </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Delete">
-        <Anchor href="/">
-          <ActionIcon color="red" variant="filled">
-            <Trash size={20} />
-          </ActionIcon>
-        </Anchor>
+        <ActionIcon color="red" variant="filled">
+          <Trash size={20} />
+        </ActionIcon>
       </Tooltip>
     </Flex>
   </Flex>

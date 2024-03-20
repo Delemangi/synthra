@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+const BASE_URL = 'http://localhost:8002';
+
 export async function getFilesForSpecifiedUser(accessToken: string | null): Promise<File[]> {
   return await axios
-    .get('http://localhost:8002/files', {
+    .get(`${BASE_URL}/files`, {
       headers: {
         authorization: `Bearer ${accessToken}`
       }
@@ -23,7 +25,7 @@ export async function sendFileForSpecifiedUser(
   formData.append('file', file);
 
   await axios
-    .post('http://localhost:8002/files', formData, {
+    .post(`${BASE_URL}/files`, formData, {
       headers: {
         authorization: `Bearer ${accessToken}`
       }
@@ -33,5 +35,23 @@ export async function sendFileForSpecifiedUser(
     })
     .catch((error) => {
       console.log(error);
+    });
+}
+
+export async function getCertainFileByPath(accessToken: string | null, path: string): Promise<void | File> {
+  return await axios
+    .get(`${BASE_URL}/files/download/${path}`, {
+      responseType: 'blob',
+      headers: {
+        authorization: `Bearer ${accessToken}`
+      }
+    })
+    .then((response) => {
+      const file = new File([response.data], path);
+      return file;
+    })
+    .catch((error) => {
+      console.log(error);
+      throw error;
     });
 }
