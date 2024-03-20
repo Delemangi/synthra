@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { createStyles, Button, Flex, Grid, type DefaultTheme } from '@svelteuidev/core';
+  import { createStyles, Button, Flex, Grid } from '@svelteuidev/core';
   import Card from '$lib/components/homepage/Card.svelte';
   import { HomeScreenInfo } from '$lib/types/HomeScreenInfo';
 
-  const useStyles = createStyles((theme: DefaultTheme) => {
+  const useStyles = createStyles(() => {
     return {
       root: {},
       mainText: {
@@ -25,7 +25,7 @@
     };
   });
 
-  $: ({ classes, getStyles } = useStyles());
+  $: ({ classes } = useStyles());
 
   let items: HomeScreenInfo[] = [
     new HomeScreenInfo(

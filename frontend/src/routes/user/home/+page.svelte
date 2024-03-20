@@ -5,7 +5,6 @@
     Button,
     Box,
     Flex,
-    Text,
     Overlay,
     Title,
     type DefaultTheme

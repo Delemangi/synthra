@@ -1,5 +1,5 @@
 <script>
-  import { colorScheme, SvelteUIProvider, AppShell, Button } from '@svelteuidev/core';
+  import { colorScheme, SvelteUIProvider, AppShell } from '@svelteuidev/core';
   import { Header } from '$lib';
 
   function toggleTheme() {

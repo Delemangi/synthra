@@ -40,7 +40,7 @@
     };
   });
 
-  $: ({ _, getStyles } = useStyles());
+  $: ({ getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>
