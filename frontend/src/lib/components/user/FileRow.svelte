@@ -41,13 +41,13 @@
     };
   });
 
-  async function getFile() : Promise<void>
-  {
-    try
-    {
-      let retrievedFile : void | globalThis.File = await getCertainFileByPath(localStorage.getItem('accessToken'), file.path);
-      if(retrievedFile)
-      {
+  async function getFile(): Promise<void> {
+    try {
+      let retrievedFile: void | globalThis.File = await getCertainFileByPath(
+        localStorage.getItem('accessToken'),
+        file.path
+      );
+      if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
         const a = document.createElement('a');
         a.href = url;
@@ -55,9 +55,7 @@
         a.click();
         URL.revokeObjectURL(url);
       }
-    }
-    catch(e)
-    {
+    } catch (e) {
       console.log(e);
     }
   }
@@ -84,9 +82,9 @@
     </Text>
     <Flex justify="left" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Preview">
-          <ActionIcon variant="filled" color="blue">
-            <EyeOpen size={20} />
-          </ActionIcon>
+        <ActionIcon variant="filled" color="blue">
+          <EyeOpen size={20} />
+        </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Share">
         <ActionIcon variant="filled" color="cyan">

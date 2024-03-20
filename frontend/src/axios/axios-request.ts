@@ -38,7 +38,10 @@ export async function sendFileForSpecifiedUser(
     });
 }
 
-export async function getCertainFileByPath(accessToken: string | null, path: string): Promise<void | File> {
+export async function getCertainFileByPath(
+  accessToken: string | null,
+  path: string
+): Promise<void | File> {
   return await axios
     .get(`${BASE_URL}/files/download/${path}`, {
       responseType: 'blob',
