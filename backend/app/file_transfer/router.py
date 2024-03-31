@@ -9,7 +9,14 @@ from ..auth.models import User
 from ..database import get_async_session
 from .constants import FILE_PATH
 from .schemas import FileUploaded, MetadataFileResponse
-from .service import get_all_files_user, upload_file_unencrypted, verify_file
+from .service import (
+    get_all_files_user,
+    upload_file_unencrypted,
+    verify_file,
+    delete_file,
+)
+
+from ..schemas import RequestStatus
 
 router = APIRouter(tags=["file_transfer"])
 
@@ -20,9 +27,9 @@ async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
-) -> dict:
+) -> FileUploaded:
     await upload_file_unencrypted(session, file, current_user)
-    return {"filename": file.filename}
+    return FileUploaded(filename=file.filename, username=str(current_user.username))
 
 
 @router.get("/", response_model=list[MetadataFileResponse])
@@ -42,6 +49,19 @@ async def get_file(
     filename = await verify_file(path, current_user, session)
     # Return the file using FileResponse
     return FileResponse(FILE_PATH + path, filename=filename)
+
+
+@router.delete("/{path}", response_model=RequestStatus)
+async def verify_and_delete_file(
+    path: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> RequestStatus:
+    filename = await verify_file(path, current_user, session)
+    # Return the file using FileResponse
+    await delete_file(path, session)
+
+    return RequestStatus(message=f"File {filename} deleted")
 
 
 @router.get("/test")
