@@ -1,5 +1,5 @@
-# Development stage
-FROM --platform=${BUILDPLATFORM} node:20 AS development
+# Build stage
+FROM --platform=${BUILDPLATFORM} node:21 AS build
 WORKDIR /workspace/frontend
 
 COPY package.json package-lock.json ./
@@ -9,11 +9,11 @@ COPY . ./
 RUN npm run build
 
 # Production stage
-FROM --platform=${TARGETPLATFORM} node:20 AS production
+FROM --platform=${TARGETPLATFORM} node:21 AS production
 WORKDIR /workspace/frontend
 
-COPY --from=development /workspace/frontend .
+COPY package.json package-lock.json ./
 
-RUN npm prune --production && npm i --ignore-scripts vite && npm cache clean --force
+COPY --from=build /workspace/frontend/build ./build
 
-CMD [ "npm", "run", "preview" ]
+CMD [ "node", "build/index.js" ]

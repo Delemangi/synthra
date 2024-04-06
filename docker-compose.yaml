@@ -34,4 +34,4 @@ services:
     container_name: synthra-frontend
     restart: unless-stopped
     ports:
-      - "4173:4173"
+      - "3000:3000"
