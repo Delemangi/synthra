@@ -12,6 +12,8 @@ def configure_auth_jobs(scheduler: AsyncIOScheduler) -> AsyncIOScheduler:
         trigger=IntervalTrigger(seconds=INVALID_TOKENS_CLEAN_UP_INTERVAL_SECONDS),
     )
 
+    return scheduler
+
 
 def schedule_jobs() -> AsyncIOScheduler:
     scheduler = AsyncIOScheduler()
