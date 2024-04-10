@@ -1,9 +1,4 @@
 {
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    }
-  },
   "forwardPorts": [
     5432,
     80,
