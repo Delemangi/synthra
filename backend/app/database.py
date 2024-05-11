@@ -11,7 +11,8 @@ from sqlalchemy.ext.asyncio import (
 
 
 from app.auth.models import Role  # noqa: F401
-from app.file_transfer.models import File, Webhook  # noqa: F401
+from app.file_transfer.models import File  # noqa: F401
+from app.webhooks.models import Webhook  # noqa: F401
 from app.models import Base
 
 SQLALCHEMY_DATABASE_URL = os.getenv(

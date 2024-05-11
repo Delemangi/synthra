@@ -13,6 +13,7 @@ import sys
 from .auth.router import router as auth_router
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
+from .webhooks.router import router as webhook_router
 from app.settings import APISettings
 
 from .constants import MAX_DB_CONNECTION_ATTEMPTS
@@ -58,6 +59,7 @@ def make_app() -> FastAPI:
 
     app.include_router(auth_router, prefix="/auth")
     app.include_router(file_router, prefix="/files")
+    app.include_router(webhook_router, prefix="/webhooks")
 
     @app.get("/")
     async def root() -> str:
