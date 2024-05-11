@@ -2,8 +2,8 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from schemas import CreateWebhook
-from models import Webhook
+from app.webhooks.schemas import CreateWebhook
+from app.webhooks.models import Webhook
 
 from sqlalchemy import select, delete
 
