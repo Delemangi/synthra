@@ -18,8 +18,8 @@ class File(Base):
     size = Column(Integer, nullable=False)
     encrypted = Column(Boolean, nullable=False)
 
-    expiration = Column(DateTime, nullable=False)
-    timestamp = Column(DateTime, nullable=False)
+    expiration = Column(DateTime(timezone=True), nullable=False)
+    timestamp = Column(DateTime(timezone=True), nullable=False)
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="files", lazy="selectin")
