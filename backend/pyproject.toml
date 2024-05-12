@@ -25,7 +25,6 @@ ruff = "^0.4.4"
 pre-commit = "^3.7.1"
 types-python-jose = "^3.3.4.20240106"
 types-passlib = "^1.7.7.20240327"
-types-sqlalchemy = "^1.4.53.38"
 
 [build-system]
 requires = ["poetry-core"]
