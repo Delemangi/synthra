@@ -22,3 +22,6 @@ class File(Base):
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="files", lazy="selectin")
+
+    def full_path(self: "File") -> str:
+        return "/assets/" + self.path

@@ -23,7 +23,9 @@ class User(Base):
     role = relationship("Role", back_populates="users")
 
     files = relationship("File", back_populates="user", lazy="selectin")
-    webhooks = relationship("Webhook", back_populates="user", cascade="all, delete-orphan")
+    webhooks = relationship(
+        "Webhook", back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+    )
 
     def has_remaining_quota(self: Self) -> bool:
         return bool(self.quota != 0)

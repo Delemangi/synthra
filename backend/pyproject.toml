@@ -75,6 +75,7 @@ select = [
   # ruff
   "RUF",
 ]
+line-length = 100
 target-version = "py311"
 ignore = ["A003"]
 

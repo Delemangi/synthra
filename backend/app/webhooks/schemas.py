@@ -6,7 +6,7 @@ from datetime import datetime
 class CreateWebhook(BaseModel):
     user_id: UUID
     url: str
-    platform: str
+    platform: str = "Discord"
 
 
 class SendWebhook(BaseModel):
@@ -15,3 +15,7 @@ class SendWebhook(BaseModel):
     platform: str
     active: bool
     timestamp: datetime
+
+
+class RequestStatus(BaseModel):
+    message: str

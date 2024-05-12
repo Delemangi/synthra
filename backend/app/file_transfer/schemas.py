@@ -19,3 +19,6 @@ class MetadataFileResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+    def full_path(self: "MetadataFileResponse") -> str:
+        return "/assets/" + self.path
