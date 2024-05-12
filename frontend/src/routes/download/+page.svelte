@@ -1,14 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import {
-    createStyles,
-    Button,
-    Box,
-    Flex,
-    Overlay,
-    Title,
-    type DefaultTheme
-  } from '@svelteuidev/core';
+  import { createStyles, Button, Box, Flex, Title, type DefaultTheme } from '@svelteuidev/core';
   import { getMetadataFilePath, getCertainFileByPath } from '../../axios/axios-request';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
@@ -55,6 +47,7 @@
 
   async function downloadFile(): Promise<void> {
     try {
+      // eslint-disable-next-line no-undef
       let retrievedFile: void | globalThis.File = await getCertainFileByPath(
         localStorage.getItem('accessToken'),
         filePath
@@ -78,7 +71,7 @@
     <Title order={3}>Download File</Title>
 
     {#if fileMetadata}
-      <Box>
+      <Box class={getStyles()}>
         <p>File Name: {fileMetadata.name}</p>
         <p>File Size: {fileMetadata.size} bytes</p>
       </Box>
