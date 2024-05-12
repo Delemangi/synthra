@@ -1,75 +1,49 @@
+import type { FileMetadata } from '$lib/types/FileMetadata';
+import type { FileUploaded } from '$lib/types/FileUploaded';
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export async function getFilesForSpecifiedUser(accessToken: string | null): Promise<File[]> {
-  return await axios
-    .get(`${BASE_URL}/files`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`
-      }
-    })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+export async function getFilesForSpecifiedUser(accessToken: string | null) {
+  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return result.data;
 }
 
-export async function sendFileForSpecifiedUser(
-  accessToken: string | null,
-  file: File
-): Promise<void> {
+export async function sendFileForSpecifiedUser(accessToken: string | null, file: File) {
   const formData = new FormData();
   formData.append('file', file);
 
-  await axios
-    .post(`${BASE_URL}/files`, formData, {
-      headers: {
-        authorization: `Bearer ${accessToken}`
-      }
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  const result = await axios.post<FileUploaded>(`${BASE_URL}/files`, formData, {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return result.data;
 }
 
-export async function getCertainFileByPath(
-  accessToken: string | null,
-  path: string
-): Promise<void | File> {
-  return await axios
-    .get(`${BASE_URL}/files/download/${path}`, {
+export async function getCertainFileByPath(accessToken: string | null, path: string) {
+  const result = await axios.get<File>(`${BASE_URL}/files/${path}`, {
+    headers: {
       responseType: 'blob',
-      headers: {
-        authorization: `Bearer ${accessToken}`
-      }
-    })
-    .then((response) => {
-      const file = new File([response.data], path);
-      return file;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return new File([result.data], path);
 }
 
 export async function deleteFileByPath(accessToken: string | null, path: string): Promise<void> {
-  await axios
-    .delete(`${BASE_URL}/files/${path}`, {
-      headers: {
-        authorization: `Bearer ${accessToken}`
-      }
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  const result = await axios.delete(`${BASE_URL}/files/${path}`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return result.data;
 }

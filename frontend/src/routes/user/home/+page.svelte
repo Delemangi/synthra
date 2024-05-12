@@ -1,6 +1,7 @@
 <script lang="ts">
   import FileRow from '$lib/components/user/FileRow.svelte';
   import TitleFileRow from '$lib/components/user/TitleFileRow.svelte';
+  import type { FileMetadata } from '$lib/types/FileMetadata';
   import {
     Box,
     Button,
@@ -49,7 +50,7 @@
 
   $: ({ classes, getStyles } = useStyles());
 
-  let userFiles: File[] = [];
+  let userFiles: FileMetadata[] = [];
 
   onMount(async function () {
     let accessToken = localStorage.getItem('accessToken');
