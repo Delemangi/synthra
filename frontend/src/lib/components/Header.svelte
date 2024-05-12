@@ -1,6 +1,6 @@
 <!-- Header.svelte -->
 <script lang="ts">
-  import { createStyles, Switch, Header, Flex, Title, type theme } from '@svelteuidev/core';
+  import { Flex, Header, Switch, Title, createStyles, type theme } from '@svelteuidev/core';
   export let toggleTheme = () => {};
   export let currentTheme = 'light';
 

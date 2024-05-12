@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, Group, Text, Badge, type BadgeVariant } from '@svelteuidev/core';
+  import { Badge, Card, Group, Text, type BadgeVariant } from '@svelteuidev/core';
 
   export let badgeTitle: string = '';
   export let badgeColor: string = '';

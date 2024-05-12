@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { createStyles, Button, Flex, Grid } from '@svelteuidev/core';
   import Card from '$lib/components/homepage/Card.svelte';
   import { HomeScreenInfo } from '$lib/types/HomeScreenInfo';
+  import { Button, Flex, Grid, createStyles } from '@svelteuidev/core';
 
   const useStyles = createStyles(() => {
     return {
