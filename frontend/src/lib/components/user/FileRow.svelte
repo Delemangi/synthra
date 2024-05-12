@@ -61,8 +61,8 @@
   }
 
   function copyClipboard(): void {
-    navigator.clipboard.writeText("http://localhost:3000/download/?file="+file.path);
-    alert("Successfully, copied the link to clipboard");
+    navigator.clipboard.writeText('http://localhost:3000/download/?file=' + file.path);
+    alert('Successfully, copied the link to clipboard');
   }
 
   async function deleteFile(): Promise<void> {

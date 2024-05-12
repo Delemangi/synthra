@@ -25,10 +25,9 @@ export async function getMetadataFilePath(path): Promise<File> {
     })
     .catch((error) => {
       console.log(error);
-      throw error
+      throw error;
     });
 }
-
 
 export async function sendFileForSpecifiedUser(
   accessToken: string | null,
@@ -72,12 +71,10 @@ export async function getCertainFileByPath(
     });
 }
 
-export async function download_file_link(
-  path: string
-): Promise<void | File> {
+export async function download_file_link(path: string): Promise<void | File> {
   return await axios
     .get(`${BASE_URL}/files/download-link/${path}`, {
-      responseType: 'blob',
+      responseType: 'blob'
     })
     .then((response) => {
       const file = new File([response.data], path);

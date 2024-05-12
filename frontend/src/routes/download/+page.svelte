@@ -48,8 +48,8 @@
       fileMetadata = response;
     } catch (error) {
       console.error('Error retrieving file metadata:', error);
-      alert("File does not exist or is expired")
-      document.location.href="/";
+      alert('File does not exist or is expired');
+      document.location.href = '/';
     }
   });
 
