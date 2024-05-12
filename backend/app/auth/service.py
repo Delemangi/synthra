@@ -42,9 +42,7 @@ def verify_password(plain_password: str, password: str) -> bool:
     return pwd_context.verify(plain_password, password)
 
 
-async def authenticate_user(
-    username: str, password: str, session: AsyncSession
-) -> User | None:
+async def authenticate_user(username: str, password: str, session: AsyncSession) -> User | None:
     user = await get_user_by_username(username, session)
 
     if not user:
@@ -104,9 +102,7 @@ async def add_user(user: User, session: AsyncSession) -> None:
     await session.commit()
 
 
-async def get_user_by_filter(
-    user_filter: Callable, session: AsyncSession
-) -> User | None:
+async def get_user_by_filter(user_filter: Callable, session: AsyncSession) -> User | None:
     async with session:
         users = await session.execute(select(User).filter(lambda: user_filter(User)))
         return users.scalar_one_or_none()

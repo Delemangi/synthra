@@ -54,9 +54,7 @@ async def get_all_files_user(
     current_user: Annotated[User, Depends(get_current_user)], session: AsyncSession
 ) -> list[MetadataFileResponse]:
     async with session:
-        files = await session.execute(
-            select(File).filter(File.user_id == current_user.id)
-        )
+        files = await session.execute(select(File).filter(File.user_id == current_user.id))
 
         return [
             MetadataFileResponse(
@@ -102,3 +100,9 @@ async def delete_file(
         path_to_delete.unlink()
     else:
         raise not_found_exception
+
+
+async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | None:
+    async with session:
+        file = await session.execute(select(File).filter(File.id == file_id))
+        return file.scalar_one_or_none()
