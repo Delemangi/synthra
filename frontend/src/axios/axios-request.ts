@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8002';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export async function getFilesForSpecifiedUser(accessToken: string | null): Promise<File[]> {
   return await axios
