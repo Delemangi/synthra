@@ -17,7 +17,7 @@ class User(Base):
     password = Column(String, nullable=False)
     avatar = Column(String, nullable=True)
     quota = Column(Integer, nullable=True)
-    timestamp = Column(DateTime, nullable=True)
+    timestamp = Column(DateTime(timezone=True), nullable=True)
 
     role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=True)
     role = relationship("Role", back_populates="users")
@@ -39,7 +39,7 @@ class Role(Base):
     name = Column(String, nullable=False)
     quota_size = Column(Integer, nullable=False)
     quota_files = Column(Integer, nullable=True)
-    timestamp = Column(DateTime, nullable=False)
+    timestamp = Column(DateTime(timezone=True), nullable=False)
 
     users = relationship("User", back_populates="role")
 
@@ -48,4 +48,4 @@ class LoggedInTokens(Base):
     __tablename__ = "logged_in_tokens"
 
     token = Column(String, primary_key=True, nullable=False)
-    expiration = Column(DateTime, nullable=False)
+    expiration = Column(DateTime(timezone=True), nullable=False)

@@ -17,6 +17,18 @@ export async function getFilesForSpecifiedUser(accessToken: string | null): Prom
     });
 }
 
+export async function getMetadataFilePath(path): Promise<File> {
+  return await axios
+    .get(`${BASE_URL}/files/metadata/${path}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      throw error;
+    });
+}
+
 export async function sendFileForSpecifiedUser(
   accessToken: string | null,
   file: File
@@ -48,6 +60,21 @@ export async function getCertainFileByPath(
       headers: {
         authorization: `Bearer ${accessToken}`
       }
+    })
+    .then((response) => {
+      const file = new File([response.data], path);
+      return file;
+    })
+    .catch((error) => {
+      console.log(error);
+      throw error;
+    });
+}
+
+export async function download_file_link(path: string): Promise<void | File> {
+  return await axios
+    .get(`${BASE_URL}/files/download-link/${path}`, {
+      responseType: 'blob'
     })
     .then((response) => {
       const file = new File([response.data], path);

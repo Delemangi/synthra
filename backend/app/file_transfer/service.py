@@ -70,6 +70,25 @@ async def get_all_files_user(
         ]
 
 
+async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileResponse:
+    async with session:
+        files = await session.execute(select(File).filter(File.path == path))
+        file = files.scalar_one_or_none()
+
+        if file is None:
+            raise not_found_exception
+
+        return MetadataFileResponse(
+            id=file.id,  # type: ignore
+            name=str(file.name),
+            path=str(file.path),
+            size=file.size,  # type: ignore
+            encrypted=bool(file.encrypted),
+            timestamp=file.timestamp,  # type: ignore
+            expiration=file.expiration,  # type: ignore
+        )
+
+
 async def verify_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
@@ -86,6 +105,20 @@ async def verify_file(
             return str(file.name)
 
         raise no_access_exception
+
+
+async def verify_file_link(
+    path: str,
+    session: AsyncSession,
+) -> str:
+    async with session:
+        files = await session.execute(select(File).filter(File.path == path))
+        file = files.scalar_one_or_none()
+
+        if file is None:
+            raise not_found_exception
+
+        return str(file.name)
 
 
 async def delete_file(
