@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import FileRow from '$lib/components/user/FileRow.svelte';
+  import TitleFileRow from '$lib/components/user/TitleFileRow.svelte';
   import {
-    createStyles,
-    Button,
     Box,
+    Button,
     Flex,
     Overlay,
     Title,
+    createStyles,
     type DefaultTheme
   } from '@svelteuidev/core';
-  import FileRow from '$lib/components/user/FileRow.svelte';
+  import { onMount } from 'svelte';
   import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../axios/axios-request';
-  import TitleFileRow from '$lib/components/user/TitleFileRow.svelte';
 
   let filesToUpload: FileList | null = null;
 
