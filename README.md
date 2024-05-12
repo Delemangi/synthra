@@ -1,12 +1,18 @@
 # Synthra
 
-Synthra is a file hosting application built using FastAPI with Python 3.11 and SvelteKit, with PostgreSQL as the database.
+Synthra is a file hosting application built using [FastAPI](https://github.com/tiangolo/fastapi) (with Python 3.11) and [SvelteKit](https://github.com/sveltejs/kit), with PostgreSQL.
 
 This repository contains both the frontend and the backend of the project in their respective folders.
 
 ## Installation
 
 For running the application in production mode, it's highly recommended to use Docker. Otherwise, the manual setup is also available for those who wish to test the application in a development environment.
+
+### Quick Deployment
+
+1. Grab the `docker-compose.prod.yaml` file from the repository
+2. Rename it to `docker-compose.yaml`
+3. Run `docker compose up -d`
 
 ### Development
 
