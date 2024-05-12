@@ -9,9 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
-
 from .constants import FILE_PATH
-from .exceptions import no_access_exception, quota_exception, not_found_exception
+from .exceptions import no_access_exception, not_found_exception, quota_exception
 from .models import File
 from .schemas import MetadataFileResponse
 
@@ -54,19 +53,20 @@ async def get_all_files_user(
     current_user: Annotated[User, Depends(get_current_user)], session: AsyncSession
 ) -> list[MetadataFileResponse]:
     async with session:
-        files = await session.execute(select(File).filter(File.user_id == current_user.id))
+        result = await session.execute(select(File).filter(File.user_id == current_user.id))
+        files = result.scalars().all()
 
         return [
             MetadataFileResponse(
-                id=file.id,
+                id=file.id,  # type: ignore
                 name=str(file.name),
                 path=str(file.path),
-                size=int(file.size),  # type: ignore
+                size=file.size,  # type: ignore
                 encrypted=bool(file.encrypted),
-                timestamp=file.timestamp,
-                expiration=file.expiration,
+                timestamp=file.timestamp,  # type: ignore
+                expiration=file.expiration,  # type: ignore
             )
-            for file in files.scalars()
+            for file in files
         ]
 
 

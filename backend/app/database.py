@@ -1,19 +1,17 @@
 import os
-
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
-    AsyncEngine,
 )
 
-
-from app.auth.models import Role  # noqa: F401
-from app.file_transfer.models import File  # noqa: F401
-from app.webhooks.models import Webhook  # noqa: F401
-from app.models import Base
+from .auth.models import Role  # noqa: F401
+from .file_transfer.models import File  # noqa: F401
+from .models import Base
+from .webhooks.models import Webhook  # noqa: F401
 
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -32,10 +30,10 @@ class DatabaseEngine:
 
 
 class AsyncSessionMaker:
-    _instance: None | async_sessionmaker = None
+    _instance: None | async_sessionmaker[AsyncSession] = None
 
     @classmethod
-    def get_sessionmaker(cls: type["AsyncSessionMaker"]) -> async_sessionmaker:
+    def get_sessionmaker(cls: type["AsyncSessionMaker"]) -> async_sessionmaker[AsyncSession]:
         if cls._instance is None:
             cls._instance = async_sessionmaker(
                 autocommit=False,

@@ -1,24 +1,21 @@
+import sys
+import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.database import initialize_database
-import uvicorn
-import time
-import sys
-
 from .auth.router import router as auth_router
+from .constants import MAX_DB_CONNECTION_ATTEMPTS
+from .database import initialize_database
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
+from .jobs import schedule_jobs  # type: ignore[attr-defined]
+from .settings import APISettings
 from .webhooks.router import router as webhook_router
-from app.settings import APISettings
-
-from .constants import MAX_DB_CONNECTION_ATTEMPTS
-
-from .jobs import schedule_jobs
 
 
 @asynccontextmanager
