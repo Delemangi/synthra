@@ -7,18 +7,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
 from ..database import get_async_session
+from ..schemas import RequestStatus
 from .constants import FILE_PATH
 from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
+    delete_file,
     get_all_files_user,
     get_metadata_path,
     upload_file_unencrypted,
     verify_file,
     verify_file_link,
-    delete_file,
 )
-
-from ..schemas import RequestStatus
 
 router = APIRouter(tags=["file_transfer"])
 
@@ -38,7 +37,7 @@ async def create_upload_file(
 async def get_all_files(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-) -> list:
+) -> list[MetadataFileResponse]:
     return await get_all_files_user(current_user, session)
 
 

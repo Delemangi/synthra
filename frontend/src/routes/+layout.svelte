@@ -1,6 +1,6 @@
 <script>
-  import { colorScheme, SvelteUIProvider, AppShell } from '@svelteuidev/core';
   import { Header } from '$lib';
+  import { AppShell, SvelteUIProvider, colorScheme } from '@svelteuidev/core';
 
   function toggleTheme() {
     colorScheme.update((v) => (v === 'light' ? 'dark' : 'light'));

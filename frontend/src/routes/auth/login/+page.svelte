@@ -1,5 +1,5 @@
 <script>
-  import { TextInput, Button } from '@svelteuidev/core';
+  import { Button, TextInput } from '@svelteuidev/core';
 
   let email = '';
   let password = '';

@@ -10,38 +10,40 @@ on:
 
 jobs:
   eslint:
+    name: ESLint & Prettier
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           cd frontend
           npm i
 
-      - name: Run Prettier
+      - name: Run ESLint & Prettier
         run: |
           cd frontend
           npm run lint
 
   ruff:
+    name: Ruff
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: 3.11
 
       - name: Install Poetry
         run: |
@@ -54,27 +56,52 @@ jobs:
           cd backend
           poetry run ruff check .
 
-  sonarcloud:
+  mypy:
+    name: MyPy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          cd backend
+          poetry install
+
+      - name: Run MyPy
+        run: |
+          cd backend
+          poetry run mypy .
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: SonarCloud scan
+      - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   docker-backend:
+    name: Docker Image (Backend)
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - ruff
-      - sonarcloud
 
     steps:
       - name: Set up QEMU
@@ -89,7 +116,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push backend
+      - name: Build and Push
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:backend"
@@ -97,11 +124,11 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-backend:latest
 
   docker-frontend:
+    name: Docker Image (Frontend)
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - eslint
-      - sonarcloud
 
     steps:
       - name: Set up QEMU
@@ -116,7 +143,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push frontend
+      - name: Build and Push
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:frontend"
@@ -124,6 +151,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-frontend:latest
 
   gitlab-mirror:
+    name: GitLab Mirror
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
@@ -131,7 +159,7 @@ jobs:
       - docker-backend
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0

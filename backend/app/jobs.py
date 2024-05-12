@@ -1,8 +1,9 @@
+# type: ignore
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
 from .auth.service import delete_inactive_tokens
-
 from .constants import INVALID_TOKENS_CLEAN_UP_INTERVAL_SECONDS
 
 

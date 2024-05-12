@@ -6,20 +6,21 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import get_current_user
-from app.auth.service import create_user, get_user_by_username
-from app.database import get_async_session
 from app.auth.models import User
+from app.auth.service import create_user, get_user_by_username
 from app.file_transfer.schemas import MetadataFileResponse
 from app.file_transfer.service import get_all_files_user, get_file_by_id
 from app.webhooks.models import Webhook
-from app.webhooks.schemas import CreateWebhook
+from app.webhooks.schemas import CreateWebhook, SendWebhook
 from app.webhooks.service import (
     create_webhook,
-    send_webhook_file,
-    get_webhook_by_id,
-    get_all_webhooks_for_user,
     delete_webhook,
+    get_all_webhooks_for_user,
+    get_webhook_by_id,
+    send_webhook_file,
 )
+
+from ..database import get_async_session
 
 router = APIRouter(tags=["webhooks"])
 
@@ -32,7 +33,7 @@ WEBHOOK_URL = os.getenv(
 @router.get("/create-test-webhook", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
     user: User = await create_user("a", "a", 30, session)
-    webhook: CreateWebhook = CreateWebhook(url=WEBHOOK_URL, user_id=user.id, platform="discord")
+    webhook = CreateWebhook(url=WEBHOOK_URL, user_id=user.id, platform="discord")  # type: ignore
     try:
         await create_webhook(webhook, session)
     except Exception:
@@ -57,7 +58,7 @@ async def send_webhook(
     return "Sent webhook with file"
 
 
-@router.post("/create", response_model=Webhook)
+@router.post("/create", response_model=SendWebhook)
 async def create_webhook_route(
     webhook: CreateWebhook,
     session: Annotated[AsyncSession, Depends(get_async_session)],
@@ -83,12 +84,12 @@ async def send_webhook_route(
     return "Sent webhook with file"
 
 
-@router.get("/user-webhooks", response_model=list[Webhook])
+@router.get("/user-webhooks", response_model=list[SendWebhook])
 async def get_user_webhooks(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-) -> list:
-    return await get_all_webhooks_for_user(current_user.id, session)
+) -> list[Webhook]:
+    return await get_all_webhooks_for_user(current_user.id.value(), session)
 
 
 @router.delete("/delete/{webhook_id}", response_model=str)
