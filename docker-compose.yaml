@@ -1,9 +1,9 @@
-version: "3.8"
+name: synthra-dev
 
 services:
   database:
     image: postgres:16
-    container_name: synthra-database
+    container_name: synthra-database-dev
     restart: unless-stopped
     env_file:
       - .env
@@ -17,21 +17,21 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     image: delemangi/synthra-backend:latest
-    container_name: synthra-backend
+    container_name: synthra-backend-dev
     restart: unless-stopped
     depends_on:
       - database
     env_file:
       - .env
     ports:
-    - "8002:8002"
+      - "8002:8002"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     image: delemangi/synthra-frontend:latest
-    container_name: synthra-frontend
+    container_name: synthra-frontend-dev
     restart: unless-stopped
     ports:
       - "3000:3000"
