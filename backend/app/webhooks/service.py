@@ -2,25 +2,25 @@ import uuid
 from pathlib import Path
 
 from discord_webhook import DiscordWebhook
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.file_transfer.models import File
 from app.file_transfer.schemas import MetadataFileResponse
-from app.webhooks.schemas import CreateWebhook
 from app.webhooks.models import Webhook
-
-from sqlalchemy import select, delete
+from app.webhooks.schemas import CreateWebhook
 
 
 async def create_webhook(
-    webhook: CreateWebhook,
+    webhook_schema: CreateWebhook,
     session: AsyncSession,
 ) -> Webhook:
     async with session:
-        webhook = Webhook(**webhook.dict())
+        webhook = Webhook(**webhook_schema.model_dump())
 
         session.add(webhook)
         await session.commit()
+
         return webhook
 
 
@@ -43,13 +43,16 @@ async def delete_webhook(webhook_id: uuid.UUID, session: AsyncSession) -> None:
 
 
 async def send_webhook_file(webhook: Webhook, file_data: File | MetadataFileResponse) -> None:
-    discord_webhook = DiscordWebhook(url=webhook.url)
+    discord_webhook = DiscordWebhook(url=str(webhook.url))
+
     with Path(file_data.full_path()).open("rb") as f:
-        discord_webhook.add_file(file=f.read(), filename=file_data.name)
+        discord_webhook.add_file(file=f.read(), filename=str(file_data.name))
+
     discord_webhook.execute()
 
 
 async def get_all_webhooks_for_user(user_id: uuid.UUID, session: AsyncSession) -> list[Webhook]:
     async with session:
         webhooks = await session.execute(select(Webhook).filter(Webhook.user_id == user_id))
-        return webhooks.scalars().all()
+
+        return list(webhooks.scalars().all())

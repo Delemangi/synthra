@@ -1,10 +1,11 @@
 import uuid
-import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from app.models import Base
+
+from ..models import Base
 
 
 class Webhook(Base):
@@ -15,7 +16,7 @@ class Webhook(Base):
     url = Column(String, nullable=False)
     platform = Column(String, nullable=False)
     active = Column(Boolean, nullable=True)
-    timestamp = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, nullable=False, default=lambda: datetime.now(UTC))
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="webhooks")
