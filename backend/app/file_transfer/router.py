@@ -61,11 +61,11 @@ async def get_file_link(
     return FileResponse(FILE_PATH + path, filename=filename)
 
 
-@router.get("/metadata/{path}")
+@router.get("/metadata/{path}", response_model=MetadataFileResponse)
 async def get_file_metadata(
     path: str,
     session: Annotated[AsyncSession, Depends(get_async_session)],
-) -> FileResponse:
+) -> MetadataFileResponse:
     return await get_metadata_path(path, session)
 
 

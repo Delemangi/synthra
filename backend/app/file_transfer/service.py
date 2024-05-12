@@ -79,13 +79,13 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
             raise not_found_exception
 
         return MetadataFileResponse(
-            id=file.id,
+            id=file.id,  # type: ignore
             name=str(file.name),
             path=str(file.path),
-            size=int(file.size),  # type: ignore
+            size=file.size,  # type: ignore
             encrypted=bool(file.encrypted),
-            timestamp=file.timestamp,
-            expiration=file.expiration,
+            timestamp=file.timestamp,  # type: ignore
+            expiration=file.expiration,  # type: ignore
         )
 
 
