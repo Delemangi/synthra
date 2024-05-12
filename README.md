@@ -80,3 +80,8 @@ Once you have all these dependencies installed, then:
    1. Open the project in your terminal
    2. Run `cd frontend`
    3. If you would like to start the application in a development environment with hot reloading, then run `npm run dev`, otherwise `npm run preview`, provided that you have run `npm run build` previously
+
+
+## License
+
+This project is licensed under the MIT license.
