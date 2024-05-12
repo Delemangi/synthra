@@ -1600,6 +1600,17 @@ files = [
 types-pyasn1 = "*"
 
 [[package]]
+name = "types-sqlalchemy"
+version = "1.4.53.38"
+description = "Typing stubs for SQLAlchemy"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-SQLAlchemy-1.4.53.38.tar.gz", hash = "sha256:5bb7463537e04e1aa5a3557eb725930df99226dcfd3c9bf93008025bfe5c169e"},
+    {file = "types_SQLAlchemy-1.4.53.38-py3-none-any.whl", hash = "sha256:7e60e74f823931cc9a9e8adb0a4c05e5533e6708b8a266807893a739faf4eaaa"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.11.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -1989,4 +2000,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.x"
-content-hash = "15434a15f08b21da410ec81fc65c3b5b028ce718e72c7c5859d34b50d4e29db5"
+content-hash = "25df3a6ed72951323591345d713f5b8cb930ceea8ad57b357fddcc4ff5ba816b"
