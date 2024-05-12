@@ -60,6 +60,11 @@
     }
   }
 
+  function copyClipboard(): void {
+    navigator.clipboard.writeText("http://localhost:3000/download/?file="+file.path);
+    alert("Successfully, copied the link to clipboard");
+  }
+
   async function deleteFile(): Promise<void> {
     try {
       const confirmed = confirm('Are you sure you want to delete this file?');
@@ -99,7 +104,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Share">
-        <ActionIcon variant="filled" color="cyan">
+        <ActionIcon variant="filled" color="cyan" on:click={copyClipboard}>
           <ExternalLink size={20} />
         </ActionIcon>
       </Tooltip>
