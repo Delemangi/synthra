@@ -14,16 +14,10 @@ export async function getFilesForSpecifiedUser(accessToken: string | null) {
   return result.data;
 }
 
-export async function getMetadataFilePath(path): Promise<File> {
-  return await axios
-    .get(`${BASE_URL}/files/metadata/${path}`)
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
+export async function getMetadataFilePath(path: string) {
+  const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}`);
+
+  return result.data;
 }
 
 export async function sendFileForSpecifiedUser(accessToken: string | null, file: File) {
@@ -50,22 +44,13 @@ export async function getCertainFileByPath(accessToken: string | null, path: str
   return new File([result.data], path);
 }
 
-export async function download_file_link(path: string): Promise<void | File> {
-  return await axios
-    .get(`${BASE_URL}/files/download-link/${path}`, {
-      responseType: 'blob'
-    })
-    .then((response) => {
-      const file = new File([response.data], path);
-      return file;
-    })
-    .catch((error) => {
-      console.log(error);
-      throw error;
-    });
+export async function getDownloadFileLink(path: string) {
+  const result = await axios.get(`${BASE_URL}/files/download-link/${path}`);
+
+  return new File([result.data], path);
 }
 
-export async function deleteFileByPath(accessToken: string | null, path: string): Promise<void> {
+export async function deleteFileByPath(accessToken: string | null, path: string) {
   const result = await axios.delete(`${BASE_URL}/files/${path}`, {
     headers: {
       authorization: `Bearer ${accessToken}`
