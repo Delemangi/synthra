@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Button, TextInput } from '@svelteuidev/core';
 
   let email = '';

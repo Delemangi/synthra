@@ -1,4 +1,4 @@
-export class File {
+export class FileMetadata {
   id: string;
   name: string;
   size: number;

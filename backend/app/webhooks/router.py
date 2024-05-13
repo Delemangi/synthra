@@ -29,11 +29,10 @@ WEBHOOK_URL = os.getenv(
 )
 
 
-# /webhooks/..
 @router.get("/create-test-webhook", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
     user: User = await create_user("a", "a", 30, session)
-    webhook = CreateWebhook(url=WEBHOOK_URL, user_id=user.id, platform="discord")  # type: ignore
+    webhook = CreateWebhook(url=WEBHOOK_URL, user_id=user.id, platform="discord")  # type: ignore[arg-type]
     try:
         await create_webhook(webhook, session)
     except Exception:

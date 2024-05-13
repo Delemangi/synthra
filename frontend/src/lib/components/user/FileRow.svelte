@@ -1,18 +1,18 @@
 <script lang="ts">
   import {
-    createStyles,
-    type theme,
     ActionIcon,
     Box,
     Flex,
     Text,
-    Tooltip
+    Tooltip,
+    createStyles,
+    type theme
   } from '@svelteuidev/core';
-  import { File } from '../../types/File';
-  import { Download, EyeOpen, Trash, ExternalLink } from 'radix-icons-svelte';
+  import { Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
   import { deleteFileByPath, getCertainFileByPath } from '../../../axios/axios-request';
+  import { FileMetadata } from '../../types/FileMetadata';
 
-  export let file: File = new File(
+  export let file: FileMetadata = new FileMetadata(
     'test',
     'test',
     1,

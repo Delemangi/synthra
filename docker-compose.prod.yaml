@@ -9,13 +9,20 @@ services:
       - .env
     volumes:
       - ./pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   backend:
     image: delemangi/synthra-backend:latest
     container_name: synthra-backend
     restart: unless-stopped
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     env_file:
       - .env
 
