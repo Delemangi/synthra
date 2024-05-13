@@ -13,7 +13,7 @@ from .constants import MAX_DB_CONNECTION_ATTEMPTS
 from .database import initialize_database
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
-from .jobs import schedule_jobs  # type: ignore[attr-defined]
+from .jobs import schedule_jobs
 from .settings import APISettings
 from .webhooks.router import router as webhook_router
 

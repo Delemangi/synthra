@@ -22,7 +22,6 @@ from .service import (
 router = APIRouter(tags=["file_transfer"])
 
 
-# /files/..
 @router.post("/", response_model=FileUploaded)
 async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
@@ -48,7 +47,6 @@ async def get_file(
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> FileResponse:
     filename = await verify_file(path, current_user, session)
-    # Return the file using FileResponse
     return FileResponse(FILE_PATH + path, filename=filename)
 
 
@@ -76,9 +74,7 @@ async def verify_and_delete_file(
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> RequestStatus:
     filename = await verify_file(path, current_user, session)
-    # Return the file using FileResponse
     await delete_file(path, session)
-
     return RequestStatus(message=f"File {filename} deleted")
 
 

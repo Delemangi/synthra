@@ -1,4 +1,4 @@
-# type: ignore
+# mypy: disable-error-code="import-untyped"
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger

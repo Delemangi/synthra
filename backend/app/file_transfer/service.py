@@ -58,13 +58,13 @@ async def get_all_files_user(
 
         return [
             MetadataFileResponse(
-                id=file.id,  # type: ignore
+                id=file.id,  # type: ignore[arg-type]
                 name=str(file.name),
                 path=str(file.path),
-                size=file.size,  # type: ignore
+                size=file.size,  # type: ignore[arg-type]
                 encrypted=bool(file.encrypted),
-                timestamp=file.timestamp,  # type: ignore
-                expiration=file.expiration,  # type: ignore
+                timestamp=file.timestamp,  # type: ignore[arg-type]
+                expiration=file.expiration,  # type: ignore[arg-type]
             )
             for file in files
         ]
@@ -79,13 +79,13 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
             raise not_found_exception
 
         return MetadataFileResponse(
-            id=file.id,  # type: ignore
+            id=file.id,  # type: ignore[arg-type]
             name=str(file.name),
             path=str(file.path),
-            size=file.size,  # type: ignore
+            size=file.size,  # type: ignore[arg-type]
             encrypted=bool(file.encrypted),
-            timestamp=file.timestamp,  # type: ignore
-            expiration=file.expiration,  # type: ignore
+            timestamp=file.timestamp,  # type: ignore[arg-type]
+            expiration=file.expiration,  # type: ignore[arg-type]
         )
 
 
