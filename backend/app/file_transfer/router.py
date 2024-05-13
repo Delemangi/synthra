@@ -13,8 +13,10 @@ from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
     delete_file,
     get_all_files_user,
+    get_metadata_path,
     upload_file_unencrypted,
     verify_file,
+    verify_file_link,
 )
 
 router = APIRouter(tags=["file_transfer"])
@@ -48,6 +50,23 @@ async def get_file(
     filename = await verify_file(path, current_user, session)
     # Return the file using FileResponse
     return FileResponse(FILE_PATH + path, filename=filename)
+
+
+@router.get("/download-link/{path}")
+async def get_file_link(
+    path: str,
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> FileResponse:
+    filename = await verify_file_link(path, session)
+    return FileResponse(FILE_PATH + path, filename=filename)
+
+
+@router.get("/metadata/{path}", response_model=MetadataFileResponse)
+async def get_file_metadata(
+    path: str,
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> MetadataFileResponse:
+    return await get_metadata_path(path, session)
 
 
 @router.delete("/{path}", response_model=RequestStatus)

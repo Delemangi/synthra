@@ -16,7 +16,7 @@ class Webhook(Base):
     url = Column(String, nullable=False)
     platform = Column(String, nullable=False)
     active = Column(Boolean, nullable=True)
-    timestamp = Column(DateTime, nullable=False, default=lambda: datetime.now(UTC))
+    timestamp = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC))
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="webhooks")
