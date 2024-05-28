@@ -14,8 +14,8 @@
   import { getWebhooksForSpecifiedUser, uploadWebhook } from '../../../axios/axios-request';
   import type { WebHook } from '$lib/types/WebHook';
 
-  let platform: string = "";
-  let url: string = "";
+  let platform: string = '';
+  let url: string = '';
   async function sendData(): Promise<void> {
     await uploadWebhook(localStorage.getItem('accessToken'), platform, url);
     window.location.reload();
@@ -50,7 +50,7 @@
   onMount(async function () {
     let accessToken = localStorage.getItem('accessToken');
     userWebhooks = await getWebhooksForSpecifiedUser(accessToken);
-    console.log(userWebhooks)
+    console.log(userWebhooks);
   });
   let visible = false;
 </script>

@@ -13,9 +13,7 @@
   import { FileMetadata } from '../../types/FileMetadata';
   import { WebHook } from '$lib/types/WebHook';
 
-  export let webhook: WebHook = new WebHook(
-    0,"a","a"
-  );
+  export let webhook: WebHook = new WebHook(0, 'a', 'a');
 
   const useStyles = createStyles((theme: theme) => {
     return {
@@ -34,7 +32,6 @@
       }
     };
   });
-
 
   async function deleteWebhook(): Promise<void> {
     try {

@@ -3,13 +3,9 @@ export class WebHook {
   url: string;
   platform: string;
 
-  constructor(
-    id: string,
-    url: string,
-    platform: string
-  ) {
-    this.id = id
-    this.url = url
-    this.platform = platform
+  constructor(id: string, url: string, platform: string) {
+    this.id = id;
+    this.url = url;
+    this.platform = platform;
   }
-};
+}
