@@ -8,9 +8,8 @@
     createStyles,
     type theme
   } from '@svelteuidev/core';
-  import { Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
+  import { Trash } from 'radix-icons-svelte';
   import { deleteWebhookPost } from '../../../axios/axios-request';
-  import { FileMetadata } from '../../types/FileMetadata';
   import { WebHook } from '$lib/types/WebHook';
 
   export let webhook: WebHook = new WebHook(0, 'a', 'a');

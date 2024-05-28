@@ -34,7 +34,7 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     user: User = await create_user("a", "a", 30, session)
     webhook = CreateWebhook(url=WEBHOOK_URL, platform="discord")
     try:
-        await create_webhook(webhook, session, user.id)
+        await create_webhook(webhook, session, user.id)  # type: ignore[arg-type]
     except Exception:
         print("error creating webhook")
 
