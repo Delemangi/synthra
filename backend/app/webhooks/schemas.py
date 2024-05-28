@@ -5,13 +5,13 @@ from pydantic import BaseModel
 
 
 class CreateWebhook(BaseModel):
-    user_id: UUID
     url: str
     platform: str = "Discord"
 
 
 class SendWebhook(BaseModel):
     user_id: UUID
+    id: UUID
     url: str
     platform: str
     active: bool

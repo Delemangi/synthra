@@ -4,6 +4,7 @@ from pathlib import Path
 from discord_webhook import DiscordWebhook
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 
 from app.file_transfer.models import File
 from app.file_transfer.schemas import MetadataFileResponse
@@ -12,11 +13,12 @@ from app.webhooks.schemas import CreateWebhook
 
 
 async def create_webhook(
-    webhook_schema: CreateWebhook,
-    session: AsyncSession,
+    webhook_schema: CreateWebhook, session: AsyncSession, user_id: UUID
 ) -> Webhook:
     async with session:
         webhook = Webhook(**webhook_schema.model_dump())
+        webhook.user_id = user_id
+        webhook.active = True
 
         session.add(webhook)
         await session.commit()

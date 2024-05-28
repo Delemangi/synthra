@@ -32,9 +32,9 @@ WEBHOOK_URL = os.getenv(
 @router.get("/create-test-webhook", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
     user: User = await create_user("a", "a", 30, session)
-    webhook = CreateWebhook(url=WEBHOOK_URL, user_id=user.id, platform="discord")  # type: ignore[arg-type]
+    webhook = CreateWebhook(url=WEBHOOK_URL, platform="discord")  # type: ignore[arg-type]
     try:
-        await create_webhook(webhook, session)
+        await create_webhook(webhook, session, user.id)
     except Exception:
         print("error creating webhook")
 
@@ -60,9 +60,10 @@ async def send_webhook(
 @router.post("/create", response_model=SendWebhook)
 async def create_webhook_route(
     webhook: CreateWebhook,
+    current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> Webhook:
-    return await create_webhook(webhook, session)
+    return await create_webhook(webhook, session, current_user.id)
 
 
 @router.post("/send", response_model=str)
@@ -88,7 +89,7 @@ async def get_user_webhooks(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> list[Webhook]:
-    return await get_all_webhooks_for_user(current_user.id.value(), session)
+    return await get_all_webhooks_for_user(current_user.id, session)
 
 
 @router.delete("/delete/{webhook_id}", response_model=str)
