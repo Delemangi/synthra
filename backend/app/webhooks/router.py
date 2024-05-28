@@ -63,7 +63,7 @@ async def create_webhook_route(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> Webhook:
-    return await create_webhook(webhook, session, current_user.id)
+    return await create_webhook(webhook, session, current_user.id)  # type: ignore[arg-type]
 
 
 @router.post("/send", response_model=str)
@@ -89,7 +89,7 @@ async def get_user_webhooks(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> list[Webhook]:
-    return await get_all_webhooks_for_user(current_user.id, session)
+    return await get_all_webhooks_for_user(current_user.id, session)  # type: ignore[arg-type]
 
 
 @router.delete("/delete/{webhook_id}", response_model=str)
