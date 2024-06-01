@@ -17,8 +17,8 @@ async def create_webhook(
 ) -> Webhook:
     async with session:
         webhook = Webhook(**webhook_schema.model_dump())
-        webhook.user_id = user_id  # type: ignore[arg-type]
-        webhook.active = True  # type: ignore[arg-type]
+        webhook.user_id = user_id  # type: ignore[assignment]
+        webhook.active = True  # type: ignore[assignment]
 
         session.add(webhook)
         await session.commit()

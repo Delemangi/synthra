@@ -9,10 +9,14 @@
     type theme
   } from '@svelteuidev/core';
   import { Download, ExternalLink, EyeOpen, Trash, DoubleArrowRight } from 'radix-icons-svelte';
-  import { deleteFileByPath, getCertainFileByPath, getWebhooksForSpecifiedUser, sendWebhook } from '../../../axios/axios-request';
+  import {
+    deleteFileByPath,
+    getCertainFileByPath,
+    getWebhooksForSpecifiedUser,
+    sendWebhook
+  } from '../../../axios/axios-request';
   import { FileMetadata } from '../../types/FileMetadata';
   import type { WebHook } from '$lib/types/WebHook';
-
 
   export let file: FileMetadata = new FileMetadata(
     'test',
@@ -68,9 +72,9 @@
   }
 
   async function sendToWebHooks(): Promise<void> {
-    const webhooks = await getWebhooksForSpecifiedUser(localStorage.getItem('accessToken'))
-    const promises = webhooks.map((el: WebHook) => sendWebhook(el.id, file.id))
-    await Promise.all(promises)
+    const webhooks = await getWebhooksForSpecifiedUser(localStorage.getItem('accessToken'));
+    const promises = webhooks.map((el: WebHook) => sendWebhook(el.id, file.id));
+    await Promise.all(promises);
   }
 
   async function deleteFile(): Promise<void> {
