@@ -41,6 +41,12 @@ export async function uploadWebhook(accessToken: string | null, platform: string
   return result.data;
 }
 
+export async function sendWebhook(webhookId: string, fileId: string ) {
+  const result = await axios.post(`${BASE_URL}/webhooks/send?webhook_id=${webhookId}&file_id=${fileId}`);
+
+  return result.data;
+}
+
 export async function deleteWebhookPost(accessToken: string | null, id: number) {
   const result = await axios.delete(`${BASE_URL}/webhooks/delete/${id}`, {
     headers: {

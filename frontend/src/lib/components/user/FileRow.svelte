@@ -8,9 +8,11 @@
     createStyles,
     type theme
   } from '@svelteuidev/core';
-  import { Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
-  import { deleteFileByPath, getCertainFileByPath } from '../../../axios/axios-request';
+  import { Download, ExternalLink, EyeOpen, Trash, DoubleArrowRight } from 'radix-icons-svelte';
+  import { deleteFileByPath, getCertainFileByPath, getWebhooksForSpecifiedUser, sendWebhook } from '../../../axios/axios-request';
   import { FileMetadata } from '../../types/FileMetadata';
+  import type { WebHook } from '$lib/types/WebHook';
+
 
   export let file: FileMetadata = new FileMetadata(
     'test',
@@ -65,6 +67,12 @@
     alert('Successfully, copied the link to clipboard');
   }
 
+  async function sendToWebHooks(): Promise<void> {
+    const webhooks = await getWebhooksForSpecifiedUser(localStorage.getItem('accessToken'))
+    const promises = webhooks.map((el: WebHook) => sendWebhook(el.id, file.id))
+    await Promise.all(promises)
+  }
+
   async function deleteFile(): Promise<void> {
     try {
       const confirmed = confirm('Are you sure you want to delete this file?');
@@ -98,6 +106,11 @@
       {file.expiration}
     </Text>
     <Flex justify="left" gap="xs" css={{ flex: 1 }}>
+      <Tooltip openDelay={10} label="Send to Webhook">
+        <ActionIcon variant="filled" color="blue" on:click={sendToWebHooks}>
+          <DoubleArrowRight size={20} />
+        </ActionIcon>
+      </Tooltip>
       <Tooltip openDelay={10} label="Preview">
         <ActionIcon variant="filled" color="blue">
           <EyeOpen size={20} />
