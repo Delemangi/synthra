@@ -1,11 +1,56 @@
 import type { FileMetadata } from '$lib/types/FileMetadata';
 import type { FileUploaded } from '$lib/types/FileUploaded';
+import type { WebHook } from '$lib/types/WebHook';
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = 'http://localhost:8002';
 
 export async function getFilesForSpecifiedUser(accessToken: string | null) {
   const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return result.data;
+}
+
+export async function getWebhooksForSpecifiedUser(accessToken: string | null) {
+  const result = await axios.get<WebHook[]>(`${BASE_URL}/webhooks/user-webhooks`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+
+  return result.data;
+}
+
+export async function uploadWebhook(accessToken: string | null, platform: string, url: string) {
+  const result = await axios.post(
+    `${BASE_URL}/webhooks/create`,
+    JSON.stringify({ platform: platform, url: url }),
+    {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return result.data;
+}
+
+export async function sendWebhook(webhookId: string, fileId: string) {
+  const result = await axios.post(
+    `${BASE_URL}/webhooks/send?webhook_id=${webhookId}&file_id=${fileId}`
+  );
+
+  return result.data;
+}
+
+export async function deleteWebhookPost(accessToken: string | null, id: number) {
+  const result = await axios.delete(`${BASE_URL}/webhooks/delete/${id}`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
