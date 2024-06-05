@@ -2,7 +2,7 @@
   import type { FileMetadata } from '$lib/types/FileMetadata';
   import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { getCertainFileByPath, getMetadataFilePath } from '../../server/files';
+  import { getFileByPath, getMetadataFilePath } from '../../server/files';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -61,7 +61,7 @@
     }
 
     try {
-      let retrievedFile = await getCertainFileByPath(accessToken, filePath);
+      let retrievedFile = await getFileByPath(accessToken, filePath);
 
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);

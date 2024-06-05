@@ -9,7 +9,7 @@
     type theme
   } from '@svelteuidev/core';
   import { DoubleArrowRight, Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
-  import { deleteFileByPath, getCertainFileByPath } from '../../../server/files';
+  import { deleteFileByPath, getFileByPath } from '../../../server/files';
   import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
 
@@ -51,7 +51,7 @@
     }
 
     try {
-      let retrievedFile = await getCertainFileByPath(accessToken, file.path);
+      let retrievedFile = await getFileByPath(accessToken, file.path);
 
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
