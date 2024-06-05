@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, TextInput } from '@svelteuidev/core';
+  import { Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { register } from '../../../server/auth';
 
@@ -45,4 +45,8 @@
       Register
     </Button>
   </div>
+  <br />
+  <Text align="center">
+    Already have an account? <a href="/auth/register">Login!</a>
+  </Text>
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, TextInput } from '@svelteuidev/core';
+  import { Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { login } from '../../../server/auth';
 
@@ -40,4 +40,8 @@
   <div style="display: flex; justify-content: center;">
     <Button on:click={handleSubmit} disabled={!username.length || !password.length}>Login</Button>
   </div>
+  <br />
+  <Text align="center">
+    No account? <a href="/auth/register">Register!</a>
+  </Text>
 </div>
