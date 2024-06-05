@@ -49,7 +49,7 @@ export async function sendWebhook(webhookId: string, fileId: string) {
   return result.data;
 }
 
-export async function deleteWebhookPost(accessToken: string | null, id: number) {
+export async function deleteWebhookPost(accessToken: string | null, id: string) {
   const result = await axios.delete(`${BASE_URL}/webhooks/delete/${id}`, {
     headers: {
       authorization: `Bearer ${accessToken}`
