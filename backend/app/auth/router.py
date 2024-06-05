@@ -14,7 +14,6 @@ from .service import (
     create_user,
     oauth2_scheme,
     remove_token,
-    validate_token,
 )
 
 router = APIRouter(tags=["auth"])
@@ -49,11 +48,3 @@ async def register(
 ) -> RequestStatus:
     user = await create_user(user_schema.username, user_schema.password, 30, session)
     return RequestStatus(message=f"User {user.username} registered successfully")
-
-
-@router.post("/validate/{token}")
-async def validate(
-    token: str, session: Annotated[AsyncSession, Depends(get_async_session)]
-) -> RequestStatus:
-    valid = validate_token(token, session)
-    return RequestStatus(message="valid" if valid else "invalid")
