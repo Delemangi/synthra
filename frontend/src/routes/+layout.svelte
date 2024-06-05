@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Header, COLOR_THEME_SCHEMA } from '$lib';
+  import { Header } from '$lib';
   import { AppShell, SvelteUIProvider, colorScheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
 
@@ -12,13 +12,12 @@
 
   onMount(() => {
     const savedTheme = localStorage.getItem('theme');
-    const { data, success } = COLOR_THEME_SCHEMA.safeParse(savedTheme);
 
-    if (!success) {
+    if (!savedTheme || (savedTheme !== 'light' && savedTheme !== 'dark')) {
       return;
     }
 
-    colorScheme.update(() => data);
+    colorScheme.update(() => savedTheme);
   });
 </script>
 
