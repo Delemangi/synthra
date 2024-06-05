@@ -34,14 +34,14 @@ export const sendFileForSpecifiedUser = async (accessToken: string, file: File) 
 };
 
 export const getFileByPath = async (accessToken: string, path: string) => {
-  const result = await axios.get<File>(`${BASE_URL}/files/download/${path}/`, {
+  const result = await axios.get(`${BASE_URL}/files/download/${path}/`, {
+    responseType: 'blob',
     headers: {
-      responseType: 'blob',
       authorization: `Bearer ${accessToken}`
     }
   });
 
-  return new File([result.data], path);
+  return new File([result.data], path, { type: result.data.type });
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {
