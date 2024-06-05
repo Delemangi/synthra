@@ -1,5 +1,3 @@
-import sys
-import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -9,8 +7,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .auth.router import router as auth_router
-from .constants import MAX_DB_CONNECTION_ATTEMPTS
-from .database import initialize_database
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
 from .jobs import schedule_jobs
@@ -22,16 +18,7 @@ from .webhooks.router import router as webhook_router
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Application is starting up")
-    for i in range(10):
-        try:
-            await initialize_database()
-            print("Database initialized...")
-            break
-        except Exception as ex:
-            print(ex)
-            time.sleep(1)
-        if i == MAX_DB_CONNECTION_ATTEMPTS - 1:
-            sys.exit()
+
     Path.mkdir(Path(FILE_PATH), exist_ok=True)
 
     scheduler = schedule_jobs()

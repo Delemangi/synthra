@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 
 from .auth.models import Role  # noqa: F401
 from .file_transfer.models import File  # noqa: F401
-from .models import Base
+from .models import Base  # noqa: F401
 from .webhooks.models import Webhook  # noqa: F401
 
 SQLALCHEMY_DATABASE_URL = os.getenv(
@@ -42,12 +42,6 @@ class AsyncSessionMaker:
                 expire_on_commit=False,
             )
         return cls._instance
-
-
-async def initialize_database() -> None:
-    async with DatabaseEngine.get_engine().begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
