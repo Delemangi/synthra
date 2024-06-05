@@ -47,6 +47,8 @@ select = [
   "W",
   # mccabe
   "C90",
+  # isort
+  "I",
   # pep8-naming
   "N",
   # pyupgrade
