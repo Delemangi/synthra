@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { FileMetadata } from '$lib/types/FileMetadata';
+  import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { createStyles, Button, Box, Flex, Title, type DefaultTheme } from '@svelteuidev/core';
-  import { getMetadataFilePath, getCertainFileByPath } from '../../axios/axios-request';
+  import { getCertainFileByPath, getMetadataFilePath } from '../../axios/axios-request';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -28,12 +29,19 @@
 
   $: ({ classes, getStyles } = useStyles());
 
-  let filePath: string = '';
-  let fileMetadata: File | null = null;
+  let filePath: string | null = null;
+  let fileMetadata: FileMetadata | null = null;
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     filePath = urlParams.get('file');
+
+    if (!filePath) {
+      alert('File path not provided');
+      document.location.href = '/';
+
+      return;
+    }
 
     try {
       const response = await getMetadataFilePath(filePath);
@@ -46,9 +54,13 @@
   });
 
   async function downloadFile(): Promise<void> {
+    if (!filePath) {
+      alert('Failed downloading file');
+      return;
+    }
+
     try {
-      // eslint-disable-next-line no-undef
-      let retrievedFile: void | globalThis.File = await getCertainFileByPath(
+      let retrievedFile: void | File = await getCertainFileByPath(
         localStorage.getItem('accessToken'),
         filePath
       );
