@@ -58,7 +58,15 @@
         const a = document.createElement('a');
         a.href = url;
         a.download = file.name;
+
+        // Firefox fix
+        document.body.appendChild(a);
+
         a.click();
+
+        // Firefox fix
+        document.body.removeChild(a);
+
         URL.revokeObjectURL(url);
       }
     } catch {
