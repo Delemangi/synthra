@@ -29,5 +29,9 @@
   "python.analysis.typeCheckingMode": "basic",
   "ruff.importStrategy": "fromEnvironment",
   "svelte.enable-ts-plugin": true,
-  "svelte.plugin.svelte.format.config.svelteStrictMode": true
+  "svelte.plugin.svelte.format.config.svelteStrictMode": true,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "delemangi",
+    "projectKey": "synthra"
+  }
 }
