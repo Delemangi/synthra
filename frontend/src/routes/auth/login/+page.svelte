@@ -35,7 +35,7 @@
   style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
 >
   <TextInput label="Username" bind:value={username} />
-  <TextInput label="Password" bind:value={password} />
+  <TextInput label="Password" bind:value={password} type="password" />
   <br />
   <div style="display: flex; justify-content: center;">
     <Button on:click={handleSubmit} disabled={!username.length || !password.length}>Login</Button>
