@@ -41,9 +41,7 @@ export const getFileByPath = async (accessToken: string, path: string) => {
     }
   });
 
-  console.log(result.headers);
-
-  return new File([result.data], path, { type: result.headers['content-type'] });
+  return new File([result.data], path);
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {
