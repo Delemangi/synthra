@@ -1,0 +1,11 @@
+[flake8]
+exclude = .venv,node_modules
+max-line-length = 100
+
+# see https://flake8.pycqa.org/en/latest/user/error-codes.html
+ignore =
+    # E203 - whitespace before ':' (in conflict with Black)
+    E203,
+
+    # W503 - line break before binary operator (in conflict with Black)
+    W503,
