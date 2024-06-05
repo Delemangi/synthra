@@ -79,7 +79,7 @@ export async function sendFileForSpecifiedUser(accessToken: string | null, file:
 }
 
 export async function getCertainFileByPath(accessToken: string | null, path: string) {
-  const result = await axios.get<File>(`${BASE_URL}/files/${path}`, {
+  const result = await axios.get<File>(`${BASE_URL}/files/download/${path}`, {
     headers: {
       responseType: 'blob',
       authorization: `Bearer ${accessToken}`

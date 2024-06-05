@@ -5,6 +5,8 @@ WORKDIR /workspace/frontend
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 
+ENV VITE_BASE_URL=http://localhost:8002
+
 COPY . ./
 RUN npm run build
 

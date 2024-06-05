@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Button, TextInput } from '@svelteuidev/core';
-  import { BASE_URL } from '../../../axios/axios-request';
 
   let email = '';
   let password = '';
@@ -17,7 +16,7 @@
         username: email,
         password: password
       };
-      const response = await fetch(`${BASE_URL}/auth/register/`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
