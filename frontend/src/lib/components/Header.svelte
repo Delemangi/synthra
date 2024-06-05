@@ -2,6 +2,7 @@
   import { Button, Flex, Header, Switch, Title, createStyles, type theme } from '@svelteuidev/core';
   import { onDestroy, onMount } from 'svelte';
   import { writable } from 'svelte/store';
+  import { clearSession } from '../../auth/session';
 
   export let toggleTheme = () => {};
   export let currentTheme = 'light';
@@ -38,21 +39,20 @@
     };
   });
 
-  let accessToken = '';
-  let username = '';
+  let accessToken: string | null = null;
+  let username: string | null = null;
 
   export const selectedTab = writable('');
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('username');
+    clearSession();
 
     window.location.href = '/';
   };
 
   onMount(() => {
-    accessToken = localStorage?.getItem('accessToken') ?? '';
-    username = localStorage?.getItem('username') ?? '';
+    accessToken = localStorage.getItem('accessToken');
+    username = localStorage.getItem('username');
 
     const updateHref = () => {
       selectedTab.set(window.location.href.split('/').at(-1) ?? '');

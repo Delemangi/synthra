@@ -11,7 +11,9 @@
     createStyles,
     type DefaultTheme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
+  import { clearSession } from '../../../auth/session';
   import { getWebhooksForSpecifiedUser, uploadWebhook } from '../../../server/webhooks';
 
   let name = '';
@@ -65,7 +67,22 @@
       return;
     }
 
-    userWebhooks = await getWebhooksForSpecifiedUser(accessToken);
+    try {
+      userWebhooks = await getWebhooksForSpecifiedUser(accessToken);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 401) {
+        clearSession();
+        window.location.href = '/auth/login';
+        return;
+      }
+
+      alert('An error occurred while fetching the webhooks.');
+    }
   });
 
   const URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;

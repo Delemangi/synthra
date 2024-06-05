@@ -2,6 +2,7 @@
   import { Header } from '$lib';
   import { AppShell, SvelteUIProvider, colorScheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
+  import { clearSession } from '../auth/session';
   import { validate } from '../server/auth';
 
   const toggleTheme = () => {
@@ -25,8 +26,7 @@
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
-      localStorage.setItem('accessToken', '');
-      localStorage.setItem('username', '');
+      clearSession();
       return;
     }
 
@@ -36,8 +36,7 @@
       return;
     }
 
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('username');
+    clearSession();
   };
 
   onMount(() => {

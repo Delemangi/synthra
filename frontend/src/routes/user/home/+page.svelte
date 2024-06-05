@@ -13,6 +13,7 @@
   } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
+  import { clearSession } from '../../../auth/session';
   import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../server/files';
 
   let filesToUpload: FileList | null = null;
@@ -79,7 +80,22 @@
       return;
     }
 
-    userFiles = await getFilesForSpecifiedUser(accessToken);
+    try {
+      userFiles = await getFilesForSpecifiedUser(accessToken);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 401) {
+        clearSession();
+        window.location.href = '/auth/login';
+        return;
+      }
+
+      alert('An error occurred while fetching the files.');
+    }
   });
 </script>
 
