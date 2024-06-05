@@ -23,6 +23,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    volumes:
+      - ./assets:/app/assets
     env_file:
       - .env
 
