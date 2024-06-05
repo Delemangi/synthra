@@ -48,7 +48,7 @@
     {/each}
     <Grid.Col span={12} align="center">
       <a href="/auth/register">
-        <Button variant="light" ripple radius="md" style="width:25%">Register Now!</Button>
+        <Button variant="light" radius="md" style="width:25%">Register Now!</Button>
       </a>
     </Grid.Col>
   </Grid>

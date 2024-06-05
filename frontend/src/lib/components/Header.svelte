@@ -107,13 +107,13 @@
       {/if}
 
       {#if accessToken}
-        <Button variant="light" ripple>
+        <Button variant="light">
           <a class={classes.leftOptions} href="/" on:click={handleLogout}>
             <Title order={3}>Logout</Title>
           </a>
         </Button>
       {:else}
-        <Button variant="light" ripple>
+        <Button variant="light">
           <a class={classes.leftOptions} href="/auth/login">
             <Title order={3}>Login</Title>
           </a>
