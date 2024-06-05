@@ -1,6 +1,6 @@
 # Synthra
 
-Synthra is a file hosting application built using [FastAPI](https://github.com/tiangolo/fastapi) (with Python 3.11) and [SvelteKit](https://github.com/sveltejs/kit), with PostgreSQL.
+Synthra is a file hosting application built using [FastAPI](https://github.com/tiangolo/fastapi) (with Python 3.11) and [SvelteKit](https://github.com/sveltejs/kit), with [PostgreSQL](https://github.com/postgres/postgres), [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) and [Alembic](https://github.com/sqlalchemy/alembic).
 
 This repository contains both the frontend and the backend of the project in their respective folders.
 
@@ -9,6 +9,8 @@ This repository contains both the frontend and the backend of the project in the
 This is a project for the courses `Implementation of free and open source systems` and `Team project`.
 
 See [DOCUMENTATION.md](docs/DOCUMENTATION.md).
+
+Authors:
 
 - Stefan Milev - 206055
 - Alek Jarmov - 206012
@@ -89,11 +91,12 @@ Once you have all these dependencies installed, then:
 ### Running (Manual Setup)
 
 1. Start the PostgreSQL service
-2. Start the backend service
+2. Apply all migrations: `alembic upgrade head`
+3. Start the backend service
    1. Open the project in your terminal
    2. Run `cd backend`
    3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 [--reload]` - the last parameter is optional, in case you want hot reloading
-3. Start the frontend service
+4. Start the frontend service
    1. Open the project in your terminal
    2. Run `cd frontend`
    3. If you would like to start the application in a development environment with hot reloading, then run `npm run dev`, otherwise `npm run preview`, provided that you have run `npm run build` previously
