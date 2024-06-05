@@ -33,7 +33,7 @@ export const sendFileForSpecifiedUser = async (accessToken: string, file: File) 
   return result.data;
 };
 
-export const getCertainFileByPath = async (accessToken: string, path: string) => {
+export const getFileByPath = async (accessToken: string, path: string) => {
   const result = await axios.get<File>(`${BASE_URL}/files/download/${path}/`, {
     headers: {
       responseType: 'blob',
@@ -41,7 +41,9 @@ export const getCertainFileByPath = async (accessToken: string, path: string) =>
     }
   });
 
-  return new File([result.data], path);
+  console.log(result.headers);
+
+  return new File([result.data], path, { type: result.headers['content-type'] });
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {
