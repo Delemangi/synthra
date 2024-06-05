@@ -28,8 +28,8 @@ async def create_upload_file(
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
 ) -> FileUploaded:
-    await upload_file_unencrypted(session, file, current_user)
-    return FileUploaded(filename=file.filename, username=str(current_user.username))
+    new_file = await upload_file_unencrypted(session, file, current_user)
+    return FileUploaded(filename=new_file, username=str(current_user.username))
 
 
 @router.get("/", response_model=list[MetadataFileResponse])
