@@ -1,6 +1,7 @@
 <script lang="ts">
-  import WebhookRow from '$lib/components/user/WebhookRow.svelte';
   import TitleWebhookRow from '$lib/components/user/TitleWebhookRow.svelte';
+  import WebhookRow from '$lib/components/user/WebhookRow.svelte';
+  import type { Webhook } from '$lib/types/Webhook';
   import {
     Box,
     Button,
@@ -11,15 +12,23 @@
     type DefaultTheme
   } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { getWebhooksForSpecifiedUser, uploadWebhook } from '../../../axios/axios-request';
-  import type { WebHook } from '$lib/types/WebHook';
+  import { getWebhooksForSpecifiedUser, uploadWebhook } from '../../../server/webhooks';
 
-  let platform: string = '';
-  let url: string = '';
-  async function sendData(): Promise<void> {
-    await uploadWebhook(localStorage.getItem('accessToken'), platform, url);
+  let name = '';
+  let url = '';
+
+  const sendData = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
+      return;
+    }
+
+    await uploadWebhook(accessToken, name, url);
     window.location.reload();
-  }
+  };
+
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
       root: {
@@ -45,17 +54,33 @@
 
   $: ({ classes, getStyles } = useStyles());
 
-  let userWebhooks: WebHook[] = [];
-
-  onMount(async function () {
-    let accessToken = localStorage.getItem('accessToken');
-    userWebhooks = await getWebhooksForSpecifiedUser(accessToken);
-    console.log(userWebhooks);
-  });
+  let userWebhooks: Webhook[] = [];
   let visible = false;
+
+  onMount(async () => {
+    let accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      return;
+    }
+
+    userWebhooks = await getWebhooksForSpecifiedUser(accessToken);
+  });
+
+  const URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
 </script>
 
-<Button on:click={() => (visible = !visible)}>Add webhook</Button>
+<div
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 2rem;"
+>
+  <Title order={1}>Webhooks</Title>
+</div>
+
+<div
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 2rem;"
+>
+  <Button on:click={() => (visible = !visible)}>Create</Button>
+</div>
 
 <TitleWebhookRow />
 
@@ -67,16 +92,22 @@
   <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
-        <Title order={3}>Add webhook</Title>
+        <Title order={3}>Add Webhook</Title>
 
-        Platform
-        <input id="platform" name="platform" bind:value={platform} />
+        Name
+        <input bind:value={name} />
 
-        Url
-        <input id="url" name="url" bind:value={url} />
+        URL
+        <input bind:value={url} />
 
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={async () => await sendData()}>Submit</Button>
+          <Button
+            variant="filled"
+            on:click={async () => await sendData()}
+            disabled={!name || !url || !URL_REGEX.test(url)}
+          >
+            Submit
+          </Button>
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
         </Flex>
       </Flex>

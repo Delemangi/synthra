@@ -11,20 +11,37 @@
     createStyles,
     type DefaultTheme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
-  import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../axios/axios-request';
+  import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../server/files';
 
   let filesToUpload: FileList | null = null;
 
-  async function sendData(): Promise<void> {
-    if (filesToUpload != null) {
-      console.log(filesToUpload);
-      await sendFileForSpecifiedUser(localStorage.getItem('accessToken'), filesToUpload[0]);
-      window.location.reload();
-    } else {
-      console.log('No file selected');
+  const sendData = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
+      return;
     }
-  }
+
+    if (!filesToUpload) {
+      return;
+    }
+
+    try {
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0]);
+      window.location.reload();
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      alert('An error occurred while uploading the file.');
+    }
+  };
+
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
       root: {
@@ -35,7 +52,8 @@
         height: '100%',
         backgroundColor: theme.fn.themeColor('gray', 1),
         opacity: 1,
-        padding: 20
+        padding: 20,
+        borderRadius: '$md'
       },
       flexOverlay: {
         display: 'flex',
@@ -51,15 +69,31 @@
   $: ({ classes, getStyles } = useStyles());
 
   let userFiles: FileMetadata[] = [];
+  let visible = false;
 
-  onMount(async function () {
+  onMount(async () => {
     let accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      window.location.href = '/auth/login';
+      return;
+    }
+
     userFiles = await getFilesForSpecifiedUser(accessToken);
   });
-  let visible = false;
 </script>
 
-<Button on:click={() => (visible = !visible)}>Upload file</Button>
+<div
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 2rem;"
+>
+  <Title order={1}>Files</Title>
+</div>
+
+<div
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 2rem;"
+>
+  <Button on:click={() => (visible = !visible)}>Upload</Button>
+</div>
 
 <TitleFileRow />
 
@@ -71,12 +105,16 @@
   <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
-        <Title order={3}>Upload your file</Title>
+        <Title order={3}>Upload File</Title>
 
-        <input type="file" id="myFile" name="filename" bind:files={filesToUpload} />
+        <input type="file" name="filename" bind:files={filesToUpload} />
 
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={async () => await sendData()}>Submit</Button>
+          <Button
+            variant="filled"
+            on:click={async () => await sendData()}
+            disabled={!filesToUpload?.length}>Submit</Button
+          >
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
         </Flex>
       </Flex>

@@ -1,4 +1,5 @@
-// place files you want to import through the `$lib` alias in this folder.
 import Header from './components/Header.svelte';
+import { COLOR_THEME_SCHEMA } from '../schemas/ColorThemeSchema';
+import { HOME_SCREEN_ITEMS } from '../utils/constants';
 
-export { Header };
+export { COLOR_THEME_SCHEMA, HOME_SCREEN_ITEMS, Header };

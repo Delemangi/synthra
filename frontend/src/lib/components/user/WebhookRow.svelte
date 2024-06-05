@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Webhook } from '$lib/types/Webhook';
   import {
     ActionIcon,
     Box,
@@ -9,10 +10,9 @@
     type theme
   } from '@svelteuidev/core';
   import { Trash } from 'radix-icons-svelte';
-  import { deleteWebhookPost } from '../../../axios/axios-request';
-  import { WebHook } from '$lib/types/WebHook';
+  import { deleteWebhookPost } from '../../../server/webhooks';
 
-  export let webhook: WebHook = new WebHook('0', 'a', 'a');
+  export let webhook = new Webhook('0', 'a', 'a');
 
   const useStyles = createStyles((theme: theme) => {
     return {
@@ -32,33 +32,39 @@
     };
   });
 
-  async function deleteWebhook(): Promise<void> {
+  const deleteWebhook = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
+
+      return;
+    }
+
     try {
-      const confirmed = confirm('Are you sure you want to delete this webhook?');
-      if (confirmed) {
-        await deleteWebhookPost(localStorage.getItem('accessToken'), webhook.id);
+      const confirmation = confirm('Are you sure you want to delete this webhook?');
+
+      if (confirmation) {
+        await deleteWebhookPost(accessToken, webhook.id);
         window.location.reload();
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
+      alert('An error occurred while deleting the webhook.');
     }
-  }
+  };
 
   $: ({ getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
-    <Text size="sm" css={{ flex: 1 }}>
-      {webhook.id}
-    </Text>
-    <Text size="sm" css={{ flex: 1 }}>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {webhook.platform}
     </Text>
-    <Text size="sm" css={{ flex: 1 }}>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {webhook.url}
     </Text>
-    <Flex justify="left" gap="xs" css={{ flex: 1 }}>
+    <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Delete">
         <ActionIcon color="red" variant="filled" on:click={deleteWebhook}>
           <Trash size={20} />

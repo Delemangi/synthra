@@ -8,17 +8,12 @@
     createStyles,
     type theme
   } from '@svelteuidev/core';
-  import { Download, ExternalLink, EyeOpen, Trash, DoubleArrowRight } from 'radix-icons-svelte';
-  import {
-    deleteFileByPath,
-    getCertainFileByPath,
-    getWebhooksForSpecifiedUser,
-    sendWebhook
-  } from '../../../axios/axios-request';
+  import { DoubleArrowRight, Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
+  import { deleteFileByPath, getCertainFileByPath } from '../../../server/files';
+  import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
-  import type { WebHook } from '$lib/types/WebHook';
 
-  export let file: FileMetadata = new FileMetadata(
+  export let file = new FileMetadata(
     'test',
     'test',
     1,
@@ -46,13 +41,18 @@
     };
   });
 
-  async function getFile(): Promise<void> {
+  const getFile = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
+
+      return;
+    }
+
     try {
-      // eslint-disable-next-line no-undef
-      let retrievedFile: void | globalThis.File = await getCertainFileByPath(
-        localStorage.getItem('accessToken'),
-        file.path
-      );
+      let retrievedFile = await getCertainFileByPath(accessToken, file.path);
+
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
         const a = document.createElement('a');
@@ -61,55 +61,68 @@
         a.click();
         URL.revokeObjectURL(url);
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
+      alert('An error occurred while downloading the file.');
     }
-  }
+  };
 
-  function copyClipboard(): void {
+  const copyToClipboard = () => {
     navigator.clipboard.writeText(`${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`);
-    alert('Successfully, copied the link to clipboard');
-  }
+  };
 
-  async function sendToWebHooks(): Promise<void> {
-    const webhooks = await getWebhooksForSpecifiedUser(localStorage.getItem('accessToken'));
-    const promises = webhooks.map((el: WebHook) => sendWebhook(el.id, file.id));
-    await Promise.all(promises);
-  }
+  const sendToWebHooks = async () => {
+    const accessToken = localStorage.getItem('accessToken');
 
-  async function deleteFile(): Promise<void> {
-    try {
-      const confirmed = confirm('Are you sure you want to delete this file?');
-      if (confirmed) {
-        await deleteFileByPath(localStorage.getItem('accessToken'), file.path);
-        window.location.reload();
-      }
-    } catch (e) {
-      console.log(e);
+    if (!accessToken) {
+      alert('You need to be logged in.');
+
+      return;
     }
-  }
+
+    const webhooks = await getWebhooksForSpecifiedUser(accessToken);
+    const promises = webhooks.map((webhook) => sendWebhook(webhook.id, file.id));
+
+    await Promise.all(promises);
+  };
+
+  const deleteFile = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
+
+      return;
+    }
+
+    const confirmation = confirm('Are you sure you want to delete this file?');
+
+    if (confirmation) {
+      await deleteFileByPath(accessToken, file.path);
+      window.location.reload();
+    }
+  };
 
   $: ({ getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
-    <Text size="sm" css={{ flex: 1 }}>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {file.name}
     </Text>
-    <Text size="sm" css={{ flex: 1 }}>
-      {file.encrypted}
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
+      {(file.size / 1000).toFixed(2)}
     </Text>
-    <Text size="sm" css={{ flex: 1 }}>
-      {Math.round(file.size / 1024)}
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
+      {file.encrypted ? 'Yes' : 'No'}
     </Text>
-    <Text size="sm" css={{ flex: 1 }}>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {file.timestamp}
     </Text>
-    <Text size="sm" css={{ flex: 1 }}>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {file.expiration}
     </Text>
-    <Flex justify="left" gap="xs" css={{ flex: 1 }}>
+    <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Send to Webhook">
         <ActionIcon variant="filled" color="blue" on:click={sendToWebHooks}>
           <DoubleArrowRight size={20} />
@@ -121,7 +134,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Share">
-        <ActionIcon variant="filled" color="cyan" on:click={copyClipboard}>
+        <ActionIcon variant="filled" color="cyan" on:click={copyToClipboard}>
           <ExternalLink size={20} />
         </ActionIcon>
       </Tooltip>
