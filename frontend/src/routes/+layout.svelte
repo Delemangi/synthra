@@ -22,8 +22,6 @@
   };
 
   const updateToken = async () => {
-    console.log('1');
-
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
@@ -32,17 +30,11 @@
       return;
     }
 
-    console.log('2');
-
     const { data } = await validate(accessToken);
-
-    console.log(data);
 
     if (data.message === 'valid') {
       return;
     }
-
-    console.log('3');
 
     localStorage.removeItem('accessToken');
     localStorage.removeItem('username');

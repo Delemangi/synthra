@@ -25,9 +25,7 @@ export const register = async (username: string, password: string) => {
 };
 
 export const validate = async (token: string) => {
-  const result = await axios.post<TokenValidity>(`${BASE_URL}/auth/validate/`, {
-    token
-  });
+  const result = await axios.post<TokenValidity>(`${BASE_URL}/auth/validate/${token}`);
 
   return result;
 };

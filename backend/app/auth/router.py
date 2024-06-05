@@ -51,7 +51,7 @@ async def register(
     return RequestStatus(message=f"User {user.username} registered successfully")
 
 
-@router.post("/validate")
+@router.post("/validate/{token}")
 async def validate(
     token: str, session: Annotated[AsyncSession, Depends(get_async_session)]
 ) -> RequestStatus:
