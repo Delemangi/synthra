@@ -1,10 +1,10 @@
 import uuid
 from pathlib import Path
+from uuid import UUID
 
 from discord_webhook import DiscordWebhook
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from uuid import UUID
 
 from app.file_transfer.models import File
 from app.file_transfer.schemas import MetadataFileResponse
