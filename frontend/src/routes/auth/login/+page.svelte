@@ -1,42 +1,43 @@
 <script lang="ts">
   import { Button, TextInput } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
+  import { login } from '../../../server/auth';
 
-  let email = '';
+  let username = '';
   let password = '';
-  let accessToken = '';
 
-  async function handleSubmit() {
+  const handleSubmit = async () => {
+    let response;
+
     try {
-      const formData = new FormData();
-      formData.append('username', email);
-      formData.append('password', password);
+      response = await login(username, password);
 
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login/`, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        accessToken = data.access_token;
-        // Save the token to localStorage or sessionStorage
-        localStorage.setItem('accessToken', accessToken);
-        window.location.href = '/user/home';
-      } else {
-        alert('Login failed. Please check your credentials.');
-      }
+      localStorage.setItem('accessToken', response.data.access_token);
+      localStorage.setItem('username', username);
+      window.location.href = '/user/home';
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('An error occurred while logging in. Please try again later.');
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 401) {
+        alert('Invalid username or password.');
+        return;
+      }
+
+      alert('An error occurred while logging in.');
     }
-  }
+  };
 </script>
 
 <div
-  style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding:10px; border-radius:5px"
+  style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
 >
-  <TextInput label="Email" bind:value={email} />
-  <TextInput type="password" label="Password" bind:value={password} />
+  <TextInput label="Username" bind:value={username} />
+  <TextInput label="Password" bind:value={password} />
   <br />
-  <Button on:click={handleSubmit}>Login</Button>
+  <div style="display: flex; justify-content: center;">
+    <Button on:click={handleSubmit} disabled={!username.length || !password.length}>Login</Button>
+  </div>
 </div>

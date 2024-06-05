@@ -1,4 +1,4 @@
-export class WebHook {
+export class Webhook {
   id: string;
   url: string;
   platform: string;

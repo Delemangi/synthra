@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createStyles, type DefaultTheme, Box, Flex, Text } from '@svelteuidev/core';
+  import { Box, Flex, Text, createStyles, type DefaultTheme } from '@svelteuidev/core';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -17,7 +17,8 @@
         }
       },
       textStyle: {
-        flex: 1
+        flex: 1,
+        textAlign: 'center'
       }
     };
   });
@@ -27,8 +28,8 @@
 
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
-    <Text size="sm" class={classes.textStyle}>Id</Text>
-    <Text size="sm" class={classes.textStyle}>Platform</Text>
-    <Text size="sm" class={classes.textStyle}>URL</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Name</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>URL</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Actions</Text>
   </Flex>
 </Box>

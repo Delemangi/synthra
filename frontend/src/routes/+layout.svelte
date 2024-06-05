@@ -1,25 +1,30 @@
 <script lang="ts">
-  import { Header } from '$lib';
-  import { AppShell, SvelteUIProvider, colorScheme, type ColorScheme } from '@svelteuidev/core';
+  import { Header, COLOR_THEME_SCHEMA } from '$lib';
+  import { AppShell, SvelteUIProvider, colorScheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
 
-  function toggleTheme() {
+  const toggleTheme = () => {
     const newTheme = $colorScheme === 'light' ? 'dark' : 'light';
+
     colorScheme.update(() => newTheme);
     localStorage.setItem('theme', newTheme);
-  }
+  };
 
   onMount(() => {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      colorScheme.update(() => savedTheme as ColorScheme);
+    const { data, success } = COLOR_THEME_SCHEMA.safeParse(savedTheme);
+
+    if (!success) {
+      return;
     }
+
+    colorScheme.update(() => data);
   });
 </script>
 
 <SvelteUIProvider withGlobalStyles themeObserver={$colorScheme}>
   <AppShell>
     <Header slot="header" {toggleTheme} currentTheme={$colorScheme}></Header>
-    <slot>This is the main content</slot>
+    <slot></slot>
   </AppShell>
 </SvelteUIProvider>

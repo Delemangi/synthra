@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { HOME_SCREEN_ITEMS } from '$lib';
   import Card from '$lib/components/homepage/Card.svelte';
-  import { HomeScreenInfo } from '$lib/types/HomeScreenInfo';
   import { Button, Flex, Grid, createStyles } from '@svelteuidev/core';
 
   const useStyles = createStyles(() => {
@@ -26,45 +26,6 @@
   });
 
   $: ({ classes } = useStyles());
-
-  let items: HomeScreenInfo[] = [
-    new HomeScreenInfo(
-      'Upload your files',
-      'Upload your files to Synthra and access them from anywhere.',
-      'Upload',
-      'light',
-      'pink'
-    ),
-    new HomeScreenInfo(
-      'Share your files',
-      'Share your files with friends and family by sending them a link to your file.',
-      'Share',
-      'light',
-      'blue'
-    ),
-    new HomeScreenInfo(
-      'Webhooks support',
-      'Post your uploaded images to platforms that support webhooks!',
-      'Webhooks',
-      'light',
-      'green'
-    ),
-    new HomeScreenInfo(
-      'Save websites',
-      'Save the websites using our extension',
-      'Websites',
-      'light',
-      'gray'
-    ),
-    new HomeScreenInfo(
-      'Browser preview',
-      'Preview the files in the browser',
-      'Preview',
-      'light',
-      'orange'
-    ),
-    new HomeScreenInfo('ShareX support', 'Full ShareX support!', 'ShareX', 'light', 'cyan')
-  ];
 </script>
 
 <Flex justify="center" direction="column" align="center" style="height:100%">
@@ -72,7 +33,7 @@
     <Grid.Col span={12}>
       <div class={classes.mainText}>Welcome to Synthra</div>
     </Grid.Col>
-    {#each items as item}
+    {#each HOME_SCREEN_ITEMS as item}
       <Grid.Col span={4} style="margin-bottom:2rem">
         <Card
           classes={classes.card}
@@ -85,9 +46,9 @@
         />
       </Grid.Col>
     {/each}
-    <Grid.Col span={12}>
+    <Grid.Col span={12} align="center">
       <a href="/auth/register">
-        <Button variant="light" ripple radius="md" style="width:100%">Register Now!</Button>
+        <Button variant="light" ripple radius="md" style="width:25%">Register Now!</Button>
       </a>
     </Grid.Col>
   </Grid>

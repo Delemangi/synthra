@@ -2,7 +2,7 @@
   import type { FileMetadata } from '$lib/types/FileMetadata';
   import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { getCertainFileByPath, getMetadataFilePath } from '../../axios/axios-request';
+  import { getCertainFileByPath, getMetadataFilePath } from '../../server/files';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -37,33 +37,32 @@
     filePath = urlParams.get('file');
 
     if (!filePath) {
-      alert('File path not provided');
-      document.location.href = '/';
-
       return;
     }
 
     try {
-      const response = await getMetadataFilePath(filePath);
-      fileMetadata = response;
+      fileMetadata = await getMetadataFilePath(filePath);
     } catch (error) {
-      console.error('Error retrieving file metadata:', error);
-      alert('File does not exist or is expired');
-      document.location.href = '/';
+      alert('The file does not exist, or has expired.');
     }
   });
 
-  async function downloadFile(): Promise<void> {
+  const downloadFile = async () => {
     if (!filePath) {
-      alert('Failed downloading file');
+      alert('An error occurred while downloading the file.');
+      return;
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      alert('You need to be logged in.');
       return;
     }
 
     try {
-      let retrievedFile: void | File = await getCertainFileByPath(
-        localStorage.getItem('accessToken'),
-        filePath
-      );
+      let retrievedFile = await getCertainFileByPath(accessToken, filePath);
+
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
         const a = document.createElement('a');
@@ -72,10 +71,10 @@
         a.click();
         URL.revokeObjectURL(url);
       }
-    } catch (e) {
-      console.error('Error downloading file:', e);
+    } catch {
+      alert('An error occurred while downloading the file.');
     }
-  }
+  };
 </script>
 
 <div class={classes.root}>
@@ -88,7 +87,7 @@
         <p>File Size: {fileMetadata.size} bytes</p>
       </Box>
     {:else}
-      <p>Loading file metadata...</p>
+      <p>Loading...</p>
     {/if}
 
     <Button on:click={downloadFile}>Download</Button>
