@@ -10,7 +10,7 @@ on:
 
 jobs:
   svelte:
-    name: Svelte
+    name: TypeScript & Svelte
     runs-on: ubuntu-latest
 
     steps:
