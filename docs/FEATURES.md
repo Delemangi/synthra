@@ -15,6 +15,7 @@
 - [ ] Responsiveness
 - [ ] Localization
 - [ ] Tests
+- [x] Database Migrations
 - [x] CI/CD
   - [x] Docker
     - [x] Dockerfile
