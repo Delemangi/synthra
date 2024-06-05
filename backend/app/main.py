@@ -71,7 +71,9 @@ def make_app() -> FastAPI:
 def run() -> None:
     app = make_app()
     settings = APISettings()
-    uvicorn.run(app, host=settings.host, port=settings.port, log_level="info")
+    uvicorn.run(
+        app, host=settings.host, port=settings.port, log_level="info", forwarded_allow_ips="*"
+    )
 
 
 if __name__ == "__main__":
