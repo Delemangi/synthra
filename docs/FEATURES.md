@@ -32,4 +32,4 @@
   - [ ] CI - Tests
   - [x] Dev Container
   - [x] Watchtower
-- [ ] Documentation
+- [x] Documentation

@@ -4,13 +4,26 @@ Synthra is a file hosting application built using [FastAPI](https://github.com/t
 
 This repository contains both the frontend and the backend of the project in their respective folders.
 
+## Documentation
+
+This is a project for the courses `Implementation of free and open source systems` and `Team project`.
+
+See [DOCUMENTATION.md](docs/DOCUMENTATION.md).
+
+- Stefan Milev - 206055
+- Alek Jarmov - 206012
+- Ana Marija Atanasovska - 206004
+- Danilo Najkov - 206033
+
 ## Features
 
 - File hosting
-- User registration & login
-- Webhooks support
+- User registration and login
+- Intuitive interface
+- Support for webhooks
+- Administrative panel
 
-See also [FEATURES.md](FEATURES.md).
+See also [FEATURES.md](docs/FEATURES.md).
 
 ## Installation
 
