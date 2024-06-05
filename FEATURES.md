@@ -1,0 +1,35 @@
+# Synthra - Features
+
+- [x] Login & Register
+- [x] File Uploads & Downloads
+- [ ] Generate ShareX Configuration
+- [ ] Roles
+- [ ] Quotas
+- [x] Administration Panel
+- [ ] Rich Viewer
+- [x] Webhooks
+- [ ] Encryption
+- [ ] Protected Files
+- [ ] 2FA
+- [ ] URL Shortening
+- [ ] Responsiveness
+- [ ] Localization
+- [ ] Tests
+- [x] CI/CD
+  - [x] Docker
+    - [x] Dockerfile
+    - [x] Docker Compose Configurations
+  - [x] CI - Linting
+    - [x] Svelte & TypeScript
+    - [x] ESLint
+    - [x] Ruff
+    - [x] MyPy
+    - [x] SonarCloud
+  - [x] CI - DockerHub Image Build & Upload
+  - [x] CI - Dependency Updates & Dependabot
+  - [x] CI - GitLab Mirror
+  - [x] CI - Security Vulnerabilities
+  - [ ] CI - Tests
+  - [x] Dev Container
+  - [x] Watchtower
+- [ ] Documentation
