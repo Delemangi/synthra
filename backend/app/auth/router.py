@@ -45,6 +45,6 @@ async def logout(
 @router.post("/register")
 async def register(
     user_schema: User, session: Annotated[AsyncSession, Depends(get_async_session)]
-) -> RequestStatus:
+) -> dict[str, str]:
     user = await create_user(user_schema.username, user_schema.password, 30, session)
-    return RequestStatus(message=f"User {user.username} registered successfully")
+    return {"hello": "world"}
