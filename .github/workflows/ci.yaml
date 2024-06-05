@@ -9,6 +9,29 @@ on:
       - "main"
 
 jobs:
+  svelte:
+    name: Svelte
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm i
+
+      - name: Run Svelte
+        run: |
+          cd frontend
+          npm run check
+
   eslint:
     name: ESLint & Prettier
     runs-on: ubuntu-latest
@@ -101,6 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
+      - mypy
       - ruff
 
     steps:
@@ -128,6 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
+      - svelte
       - eslint
 
     steps:
@@ -154,9 +179,6 @@ jobs:
     name: GitLab Mirror
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs:
-      - docker-frontend
-      - docker-backend
 
     steps:
       - name: Checkout Repository
