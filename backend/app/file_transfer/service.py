@@ -19,7 +19,7 @@ async def upload_file_unencrypted(
     session: AsyncSession,
     file: UploadFile,
     current_user: Annotated[User, Depends(get_current_user)],
-) -> None:
+) -> str:
     if not current_user.has_remaining_quota():
         raise quota_exception
 
@@ -47,6 +47,8 @@ async def upload_file_unencrypted(
         )
 
         await session.execute(update_statement)
+
+    return str(path)
 
 
 async def get_all_files_user(
