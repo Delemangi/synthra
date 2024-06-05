@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getFilesForSpecifiedUser = async (accessToken: string) => {
-  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {
+  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files/`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
@@ -15,7 +15,7 @@ export const getFilesForSpecifiedUser = async (accessToken: string) => {
 };
 
 export const getMetadataFilePath = async (path: string) => {
-  const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}`);
+  const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}/`);
 
   return result.data;
 };
@@ -24,7 +24,7 @@ export const sendFileForSpecifiedUser = async (accessToken: string, file: File) 
   const formData = new FormData();
   formData.append('file', file);
 
-  const result = await axios.post<FileUploaded>(`${BASE_URL}/files`, formData, {
+  const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
@@ -34,7 +34,7 @@ export const sendFileForSpecifiedUser = async (accessToken: string, file: File) 
 };
 
 export const getCertainFileByPath = async (accessToken: string, path: string) => {
-  const result = await axios.get<File>(`${BASE_URL}/files/download/${path}`, {
+  const result = await axios.get<File>(`${BASE_URL}/files/download/${path}/`, {
     headers: {
       responseType: 'blob',
       authorization: `Bearer ${accessToken}`
@@ -45,7 +45,7 @@ export const getCertainFileByPath = async (accessToken: string, path: string) =>
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {
-  const result = await axios.delete(`${BASE_URL}/files/${path}`, {
+  const result = await axios.delete(`${BASE_URL}/files/${path}/`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }

@@ -8,7 +8,7 @@ export const login = async (username: string, password: string) => {
   formData.append('username', username);
   formData.append('password', password);
 
-  const result = await axios.post<AccessToken>(`${BASE_URL}/auth/login`, formData);
+  const result = await axios.post<AccessToken>(`${BASE_URL}/auth/login/`, formData);
 
   return result;
 };
@@ -18,7 +18,7 @@ export const register = async (username: string, password: string) => {
   formData.append('username', username);
   formData.append('password', password);
 
-  const result = await axios.post<AccessToken>(`${BASE_URL}/auth/register`, formData);
+  const result = await axios.post<AccessToken>(`${BASE_URL}/auth/register/`, formData);
 
   return result;
 };
