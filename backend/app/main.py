@@ -14,6 +14,7 @@ from .database import initialize_database
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
 from .jobs import schedule_jobs
+from .middleware import SlashNormalizerMiddleware
 from .settings import APISettings
 from .webhooks.router import router as webhook_router
 
@@ -53,6 +54,8 @@ def make_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.add_middleware(SlashNormalizerMiddleware)
 
     app.include_router(auth_router, prefix="/auth")
     app.include_router(file_router, prefix="/files")
