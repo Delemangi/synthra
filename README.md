@@ -10,6 +10,8 @@ This repository contains both the frontend and the backend of the project in the
 - User registration & login
 - Webhooks support
 
+See also [FEATURES.md](FEATURES.md).
+
 ## Installation
 
 For running the application in production mode, it's highly recommended to use Docker. Otherwise, the manual setup is also available for those who wish to test the application in a development environment.
