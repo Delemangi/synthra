@@ -2,8 +2,6 @@
   import { Header } from '$lib';
   import { AppShell, SvelteUIProvider, colorScheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { clearSession } from '../auth/session';
-  import { validate } from '../server/auth';
 
   const toggleTheme = () => {
     const newTheme = $colorScheme === 'light' ? 'dark' : 'light';
@@ -22,26 +20,8 @@
     colorScheme.update(() => savedTheme);
   };
 
-  const updateToken = async () => {
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (!accessToken) {
-      clearSession();
-      return;
-    }
-
-    const { data } = await validate(accessToken);
-
-    if (data.message === 'valid') {
-      return;
-    }
-
-    clearSession();
-  };
-
   onMount(() => {
     updateTheme();
-    updateToken();
   });
 </script>
 
