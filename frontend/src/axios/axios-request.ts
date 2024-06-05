@@ -3,7 +3,7 @@ import type { FileUploaded } from '$lib/types/FileUploaded';
 import type { WebHook } from '$lib/types/WebHook';
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export async function getFilesForSpecifiedUser(accessToken: string | null) {
   const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {

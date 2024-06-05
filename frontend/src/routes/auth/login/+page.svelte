@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button, TextInput } from '@svelteuidev/core';
+  import { BASE_URL } from '../../../axios/axios-request';
 
   let email = '';
   let password = '';
@@ -11,7 +12,7 @@
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await fetch('http://localhost:8002/auth/login/', {
+      const response = await fetch(`${BASE_URL}/auth/login/`, {
         method: 'POST',
         body: formData
       });
