@@ -11,8 +11,6 @@ class SlashNormalizerMiddleware(BaseHTTPMiddleware):
         self: Self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         normalized_path = re.sub(r"/+", "/", request.url.path)
-        scope = dict(request.scope)
-        scope["path"] = normalized_path
-        normalized_request = Request(scope, receive=request.receive)
+        request.scope["path"] = normalized_path
 
-        return await call_next(normalized_request)
+        return await call_next(request)
