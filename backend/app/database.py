@@ -8,11 +8,6 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from .auth.models import Role  # noqa: F401
-from .file_transfer.models import File  # noqa: F401
-from .models import Base  # noqa: F401
-from .webhooks.models import Webhook  # noqa: F401
-
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+asyncpg://synthra:synthra@database:5432/synthra",

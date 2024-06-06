@@ -6,6 +6,11 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.models import Base
 
+from app.auth.models import User, Role, LoggedInTokens  # noqa: F401
+from app.file_transfer.models import File  # noqa: F401
+from app.models import Base  # noqa: F401
+from app.webhooks.models import Webhook  # noqa: F401
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
