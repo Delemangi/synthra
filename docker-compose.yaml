@@ -18,22 +18,6 @@ services:
       retries: 5
       start_period: 5s
 
-  alembic:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: delemangi/synthra-alembic:latest
-    container_name: synthra-alembic-dev
-    volumes:
-      - .:/app
-    env_file:
-      - .env
-    entrypoint: ["alembic"]
-    command: ["-c", "/workspace/backend/alembic.ini", "upgrade", "head"]
-    depends_on:
-      database:
-        condition: service_healthy
-
   backend:
     build:
       context: ./backend
@@ -44,8 +28,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
-      alembic:
-        condition: service_started
     env_file:
       - .env
     volumes:

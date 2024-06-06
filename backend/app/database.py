@@ -8,6 +8,9 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from alembic import command
+from alembic.config import Config
+
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+asyncpg://synthra:synthra@database:5432/synthra",
@@ -42,3 +45,8 @@ class AsyncSessionMaker:
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionMaker.get_sessionmaker()() as session:
         yield session
+
+
+def run_migrations() -> None:
+    alembic_cfg = Config("alembic.ini")
+    command.upgrade(alembic_cfg, "head")

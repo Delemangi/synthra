@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .auth.router import router as auth_router
+from .database import run_migrations
 from .file_transfer.constants import FILE_PATH
 from .file_transfer.router import router as file_router
 from .jobs import schedule_jobs
@@ -17,18 +18,20 @@ from .webhooks.router import router as webhook_router
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    print("Application is starting up")
+    print("Starting...")
 
+    print("Creating file storage directory...")
     Path.mkdir(Path(FILE_PATH), exist_ok=True)
 
+    print("Running migrations...")
+    run_migrations()
+
+    print("Scheduling jobs...")
     scheduler = schedule_jobs()
 
     yield
 
-    print("Application is shutting down")
-    files = Path.rglob(Path(FILE_PATH), "*")
-    for f in files:
-        Path.unlink(f)
+    print("Shutting down...")
     scheduler.shutdown(wait=False)
 
 
@@ -58,6 +61,7 @@ def make_app() -> FastAPI:
 def run() -> None:
     app = make_app()
     settings = APISettings()
+
     uvicorn.run(
         app, host=settings.host, port=settings.port, log_level="info", forwarded_allow_ips="*"
     )
