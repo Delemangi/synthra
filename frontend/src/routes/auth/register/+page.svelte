@@ -24,7 +24,7 @@
         return;
       }
 
-      if (error.response?.status === 422) {
+      if (error.response?.status === 406) {
         alert('Username is already taken.');
         return;
       }
