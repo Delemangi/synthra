@@ -1,4 +1,4 @@
-import { logout } from "../server/auth";
+import { logout } from '../server/auth';
 
 export const clearSession = async (sendRequest = false) => {
   const accessToken = localStorage.getItem('accessToken');
