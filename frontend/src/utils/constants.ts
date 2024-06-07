@@ -23,9 +23,9 @@ export const HOME_SCREEN_ITEMS = [
     'green'
   ),
   new HomeScreenInfo(
-    'Save websites',
-    'Save the websites using our extension',
-    'Websites',
+    'File encryption',
+    'Encrypt your files using a secure password',
+    'Encryption',
     'light',
     'gray'
   ),
