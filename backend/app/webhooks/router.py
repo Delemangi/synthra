@@ -31,6 +31,7 @@ WEBHOOK_URL = os.getenv(
 
 @router.get("/create-test-webhook", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
+    print("creating user")
     user: User = await create_user("a", "a", 30, session)
     webhook = CreateWebhook(url=WEBHOOK_URL, platform="discord")
     try:
