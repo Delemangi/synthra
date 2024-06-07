@@ -2,6 +2,7 @@
   import { Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { login } from '../../../server/auth';
+  import { onMount } from 'svelte';
 
   let username = '';
   let password = '';
@@ -29,6 +30,14 @@
       alert('An error occurred while logging in.');
     }
   };
+
+  onMount(() => {
+    let accessToken = localStorage.getItem('accessToken');
+
+    if (accessToken) {
+      window.location.href = '/';
+    }
+  });
 </script>
 
 <div
