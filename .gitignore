@@ -9,3 +9,6 @@ pgadmin_data
 
 # Assets
 assets/
+
+# JetBrains
+**/.idea/
