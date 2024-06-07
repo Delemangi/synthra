@@ -110,6 +110,14 @@
     }
   };
 
+  const dateTimeFormat = new Intl.DateTimeFormat('en-UK', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  });
+
   $: ({ getStyles } = useStyles());
 </script>
 
@@ -125,10 +133,10 @@
       {file.encrypted ? 'Yes' : 'No'}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {file.timestamp}
+      {dateTimeFormat.format(new Date(file.timestamp))}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {file.expiration}
+      {dateTimeFormat.format(new Date(file.expiration))}
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Send to Webhook">
