@@ -78,6 +78,11 @@
     navigator.clipboard.writeText(`${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`);
   };
 
+  const preview = () => {
+    const location = `${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`
+    window.location.href = location
+  };
+
   const sendToWebHooks = async () => {
     const accessToken = localStorage.getItem('accessToken');
 
@@ -145,7 +150,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Preview">
-        <ActionIcon variant="filled" color="blue">
+        <ActionIcon variant="filled" color="blue" on:click={preview}>
           <EyeOpen size={20} />
         </ActionIcon>
       </Tooltip>
