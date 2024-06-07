@@ -7,6 +7,7 @@
     Button,
     Flex,
     Overlay,
+    TextInput,
     Title,
     createStyles,
     type DefaultTheme
@@ -41,7 +42,8 @@
         height: '100%',
         backgroundColor: theme.fn.themeColor('gray', 1),
         opacity: 1,
-        padding: 20
+        padding: 20,
+        borderRadius: '$md'
       },
       flexOverlay: {
         display: 'flex',
@@ -112,11 +114,8 @@
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Add Webhook</Title>
 
-        Name
-        <input bind:value={name} />
-
-        URL
-        <input bind:value={url} />
+        <TextInput label="Name" bind:value={name} />
+        <TextInput label="URL" bind:value={url} />
 
         <Flex justify="space-around" align="center">
           <Button

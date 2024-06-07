@@ -5,7 +5,7 @@ Revises: be4523ccfa28
 Create Date: 2024-06-06 22:50:47.406057
 
 """
-from typing import Sequence, Union
+from typing import Sequence
 
 from alembic import op
 import sqlalchemy as sa
@@ -13,9 +13,9 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'a635e77b2a18'
-down_revision: Union[str, None] = 'be4523ccfa28'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = 'be4523ccfa28'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:

@@ -5,6 +5,8 @@ WORKDIR /workspace/frontend
 ARG VITE_BASE_URL=http://localhost:8002
 ENV VITE_BASE_URL=${VITE_BASE_URL}
 
+RUN echo "VITE_BASE_URL=$VITE_BASE_URL"
+
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 

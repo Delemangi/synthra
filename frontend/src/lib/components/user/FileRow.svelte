@@ -74,8 +74,27 @@
     }
   };
 
+  let shareTooltipText = 'Share';
+
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`);
+    const baseUrl = window.location.origin;
+    navigator.clipboard.writeText(`${baseUrl}/download/?file=${file.path}`);
+
+    shareTooltipText = 'Copied!';
+
+    setTimeout(() => {
+      shareTooltipText = 'Share';
+    }, 2000);
+  };
+
+  const resetTooltipText = () => {
+    shareTooltipText = 'Share';
+  };
+
+  const preview = () => {
+    const baseUrl = window.location.origin;
+    const location = `${baseUrl}/download/?file=${file.path}`;
+    window.location.href = location;
   };
 
   const sendToWebHooks = async () => {
@@ -145,12 +164,17 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Preview">
-        <ActionIcon variant="filled" color="blue">
+        <ActionIcon variant="filled" color="blue" on:click={preview}>
           <EyeOpen size={20} />
         </ActionIcon>
       </Tooltip>
-      <Tooltip openDelay={10} label="Share">
-        <ActionIcon variant="filled" color="cyan" on:click={copyToClipboard}>
+      <Tooltip openDelay={10} label={shareTooltipText}>
+        <ActionIcon
+          variant="filled"
+          color="cyan"
+          on:click={copyToClipboard}
+          on:mouseleave={resetTooltipText}
+        >
           <ExternalLink size={20} />
         </ActionIcon>
       </Tooltip>

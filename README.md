@@ -50,7 +50,7 @@ To setup your environment and the project for development:
 
 The project contains two Docker Compose configurations. `docker-compose.yaml` is for the development environment, and `docker-compose.prod.yaml` is for the production environment.
 
-While building the frontend, the environment variable `VITE_BASE_URL` should be present, which is the URL to the backend.
+While building the frontend, the environment variable `VITE_BASE_URL` should be present, which is the URL to the API. You can also add this to the global `.env` file.
 
 1. Run `git clone git@github.com:Delemangi/synthra.git` (or `git clone https://github.com/Delemangi/synthra.git`)
 2. Run `docker compose build`
