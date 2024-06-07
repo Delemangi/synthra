@@ -39,6 +39,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_BASE_URL: ${VITE_BASE_URL}
     image: delemangi/synthra-frontend:latest
     container_name: synthra-frontend-dev
     restart: unless-stopped
