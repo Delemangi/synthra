@@ -94,7 +94,7 @@
   const preview = () => {
     const baseUrl = window.location.origin;
     const location = `${baseUrl}/download/?file=${file.path}`;
-    window.location.href = location
+    window.location.href = location;
   };
 
   const sendToWebHooks = async () => {
