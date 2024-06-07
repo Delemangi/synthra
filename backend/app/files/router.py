@@ -9,7 +9,7 @@ from ..auth.models import User
 from ..database import get_async_session
 from ..schemas import RequestStatus
 from .constants import FILE_PATH
-from .schemas import FileUploaded, MetadataFileResponse
+from .schemas import FileUploaded, IsShared, MetadataFileResponse
 from .service import (
     delete_file,
     get_all_files_user,
@@ -27,9 +27,9 @@ async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
-    is_shared: bool = False,
+    is_shared: IsShared,
 ) -> FileUploaded:
-    new_file = await upload_file_unencrypted(session, file, current_user, is_shared)
+    new_file = await upload_file_unencrypted(session, file, current_user, is_shared.is_shared)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 
