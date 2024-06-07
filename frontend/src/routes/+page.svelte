@@ -2,6 +2,7 @@
   import { HOME_SCREEN_ITEMS } from '$lib';
   import Card from '$lib/components/homepage/Card.svelte';
   import { Button, Flex, Grid, createStyles } from '@svelteuidev/core';
+  import { onMount } from 'svelte';
 
   const useStyles = createStyles(() => {
     return {
@@ -23,6 +24,12 @@
         marginBottom: 15
       }
     };
+  });
+
+  let username: string | null = null;
+
+  onMount(() => {
+    username = localStorage.getItem('username');
   });
 
   $: ({ classes } = useStyles());
@@ -47,9 +54,15 @@
       </Grid.Col>
     {/each}
     <Grid.Col span={12} align="center">
-      <a href="/auth/register">
-        <Button variant="light" radius="md" style="width:25%">Register Now!</Button>
-      </a>
+      {#if username}
+        <a href="/user/home">
+          <Button variant="light" radius="md" style="width:25%">Go to Dashboard</Button>
+        </a>
+      {:else}
+        <a href="/auth/register">
+          <Button variant="light" radius="md" style="width:25%">Register Now!</Button>
+        </a>
+      {/if}
     </Grid.Col>
   </Grid>
 </Flex>
