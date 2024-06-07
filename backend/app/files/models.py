@@ -24,6 +24,9 @@ class File(Base):
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     user = relationship("User", back_populates="files", lazy="selectin")
+    shared_with = relationship(
+        "Share", back_populates="file", cascade="all, delete-orphan", lazy="selectin"
+    )
 
     def full_path(self: Self) -> str:
         return f"/assets/{self.path!s}"
