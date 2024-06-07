@@ -29,10 +29,14 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     print("Scheduling jobs...")
     scheduler = schedule_jobs()
 
+    print("Server started")
+
     yield
 
     print("Shutting down...")
     scheduler.shutdown(wait=False)
+
+    print("Server stopped")
 
 
 def make_app() -> FastAPI:
