@@ -80,7 +80,8 @@
   };
 
   const preview = () => {
-    const location = `${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`
+    const baseUrl = window.location.origin;
+    const location = `${baseUrl}/download/?file=${file.path}`;
     window.location.href = location
   };
 
