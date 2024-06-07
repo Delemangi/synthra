@@ -44,8 +44,8 @@
 
   export const selectedTab = writable('');
 
-  const handleLogout = () => {
-    clearSession();
+  const handleLogout = async () => {
+    await clearSession(true);
 
     window.location.href = '/';
   };

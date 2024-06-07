@@ -76,7 +76,7 @@
       }
 
       if (error.response?.status === 401) {
-        clearSession();
+        await clearSession();
         window.location.href = '/auth/login';
         return;
       }
