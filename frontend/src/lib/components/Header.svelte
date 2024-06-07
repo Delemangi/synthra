@@ -62,11 +62,6 @@
     window.addEventListener('hashchange', updateHref);
 
     updateHref();
-
-    onDestroy(() => {
-      window.removeEventListener('popstate', updateHref);
-      window.removeEventListener('hashchange', updateHref);
-    });
   });
 
   $: ({ classes, getStyles } = useStyles());
