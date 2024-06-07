@@ -21,3 +21,13 @@ export const register = async (username: string, password: string) => {
 
   return result;
 };
+
+export const logout = async (token: string) => {
+  const result = await axios.post(`${BASE_URL}/auth/logout`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  });
+
+  return result;
+};
