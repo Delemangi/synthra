@@ -126,10 +126,8 @@
         <input type="file" name="filename" bind:files={filesToUpload} />
 
         <Flex justify="space-around" align="center">
-          <Button
-            variant="filled"
-            on:click={async () => await sendData()}
-            disabled={!filesToUpload?.length}>Submit</Button
+          <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}
+            >Submit</Button
           >
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
         </Flex>
