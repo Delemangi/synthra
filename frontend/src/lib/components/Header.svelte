@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import { Button, Flex, Header, Switch, Title, createStyles, type theme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -53,17 +54,12 @@
   onMount(() => {
     accessToken = localStorage.getItem('accessToken');
     username = localStorage.getItem('username');
-
-    const updateHref = () => {
-      selectedTab.set(window.location.href.split('/').at(-1) ?? '');
-    };
-
-    window.addEventListener('popstate', updateHref);
-    window.addEventListener('hashchange', updateHref);
-
-    updateHref();
   });
 
+  $: {
+    const path = $page.url.pathname.split('/').at(-1) ?? '';
+    selectedTab.set(path);
+  }
   $: ({ classes, getStyles } = useStyles());
 </script>
 
