@@ -5,7 +5,7 @@ WORKDIR /workspace/frontend
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 
-ENV VITE_BASE_URL=http://localhost:8002
+ENV VITE_BASE_URL=https://synthra-backend.delemangi.com
 
 COPY . ./
 RUN npm run build
