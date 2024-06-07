@@ -19,7 +19,7 @@ async def upload_file_unencrypted(
     session: AsyncSession,
     file: UploadFile,
     current_user: Annotated[User, Depends(get_current_user)],
-    file_uploaaded: UploadFile | None = None,
+    is_shared: bool = False,
 ) -> str:
     if not current_user.has_remaining_quota():
         raise quota_exception
@@ -40,7 +40,7 @@ async def upload_file_unencrypted(
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),
             user=current_user,
-            shared=file_uploaaded.shared if file_uploaaded else False,
+            shared=is_shared,
         )
 
         session.add(file_db)
@@ -118,9 +118,7 @@ async def verify_file(
 
 
 async def verify_file_link(
-    path: str,
-    current_user: Annotated[User, Depends(get_current_user)],
-    session: AsyncSession,
+    path: str, session: AsyncSession, current_user: User | None = None
 ) -> str:
     async with session:
         files = await session.execute(select(File).filter(File.path == path))
