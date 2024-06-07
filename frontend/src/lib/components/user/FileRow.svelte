@@ -75,7 +75,8 @@
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`${import.meta.env.VITE_BASE_URL}/download/?file=${file.path}`);
+    const baseUrl = window.location.origin;
+    navigator.clipboard.writeText(`${baseUrl}/download/?file=${file.path}`);
   };
 
   const sendToWebHooks = async () => {
