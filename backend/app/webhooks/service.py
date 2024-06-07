@@ -6,8 +6,8 @@ from discord_webhook import DiscordWebhook
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.file_transfer.models import File
-from app.file_transfer.schemas import MetadataFileResponse
+from app.files.models import File
+from app.files.schemas import MetadataFileResponse
 from app.webhooks.models import Webhook
 from app.webhooks.schemas import CreateWebhook
 

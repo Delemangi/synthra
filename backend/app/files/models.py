@@ -17,6 +17,7 @@ class File(Base):
     path = Column(String, nullable=False)
     size = Column(Integer, nullable=False)
     encrypted = Column(Boolean, nullable=False)
+    shared = Column(Boolean, nullable=False, default=False)
 
     expiration = Column(DateTime(timezone=True), nullable=False)
     timestamp = Column(DateTime(timezone=True), nullable=False)

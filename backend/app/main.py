@@ -8,11 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .auth.router import router as auth_router
 from .database import run_migrations
-from .file_transfer.constants import FILE_PATH
-from .file_transfer.router import router as file_router
+from .files.constants import FILE_PATH
+from .files.router import router as file_router
 from .jobs import schedule_jobs
 from .middleware import SlashNormalizerMiddleware
 from .settings import APISettings
+from .shares.router import router as share_router
 from .webhooks.router import router as webhook_router
 
 
@@ -54,6 +55,7 @@ def make_app() -> FastAPI:
     app.include_router(auth_router, prefix="/auth")
     app.include_router(file_router, prefix="/files")
     app.include_router(webhook_router, prefix="/webhooks")
+    app.include_router(share_router, prefix="/shares")
 
     @app.get("/")
     async def root() -> str:

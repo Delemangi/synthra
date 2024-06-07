@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.dependencies import get_current_user
 from app.auth.models import User
 from app.auth.service import create_user, get_user_by_username
-from app.file_transfer.schemas import MetadataFileResponse
-from app.file_transfer.service import get_all_files_user, get_file_by_id
+from app.files.schemas import MetadataFileResponse
+from app.files.service import get_all_files_user, get_file_by_id
 from app.webhooks.models import Webhook
 from app.webhooks.schemas import CreateWebhook, SendWebhook
 from app.webhooks.service import (

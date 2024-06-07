@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class FileUploaded(BaseModel):
     filename: str | None
     username: str
+    shared: bool = False
 
 
 class MetadataFileResponse(BaseModel):
