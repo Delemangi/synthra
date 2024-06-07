@@ -2,7 +2,7 @@
   import type { FileMetadata } from '$lib/types/FileMetadata';
   import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { getFileByPath, getMetadataFilePath, BASE_URL } from '../../server/files';
+  import { getFileByPath, getMetadataFilePath } from '../../server/files';
 
 
   const useStyles = createStyles((theme: DefaultTheme) => {
