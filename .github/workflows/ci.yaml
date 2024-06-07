@@ -155,6 +155,9 @@ jobs:
       - svelte
       - eslint
 
+    env:
+      VITE_BASE_URL: https://synthra-backend.delemangi.com
+
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
