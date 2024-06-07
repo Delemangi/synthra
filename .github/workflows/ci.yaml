@@ -155,9 +155,6 @@ jobs:
       - svelte
       - eslint
 
-    env:
-      VITE_BASE_URL: https://synthra-backend.delemangi.com
-
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -177,6 +174,8 @@ jobs:
           context: "{{defaultContext}}:frontend"
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/synthra-frontend:latest
+          build-args: |
+            - VITE_BASE_URL=${{ env.VITE_BASE_URL }}
 
   gitlab-mirror:
     name: GitLab Mirror
