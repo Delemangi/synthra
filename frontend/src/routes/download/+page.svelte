@@ -1,6 +1,14 @@
 <script lang="ts">
   import type { FileMetadata } from '$lib/types/FileMetadata';
-  import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
+  import {
+    Box,
+    Button,
+    Flex,
+    Text,
+    Title,
+    createStyles,
+    type DefaultTheme
+  } from '@svelteuidev/core';
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
 
@@ -31,7 +39,9 @@
 
   let filePath: string | null = null;
   let fileMetadata: FileMetadata | null = null;
-  let file_url: string | null = null;
+  let fileUrl: string | null = null;
+
+  const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.txt'];
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -44,28 +54,31 @@
     try {
       fileMetadata = await getMetadataFilePath(filePath);
       const accessToken = localStorage.getItem('accessToken');
+
       if (!accessToken) {
         alert('You need to be logged in.');
         return;
       }
+
       let retrievedFile = await getFileByPath(accessToken, filePath);
 
       if (retrievedFile) {
-        file_url = URL.createObjectURL(retrievedFile);
+        fileUrl = URL.createObjectURL(retrievedFile);
       }
     } catch (error) {
       alert('The file does not exist, or has expired.');
     }
   });
 
-  function isValidFileType(url: string | null) {
+  const isValidFileType = (url: string | null) => {
     if (url == null) {
       return false;
     }
-    const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.txt'];
+
     const extension = url.slice(((url.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase();
+
     return validExtensions.includes(`.${extension}`);
-  }
+  };
 
   const downloadFile = async () => {
     if (!filePath) {
@@ -81,11 +94,13 @@
     }
 
     try {
-      if (file_url == null) {
+      if (fileUrl == null) {
         throw Error();
       }
+
       const a = document.createElement('a');
-      a.href = file_url;
+
+      a.href = fileUrl;
       a.download = filePath;
 
       // Firefox fix
@@ -107,21 +122,21 @@
 
     {#if fileMetadata}
       <Box class={getStyles()}>
-        <p>File Name: {fileMetadata.name}</p>
-        <p>File Size: {fileMetadata.size} bytes</p>
+        <Text>File Name: {fileMetadata.name}</Text>
+        <Text>File Size: {fileMetadata.size} bytes</Text>
       </Box>
     {:else}
-      <p>Loading...</p>
+      <Text>Loading...</Text>
     {/if}
 
     <Button on:click={downloadFile}>Download</Button>
     <br />
-    {#if file_url && isValidFileType(filePath)}
+    {#if fileUrl && isValidFileType(filePath)}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
       >
         <iframe
-          src={file_url}
+          src={fileUrl}
           frameborder="0"
           style="width: 100%; height: 100%; border: none;"
           title="File"
@@ -129,10 +144,9 @@
       </div>
     {:else}
       <div style="text-align: center;">
-        <p>
-          The file must be one of the following types to be previewed: .pdf, .png, .jpg, .jpeg,
-          .mp4, .mp3, .txt
-        </p>
+        <Text>
+          The file must be one of the following types to be previewed: {validExtensions.join(', ')}
+        </Text>
       </div>
     {/if}
   </Flex>
