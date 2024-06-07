@@ -4,7 +4,6 @@
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
 
-
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
       root: {
@@ -73,8 +72,8 @@
     }
 
     try {
-      if(file_url == null){
-        throw Error()
+      if (file_url == null) {
+        throw Error();
       }
       const a = document.createElement('a');
       a.href = file_url;
@@ -91,7 +90,6 @@
       alert('An error occurred while downloading the file.');
     }
   };
-
 </script>
 
 <div class={classes.root}>
@@ -108,11 +106,18 @@
     {/if}
 
     <Button on:click={downloadFile}>Download</Button>
-    <br/>
+    <br />
     {#if file_url}
-      <div style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;">
-        <iframe src={file_url} frameborder="0" style="width: 100%; height: 100%; border: none;" title="File"></iframe>
-    </div>
+      <div
+        style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
+      >
+        <iframe
+          src={file_url}
+          frameborder="0"
+          style="width: 100%; height: 100%; border: none;"
+          title="File"
+        ></iframe>
+      </div>
     {/if}
   </Flex>
 </div>
