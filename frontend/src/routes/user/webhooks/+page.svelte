@@ -121,7 +121,7 @@
         <Flex justify="space-around" align="center">
           <Button
             variant="filled"
-            on:click={async () => await sendData()}
+            on:click={sendData}
             disabled={!name || !url || !URL_REGEX.test(url)}
           >
             Submit
