@@ -2,10 +2,11 @@
 FROM --platform=${BUILDPLATFORM} node:21 AS build
 WORKDIR /workspace/frontend
 
+ARG VITE_BASE_URL=http://localhost:8002
+ENV VITE_BASE_URL=${VITE_BASE_URL}
+
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
-
-ENV VITE_BASE_URL=https://synthra-backend.delemangi.com
 
 COPY . ./
 RUN npm run build
