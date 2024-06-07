@@ -32,7 +32,6 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     binary = Path.open(path, "wb")
     binary.write(b"This is a new file.")
     binary.close()
-    binary = Path.open(path, "rb")
     print("created file")
     user = await get_user_by_username("a", session)
     file_db = File(
