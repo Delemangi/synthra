@@ -8,6 +8,8 @@
   let password = '';
   let repeatPassword = '';
 
+  const checkField = (field: string) => field.length >= 5 && field.length <= 24;
+
   const handleSubmit = async () => {
     if (password !== repeatPassword) {
       alert('Passwords do not match.');
@@ -45,12 +47,12 @@
 <div
   style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
 >
-  <TextInput label="Username (at least 5 characters)" bind:value={username} />
-  <TextInput label="Password (at least 5 characters)" bind:value={password} type="password" />
+  <TextInput label="Username (between 5 and 24 characters)" bind:value={username} />
+  <TextInput label="Password (between 5 and 24 characters)" bind:value={password} type="password" />
   <TextInput label="Repeat Password" bind:value={repeatPassword} type="password" />
   <br />
   <div style="display: flex; justify-content: center;">
-    <Button on:click={handleSubmit} disabled={username.length < 5 || password.length < 5}>
+    <Button on:click={handleSubmit} disabled={!checkField(username) || !checkField(password)}>
       Register
     </Button>
   </div>
