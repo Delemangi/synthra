@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button, Flex, Header, Switch, Title, createStyles, type theme } from '@svelteuidev/core';
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { clearSession } from '../../auth/session';
 
