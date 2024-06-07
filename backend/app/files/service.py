@@ -127,7 +127,11 @@ async def verify_file_link(
         if file is None:
             raise not_found_exception
 
-        if file.shared and current_user.id not in [share.user_id for share in file.shared_with]:
+        if (
+            file.shared
+            and current_user is not None
+            and current_user.id not in [share.user_id for share in file.shared_with]
+        ):
             raise no_access_exception
 
         return str(file.name)
