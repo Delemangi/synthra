@@ -58,6 +58,15 @@
     }
   });
 
+  function isValidFileType(url: string | null) {
+    if (url == null) {
+      return false;
+    }
+    const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.txt'];
+    const extension = url.slice(((url.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase();
+    return validExtensions.includes(`.${extension}`);
+  }
+
   const downloadFile = async () => {
     if (!filePath) {
       alert('An error occurred while downloading the file.');
@@ -107,7 +116,7 @@
 
     <Button on:click={downloadFile}>Download</Button>
     <br />
-    {#if file_url}
+    {#if file_url && isValidFileType(filePath)}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
       >
@@ -117,6 +126,13 @@
           style="width: 100%; height: 100%; border: none;"
           title="File"
         ></iframe>
+      </div>
+    {:else}
+      <div style="text-align: center;">
+        <p>
+          The file must be one of the following types to be previewed: .pdf, .png, .jpg, .jpeg,
+          .mp4, .mp3, .txt
+        </p>
       </div>
     {/if}
   </Flex>
