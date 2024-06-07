@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.service import get_user_by_username
@@ -34,13 +34,12 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     binary.close()
     binary = Path.open(path, "rb")
     print("created file")
-    file = UploadFile(file=binary)
     user = await get_user_by_username("a", session)
     file_db = File(
-        ame=file.filename,
+        name="file.filename",
         path="example.txt",
         encrypted=False,
-        size=file.size,
+        size=1000,
         timestamp=datetime.now(),
         expiration=datetime.now() + timedelta(days=14),
         user=user,
