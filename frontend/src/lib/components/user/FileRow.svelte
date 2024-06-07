@@ -74,9 +74,21 @@
     }
   };
 
+  let shareTooltipText = 'Share';
+
   const copyToClipboard = () => {
     const baseUrl = window.location.origin;
     navigator.clipboard.writeText(`${baseUrl}/download/?file=${file.path}`);
+
+    shareTooltipText = 'Copied!';
+
+    setTimeout(() => {
+      shareTooltipText = 'Share';
+    }, 2000);
+  };
+
+  const resetTooltipText = () => {
+    shareTooltipText = 'Share';
   };
 
   const preview = () => {
@@ -156,8 +168,13 @@
           <EyeOpen size={20} />
         </ActionIcon>
       </Tooltip>
-      <Tooltip openDelay={10} label="Share">
-        <ActionIcon variant="filled" color="cyan" on:click={copyToClipboard}>
+      <Tooltip openDelay={10} label={shareTooltipText}>
+        <ActionIcon
+          variant="filled"
+          color="cyan"
+          on:click={copyToClipboard}
+          on:mouseleave={resetTooltipText}
+        >
           <ExternalLink size={20} />
         </ActionIcon>
       </Tooltip>
