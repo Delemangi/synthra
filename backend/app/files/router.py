@@ -27,8 +27,9 @@ async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
+    is_shared: bool = False,
 ) -> FileUploaded:
-    new_file = await upload_file_unencrypted(session, file, current_user, file)
+    new_file = await upload_file_unencrypted(session, file, current_user, is_shared)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 
@@ -54,8 +55,9 @@ async def get_file(
 async def get_file_link(
     path: str,
     session: Annotated[AsyncSession, Depends(get_async_session)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> FileResponse:
-    filename = await verify_file_link(path, session)
+    filename = await verify_file_link(path, session, current_user)
     return FileResponse(FILE_PATH + path, filename=filename)
 
 

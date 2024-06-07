@@ -20,6 +20,11 @@ from .service import create_share, delete_share
 router = APIRouter(tags=["shares"])
 
 
+@router.get("/test", response_model=str)
+async def simple_test() -> str:
+    return "hi"
+
+
 @router.get("/create-test-share", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
     print("Creating file")
@@ -30,6 +35,7 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     binary = Path.open(path, "rb")
     print("created file")
     file = UploadFile(file=binary)
+    user = await get_user_by_username("a", session)
     file_db = File(
         ame=file.filename,
         path="example.txt",
@@ -37,7 +43,7 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
         size=file.size,
         timestamp=datetime.now(),
         expiration=datetime.now() + timedelta(days=14),
-        user=get_user_by_username("a", session),
+        user=user,
     )
     try:
         print("adding file to db")
@@ -54,6 +60,8 @@ async def create_webhook_route(
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> Share:
     user = await get_user_by_username(share.username, session)
+    if user is None:
+        raise Exception("User not found")
     share_db = Share(user_id=user.id, file_id=share.file_id)
     await create_share(share_db, session)
     return share_db
