@@ -2,7 +2,8 @@
   import type { FileMetadata } from '$lib/types/FileMetadata';
   import { Box, Button, Flex, Title, createStyles, type DefaultTheme } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { getFileByPath, getMetadataFilePath } from '../../server/files';
+  import { getFileByPath, getMetadataFilePath, BASE_URL } from '../../server/files';
+
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -31,6 +32,7 @@
 
   let filePath: string | null = null;
   let fileMetadata: FileMetadata | null = null;
+  let file_url: string | null = null;
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -42,6 +44,16 @@
 
     try {
       fileMetadata = await getMetadataFilePath(filePath);
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        alert('You need to be logged in.');
+        return;
+      }
+      let retrievedFile = await getFileByPath(accessToken, filePath);
+
+      if (retrievedFile) {
+        file_url = URL.createObjectURL(retrievedFile);
+      }
     } catch (error) {
       alert('The file does not exist, or has expired.');
     }
@@ -61,28 +73,25 @@
     }
 
     try {
-      let retrievedFile = await getFileByPath(accessToken, filePath);
-
-      if (retrievedFile) {
-        const url = URL.createObjectURL(retrievedFile);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filePath;
-
-        // Firefox fix
-        document.body.appendChild(a);
-
-        a.click();
-
-        // Firefox fix
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
+      if(file_url == null){
+        throw Error()
       }
+      const a = document.createElement('a');
+      a.href = file_url;
+      a.download = filePath;
+
+      // Firefox fix
+      document.body.appendChild(a);
+
+      a.click();
+
+      // Firefox fix
+      document.body.removeChild(a);
     } catch {
       alert('An error occurred while downloading the file.');
     }
   };
+
 </script>
 
 <div class={classes.root}>
@@ -99,5 +108,11 @@
     {/if}
 
     <Button on:click={downloadFile}>Download</Button>
+    <br/>
+    {#if file_url}
+      <div style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;">
+        <iframe src={file_url} frameborder="0" style="width: 100%; height: 100%; border: none;" title="File"></iframe>
+    </div>
+    {/if}
   </Flex>
 </div>
