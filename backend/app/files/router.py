@@ -27,10 +27,9 @@ async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile = File(...),  # noqa: B008
-    is_shared: bool = Form(...),
     password: str = Form(...),
 ) -> FileUploaded:
-    new_file = await upload_file(session, file, current_user, is_shared, password)
+    new_file = await upload_file(session, file, current_user, False, password)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 

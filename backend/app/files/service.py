@@ -1,8 +1,13 @@
+import base64
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
+from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from fastapi import Depends, UploadFile
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,6 +35,12 @@ async def upload_file(
 
     async with session.begin():
         contents = await file.read()
+
+        if password is not None:
+            key = derive_key(password, current_user.id.bytes)
+            fernet = Fernet(key)
+            contents = fernet.encrypt(contents)
+
         with Path.open(path, "wb") as f:
             f.write(contents)
 
@@ -156,3 +167,15 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
     async with session:
         file = await session.execute(select(File).filter(File.id == file_id))
         return file.scalar_one_or_none()
+
+
+def derive_key(password: str, salt: bytes) -> bytes:
+    """Derive a secret key from the given password."""
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend(),
+    )
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
