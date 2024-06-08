@@ -20,13 +20,15 @@ export const getMetadataFilePath = async (path: string) => {
   return result.data;
 };
 
-export const sendFileForSpecifiedUser = async (accessToken: string, file: File) => {
+export const sendFileForSpecifiedUser = async (accessToken: string, file: File, password: string) => {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('password', password);
 
   const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
-      authorization: `Bearer ${accessToken}`
+      authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'multipart/form-data'
     }
   });
 

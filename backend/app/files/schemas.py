@@ -9,10 +9,6 @@ class FileUploaded(BaseModel):
     username: str
 
 
-class IsShared(BaseModel):
-    is_shared: bool = False
-
-
 class MetadataFileResponse(BaseModel):
     id: uuid.UUID
     name: str

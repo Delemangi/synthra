@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,12 +9,12 @@ from ..auth.models import User
 from ..database import get_async_session
 from ..schemas import RequestStatus
 from .constants import FILE_PATH
-from .schemas import FileUploaded, IsShared, MetadataFileResponse
+from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
     delete_file,
     get_all_files_user,
     get_metadata_path,
-    upload_file_unencrypted,
+    upload_file,
     verify_file,
     verify_file_link,
 )
@@ -26,10 +26,11 @@ router = APIRouter(tags=["files"])
 async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-    file: UploadFile,
-    is_shared: IsShared,
+    file: UploadFile = File(...),  # noqa: B008
+    is_shared: bool = Form(...),
+    password: str = Form(...),
 ) -> FileUploaded:
-    new_file = await upload_file_unencrypted(session, file, current_user, is_shared.is_shared)
+    new_file = await upload_file(session, file, current_user, is_shared, password)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 

@@ -15,11 +15,12 @@ from .models import File
 from .schemas import MetadataFileResponse
 
 
-async def upload_file_unencrypted(
+async def upload_file(
     session: AsyncSession,
     file: UploadFile,
     current_user: Annotated[User, Depends(get_current_user)],
     is_shared: bool = False,
+    password: str | None = None,
 ) -> str:
     if not current_user.has_remaining_quota():
         raise quota_exception
@@ -35,7 +36,7 @@ async def upload_file_unencrypted(
         file_db = File(
             name=file.filename,
             path=file_path,
-            encrypted=False,
+            encrypted=password is not None,
             size=file.size,
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),

@@ -31,7 +31,8 @@
     }
 
     try {
-      await sendFileForSpecifiedUser(accessToken, filesToUpload[0]);
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], uploadFilePassword);
+      uploadFilePassword = ''
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -70,6 +71,8 @@
   $: ({ classes, getStyles } = useStyles());
 
   let userFiles: FileMetadata[] = [];
+  let uploadFilePassword = '';
+
   let visible = false;
 
   onMount(async () => {
@@ -124,6 +127,7 @@
         <Title order={3}>Upload File</Title>
 
         <input type="file" name="filename" bind:files={filesToUpload} />
+        <input type="text" name="filepassword" bind:value={uploadFilePassword}/>
 
         <Flex justify="space-around" align="center">
           <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}
