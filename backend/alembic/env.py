@@ -6,6 +6,7 @@ from app.auth.models import LoggedInTokens, Role, User  # noqa: F401
 from app.files.models import File  # noqa: F401
 from app.models import Base  # noqa: F401
 from app.webhooks.models import Webhook  # noqa: F401
+from app.shares.models import Share  # noqa: F401
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
