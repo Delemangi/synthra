@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Form, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,6 +11,7 @@ from ..schemas import RequestStatus
 from .constants import FILE_PATH
 from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
+    decrypt_file,
     delete_file,
     get_all_files_user,
     get_metadata_path,
@@ -56,9 +57,11 @@ async def get_file_link(
     path: str,
     session: Annotated[AsyncSession, Depends(get_async_session)],
     current_user: Annotated[User, Depends(get_current_user)],
+    file_password: str = Header(...),
 ) -> FileResponse:
-    filename = await verify_file_link(path, session, current_user)
-    return FileResponse(FILE_PATH + path, filename=filename)
+    filename = await verify_file_link(path, session, current_user, file_password)
+    full_path = decrypt_file(path, file_password, current_user)
+    return FileResponse(full_path, filename=filename)
 
 
 @router.get("/metadata/{path}", response_model=MetadataFileResponse)

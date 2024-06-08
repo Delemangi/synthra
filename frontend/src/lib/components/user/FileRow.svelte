@@ -2,8 +2,11 @@
   import {
     ActionIcon,
     Box,
+    Button,
     Flex,
+    Overlay,
     Text,
+    Title,
     Tooltip,
     createStyles,
     type theme
@@ -37,10 +40,24 @@
         '&:hover': {
           backgroundColor: '$gray100'
         }
+      },
+      flexOverlay: {
+        display: 'flex',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        direction: 'column',
+        backdropFilter: 'blur(5px)'
       }
     };
   });
 
+  const downloadFile = () => {
+    if(file.encrypted)
+      isDownloadWindowVisible = true;
+    else
+      getFile();
+  };
   const getFile = async () => {
     const accessToken = localStorage.getItem('accessToken');
 
@@ -51,7 +68,7 @@
     }
 
     try {
-      let retrievedFile = await getFileByPath(accessToken, file.path);
+      let retrievedFile = await getFileByPath(accessToken, file.path, downloadFilePassword);
 
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
@@ -75,6 +92,8 @@
   };
 
   let shareTooltipText = 'Share';
+  let isDownloadWindowVisible = false;
+  let downloadFilePassword = '';
 
   const copyToClipboard = () => {
     const baseUrl = window.location.origin;
@@ -137,7 +156,7 @@
     minute: 'numeric'
   });
 
-  $: ({ getStyles } = useStyles());
+  $: ({ classes, getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>
@@ -179,7 +198,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Download">
-        <ActionIcon variant="filled" on:click={getFile}>
+        <ActionIcon variant="filled" on:click={downloadFile}>
           <Download size={20} />
         </ActionIcon>
       </Tooltip>
@@ -191,3 +210,24 @@
     </Flex>
   </Flex>
 </Box>
+
+{#if isDownloadWindowVisible}
+  <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
+    <Box class={getStyles()}>
+      <Flex direction="column" align="space-evenly" gap="md" justify="center">
+        <Title order={3}>Download File</Title>
+
+        <input type="text" name="filepassword" bind:value={downloadFilePassword}/>
+
+        <Flex justify="space-around" align="center">
+          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
+            Submit
+          </Button>
+          <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>
+            Close
+          </Button>
+        </Flex>
+      </Flex>
+    </Box>
+  </Overlay>
+{/if}

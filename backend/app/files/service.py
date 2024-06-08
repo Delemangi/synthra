@@ -130,7 +130,7 @@ async def verify_file(
 
 
 async def verify_file_link(
-    path: str, session: AsyncSession, current_user: User | None = None
+    path: str, session: AsyncSession, current_user: User | None = None, password: str | None = None
 ) -> str:
     async with session:
         files = await session.execute(select(File).filter(File.path == path))
@@ -139,11 +139,14 @@ async def verify_file_link(
         if file is None:
             raise not_found_exception
 
+        if file.encrypted and password is None:  # type: ignore
+            raise no_access_exception
+
         if (
-            file.shared
-            and current_user is not None
+            file.shared  # type: ignore
+            and current_user is not None  # type: ignore
             and current_user.id not in [share.user_id for share in file.shared_with]
-        ):
+        ):  # type: ignore
             raise no_access_exception
 
         return str(file.name)
@@ -167,6 +170,26 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
     async with session:
         file = await session.execute(select(File).filter(File.id == file_id))
         return file.scalar_one_or_none()
+
+
+def decrypt_file(path: str, password: str, current_user: User) -> str:
+    if password is None or password == "":
+        return (Path(FILE_PATH) / path).name
+
+    key = derive_key(password, current_user.id.bytes)
+    fernet = Fernet(key)
+
+    with Path.open(Path(FILE_PATH) / path, "rb") as f:
+        contents = f.read()
+
+    decoded_file = fernet.decrypt(contents)
+
+    decrypted_file_tmp_path = Path(FILE_PATH) / f"{uuid.uuid4()}{path}"
+
+    with Path.open(decrypted_file_tmp_path, "wb") as f:
+        f.write(decoded_file)
+
+    return decrypted_file_tmp_path.name
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
