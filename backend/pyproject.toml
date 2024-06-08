@@ -55,12 +55,12 @@ build-backend = "poetry.core.masonry.api"
 [tool.mypy]
 strict = true
 plugins = ["sqlalchemy.ext.mypy.plugin"]
-exclude = ["alembic/"]
+exclude = ["versions/"]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-exclude = ["alembic/"]
+exclude = ["versions/"]
 
 [tool.ruff.lint]
 select = [
@@ -106,7 +106,6 @@ select = [
   # ruff
   "RUF",
 ]
-ignore = ["A003"]
 
 [tool.ruff.format]
 quote-style = "double"
