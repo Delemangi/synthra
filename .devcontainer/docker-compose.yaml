@@ -33,4 +33,4 @@ services:
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
     ports:
-      - 82:80
+      - 8001:80
