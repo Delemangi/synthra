@@ -10,5 +10,6 @@
   "dockerComposeFile": "./docker-compose.yaml",
   "service": "dev",
   "workspaceFolder": "/synthra",
-  "name": "Synthra"
+  "name": "Synthra",
+  "postCreateCommand": "sudo mkdir /assets && sudo chown vscode /assets"
 }
