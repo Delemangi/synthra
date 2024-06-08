@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, Form, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +13,7 @@ from ..database import get_async_session
 from ..files.models import File
 from ..schemas import RequestStatus
 from .constants import FILE_PATH
-from .schemas import FileUploaded, IsShared, MetadataFileResponse
+from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
     create_file,
     delete_file,
@@ -62,14 +62,15 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     return "Created a test file"
 
 
+# isShared is false by default (which means that everyone can see it)
 @router.post("/", response_model=FileUploaded)
 async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
-    is_shared: IsShared,
+    is_shared: bool = Form(False),
 ) -> FileUploaded:
-    new_file = await upload_file_unencrypted(session, file, current_user, is_shared.is_shared)
+    new_file = await upload_file_unencrypted(session, file, current_user, is_shared)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 

@@ -20,9 +20,15 @@ export const getMetadataFilePath = async (path: string) => {
   return result.data;
 };
 
-export const sendFileForSpecifiedUser = async (accessToken: string, file: File) => {
+// isShared is false by default (which means that everyone can see it)
+export const sendFileForSpecifiedUser = async (
+  accessToken: string,
+  file: File,
+  isShared: boolean = false
+) => {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('is_shared', isShared.toString());
 
   const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
