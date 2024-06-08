@@ -12,7 +12,7 @@ WORKDIR /workspace/backend
 
 COPY ./pyproject.toml ./poetry.lock ./
 
-RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --without dev
+RUN --mount=type=cache,target=$POETRY_CACHE_DIR poetry install --without dev --no-root
 
 # Production stage
 FROM --platform=${TARGETPLATFORM} python:3.11 AS production
