@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -172,7 +172,7 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
         return file.scalar_one_or_none()
 
 
-def decrypt_file(path: str, password: str, current_user: User) -> str:
+def decrypt_file(path: str, password: str | None, current_user: User) -> str:
     if password is None or password == "":
         return (Path(FILE_PATH) / path).name
 
@@ -182,14 +182,17 @@ def decrypt_file(path: str, password: str, current_user: User) -> str:
     with Path.open(Path(FILE_PATH) / path, "rb") as f:
         contents = f.read()
 
-    decoded_file = fernet.decrypt(contents)
+    try:
+        decoded_file = fernet.decrypt(contents)
+    except InvalidToken as err:
+        raise no_access_exception from err
 
     decrypted_file_tmp_path = Path(FILE_PATH) / f"{uuid.uuid4()}{path}"
 
     with Path.open(decrypted_file_tmp_path, "wb") as f:
         f.write(decoded_file)
 
-    return decrypted_file_tmp_path.name
+    return f"{uuid.uuid4()}{path}"
 
 
 def derive_key(password: str, salt: bytes) -> bytes:

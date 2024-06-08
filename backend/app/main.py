@@ -48,6 +48,7 @@ def make_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
     )
 
     app.add_middleware(SlashNormalizerMiddleware)

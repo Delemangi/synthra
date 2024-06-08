@@ -36,11 +36,13 @@ export const sendFileForSpecifiedUser = async (accessToken: string, file: File, 
 };
 
 export const getFileByPath = async (accessToken: string, path: string, password: string) => {
-  const result = await axios.get(`${BASE_URL}/files/download/${path}/`, {
+  const formData = new FormData();
+  formData.append('file_password', password);
+
+  const result = await axios.post(`${BASE_URL}/files/download/${path}/`, formData, {
     responseType: 'blob',
     headers: {
-      authorization: `Bearer ${accessToken}`,
-      "File-Password": password
+      authorization: `Bearer ${accessToken}`
     }
   });
 

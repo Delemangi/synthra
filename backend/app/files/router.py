@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, Header, UploadFile
@@ -42,14 +43,18 @@ async def get_all_files(
     return await get_all_files_user(current_user, session)
 
 
-@router.get("/download/{path}")
+@router.post("/download/{path}")
 async def get_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
+    file_password: str = Form(...),
 ) -> FileResponse:
+    print(f"Path {path}")
     filename = await verify_file(path, current_user, session)
-    return FileResponse(FILE_PATH + path, filename=filename)
+    print(f"Filename: {filename}")
+    full_path = decrypt_file(path, file_password, current_user)
+    return FileResponse(full_path, filename=filename)
 
 
 @router.get("/download-link/{path}")
@@ -57,11 +62,11 @@ async def get_file_link(
     path: str,
     session: Annotated[AsyncSession, Depends(get_async_session)],
     current_user: Annotated[User, Depends(get_current_user)],
-    file_password: str = Header(...),
+    file_password: Annotated[str | None, Header()],
 ) -> FileResponse:
     filename = await verify_file_link(path, session, current_user, file_password)
     full_path = decrypt_file(path, file_password, current_user)
-    return FileResponse(full_path, filename=filename)
+    return FileResponse(Path(FILE_PATH) / full_path, filename=filename)
 
 
 @router.get("/metadata/{path}", response_model=MetadataFileResponse)
