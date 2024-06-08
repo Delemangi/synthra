@@ -3,8 +3,8 @@ import uuid
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.models import User
-from app.shares.models import Share
+from ..auth.models import User
+from ..shares.models import Share
 
 
 async def create_share(share: Share, session: AsyncSession) -> None:

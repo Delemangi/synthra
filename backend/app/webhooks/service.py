@@ -6,10 +6,10 @@ from discord_webhook import DiscordWebhook
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.files.models import File
-from app.files.schemas import MetadataFileResponse
-from app.webhooks.models import Webhook
-from app.webhooks.schemas import CreateWebhook
+from ..files.models import File
+from ..files.schemas import MetadataFileResponse
+from ..webhooks.models import Webhook
+from ..webhooks.schemas import CreateWebhook
 
 
 async def create_webhook(

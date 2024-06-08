@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
 from .constants import FILE_PATH
-from .exceptions import no_access_exception, not_found_exception, quota_exception
+from .exceptions import NO_ACCESS_EXCEPTION, NOT_FOUND_EXCEPTION, QUOTA_EXCEPTION
 from .models import File
 from .schemas import MetadataFileResponse
 
@@ -22,7 +22,7 @@ async def upload_file_unencrypted(
     is_shared: bool = False,
 ) -> str:
     if not current_user.has_remaining_quota():
-        raise quota_exception
+        raise QUOTA_EXCEPTION
 
     file_path = f"{uuid.uuid4()}{file.filename}"
     path = Path(FILE_PATH) / file_path
@@ -86,7 +86,7 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         return MetadataFileResponse(
             id=file.id,  # type: ignore[arg-type]
@@ -109,12 +109,12 @@ async def verify_file(
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         if file.user.id == current_user.id:
             return str(file.name)
 
-        raise no_access_exception
+        raise NO_ACCESS_EXCEPTION
 
 
 async def verify_file_link(
@@ -125,14 +125,14 @@ async def verify_file_link(
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         if (
             file.shared
             and current_user is not None
             and current_user.id not in [share.user_id for share in file.shared_with]
         ):
-            raise no_access_exception
+            raise NO_ACCESS_EXCEPTION
 
         return str(file.name)
 
@@ -148,7 +148,7 @@ async def delete_file(
     if path_to_delete.exists():
         path_to_delete.unlink()
     else:
-        raise not_found_exception
+        raise NOT_FOUND_EXCEPTION
 
 
 async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | None:

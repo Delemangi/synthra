@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, UploadFile
@@ -6,11 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
+from ..auth.service import get_user_by_username
 from ..database import get_async_session
+from ..files.models import File
 from ..schemas import RequestStatus
 from .constants import FILE_PATH
 from .schemas import FileUploaded, IsShared, MetadataFileResponse
 from .service import (
+    create_file,
     delete_file,
     get_all_files_user,
     get_metadata_path,
@@ -20,6 +25,41 @@ from .service import (
 )
 
 router = APIRouter(tags=["files"])
+
+
+@router.get("/test", response_model=str)
+async def simple_test() -> str:
+    return "Hello! The files router is working."
+
+
+@router.post("/create-test-file", response_model=str)
+async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
+    file_name = "a.txt"
+
+    path = Path(FILE_PATH) / file_name
+
+    binary = Path.open(path, "wb")
+    binary.write(b"a")
+    binary.close()
+
+    user = await get_user_by_username("a", session)
+
+    if user is None:
+        return "Please create a test user first"
+
+    file_db = File(
+        name=file_name,
+        path=file_name,
+        encrypted=False,
+        size=1,
+        timestamp=datetime.now(),
+        expiration=datetime.now() + timedelta(days=14),
+        user=user,
+    )
+
+    await create_file(session, file_db)
+
+    return "Created a test file"
 
 
 @router.post("/", response_model=FileUploaded)
@@ -78,8 +118,3 @@ async def verify_and_delete_file(
     filename = await verify_file(path, current_user, session)
     await delete_file(path, session)
     return RequestStatus(message=f"File {filename} deleted")
-
-
-@router.get("/test")
-async def test() -> str:
-    return "Endpoint works"

@@ -42,6 +42,8 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
 def make_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
+
+    # CORS Middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -50,6 +52,7 @@ def make_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # URL Normalizer Middleware
     app.add_middleware(SlashNormalizerMiddleware)
 
     app.include_router(auth_router, prefix="/auth")
@@ -59,7 +62,7 @@ def make_app() -> FastAPI:
 
     @app.get("/")
     async def root() -> str:
-        return "Hello World"
+        return "Hello! The application is running."
 
     return app
 

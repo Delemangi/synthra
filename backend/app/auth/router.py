@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..schemas import RequestStatus
-from .exceptions import credentials_exception
+from .exceptions import CREDENTIALS_EXCEPTION
 from .schemas import Token, User
 from .service import (
     authenticate_user,
@@ -19,6 +19,18 @@ from .service import (
 router = APIRouter(tags=["auth"])
 
 
+@router.get("/test", response_model=str)
+async def simple_test() -> str:
+    return "Hello! The auth router is working."
+
+
+@router.post("/create-test-user", response_model=str)
+async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
+    await create_user("a", "a", 30, session)
+
+    return "Created a test user"
+
+
 @router.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -27,7 +39,7 @@ async def login_for_access_token(
     user = await authenticate_user(form_data.username, form_data.password, session)
 
     if not user:
-        raise credentials_exception
+        raise CREDENTIALS_EXCEPTION
 
     access_token = await create_access_token(session, data={"sub": str(user.username)})
     return {"access_token": access_token, "token_type": "bearer"}

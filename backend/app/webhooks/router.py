@@ -5,22 +5,20 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.dependencies import get_current_user
-from app.auth.models import User
-from app.auth.service import create_user, get_user_by_username
-from app.files.schemas import MetadataFileResponse
-from app.files.service import get_all_files_user, get_file_by_id
-from app.webhooks.models import Webhook
-from app.webhooks.schemas import CreateWebhook, SendWebhook
-from app.webhooks.service import (
+from ..auth.dependencies import get_current_user
+from ..auth.models import User
+from ..auth.service import get_user_by_username
+from ..database import get_async_session
+from ..files.service import get_all_files_user, get_file_by_id
+from ..webhooks.models import Webhook
+from ..webhooks.schemas import CreateWebhook, SendWebhook
+from ..webhooks.service import (
     create_webhook,
     delete_webhook,
     get_all_webhooks_for_user,
     get_webhook_by_id,
     send_webhook_file,
 )
-
-from ..database import get_async_session
 
 router = APIRouter(tags=["webhooks"])
 
@@ -29,33 +27,41 @@ WEBHOOK_URL = os.getenv(
 )
 
 
-@router.get("/create-test-webhook", response_model=str)
+@router.get("/test", response_model=str)
+async def simple_test() -> str:
+    return "Hello! The webhooks router is working."
+
+
+@router.post("/create-test-webhook", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
-    print("creating user")
-    user: User = await create_user("a", "a", 30, session)
-    webhook = CreateWebhook(url=WEBHOOK_URL, platform="discord")
-    try:
-        await create_webhook(webhook, session, user.id)  # type: ignore[arg-type]
-    except Exception:
-        print("error creating webhook")
+    user = await get_user_by_username("a", session)
+    webhook = CreateWebhook(url=WEBHOOK_URL, platform="Test")
 
-    return "Created webhook and user"
+    if user is None:
+        return "Please create a test user first"
+
+    await create_webhook(webhook, session, user.id)  # type: ignore[arg-type]
+
+    return "Created a test webhook"
 
 
-@router.get("/send-test-webhook", response_model=str)
+@router.post("/send-test-webhook", response_model=str)
 async def send_webhook(
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> str:
     async with session:
-        user: User | None = await get_user_by_username("a", session)
+        user = await get_user_by_username("a", session)
+
         if user is None:
-            return "User not found"
+            return "Please create a test user first"
 
         user_files = await get_all_files_user(user, session)
-        dog_image: MetadataFileResponse = user_files[0]
+        file = user_files[0]
         user_webhook = user.webhooks[0]
-        await send_webhook_file(user_webhook, dog_image)
-    return "Sent webhook with file"
+
+        await send_webhook_file(user_webhook, file)
+
+    return "Sent the test file to the test webhook"
 
 
 @router.post("/create", response_model=SendWebhook)

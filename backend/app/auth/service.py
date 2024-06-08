@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
-from .exceptions import username_taken_exception
+from .exceptions import USERNAME_TAKEN_EXCEPTION
 from .models import LoggedInTokens, User
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
@@ -30,7 +30,7 @@ async def create_user(
     existing_user = await get_user_by_username(username, session)
 
     if existing_user:
-        raise username_taken_exception
+        raise USERNAME_TAKEN_EXCEPTION
 
     await add_user(user, session)
     return user

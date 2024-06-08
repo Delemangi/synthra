@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from .constants import ALGORITHM
-from .exceptions import credentials_exception
+from .exceptions import CREDENTIALS_EXCEPTION
 from .models import User
 from .service import (
     SECRET_KEY,
@@ -26,21 +26,21 @@ async def get_current_user(
         username: str | None = payload.get("sub")
 
         if not (await validate_token(token, session)):
-            raise credentials_exception
+            raise CREDENTIALS_EXCEPTION
 
         if username is None:
-            raise credentials_exception
+            raise CREDENTIALS_EXCEPTION
 
         date_expir: int | None = payload.get("exp")
         if date_expir is None or date_expir < datetime.datetime.now().timestamp():
-            raise credentials_exception
+            raise CREDENTIALS_EXCEPTION
 
     except JWTError as err:
-        raise credentials_exception from err
+        raise CREDENTIALS_EXCEPTION from err
 
     user = await get_user_by_username(username=username, session=session)
 
     if user is None:
-        raise credentials_exception
+        raise CREDENTIALS_EXCEPTION
 
     return user
