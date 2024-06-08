@@ -1,15 +1,15 @@
 {
-  "forwardPorts": [
-    8002,
-    8001,
-    8000,
-    5432,
-    5173,
-    3000
-  ],
   "dockerComposeFile": "./docker-compose.yaml",
-  "service": "dev",
-  "workspaceFolder": "/synthra",
+  "forwardPorts": [
+    3000,
+    5173,
+    5432,
+    8000,
+    8001,
+    8002
+  ],
   "name": "Synthra",
-  "postCreateCommand": "sudo mkdir /assets && sudo chown vscode /assets"
+  "postCreateCommand": "sudo mkdir /assets && sudo chown vscode /assets",
+  "service": "dev",
+  "workspaceFolder": "/synthra"
 }
