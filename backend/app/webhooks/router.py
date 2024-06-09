@@ -5,6 +5,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.webhooks.service import (
+    create_webhook,
+    delete_webhook,
+    get_all_webhooks_for_user,
+    get_webhook_by_id,
+    send_webhook_file,
+)
+
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
 from ..auth.service import get_user_by_username
@@ -12,13 +20,6 @@ from ..database import get_async_session
 from ..files.service import get_all_files_user, get_file_by_id
 from ..webhooks.models import Webhook
 from ..webhooks.schemas import CreateWebhook, SendWebhook
-from ..webhooks.service import (
-    create_webhook,
-    delete_webhook,
-    get_all_webhooks_for_user,
-    get_webhook_by_id,
-    send_webhook_file,
-)
 
 router = APIRouter(tags=["webhooks"])
 
