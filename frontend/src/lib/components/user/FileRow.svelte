@@ -2,21 +2,23 @@
   import {
     ActionIcon,
     Box,
-    Flex,
-    Text,
-    Tooltip,
-    Overlay,
-    Title,
     Button,
+    Flex,
+    Overlay,
+    Text,
+    TextInput,
+    Title,
+    Tooltip,
     createStyles,
     type theme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { DoubleArrowRight, Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
   import {
-    deleteFileByPath,
-    getFileByPath,
     addShareForFile,
-    deleteShareForFile
+    deleteFileByPath,
+    deleteShareForFile,
+    getFileByPath
   } from '../../../server/files';
   import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
@@ -147,8 +149,22 @@
   };
 
   const shareFile = async () => {
-    await addShareForFile(usernameShare, file.id);
-    window.location.reload();
+    try {
+      await addShareForFile(usernameShare, file.id);
+      window.location.reload();
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 404) {
+        alert('That user does not exist.');
+        return;
+      }
+
+      alert('An error occurred while sharing the file.');
+    }
   };
 
   const deleteShare = async (id: string) => {
@@ -185,15 +201,13 @@
       {file.encrypted ? 'Yes' : 'No'}
     </Text>
     {#if file.shared}
-      <Tooltip openDelay={10} label="Manage Shares">
-        <Text
-          size="sm"
-          css={{ flex: 1, textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}
-          on:click={openShare}
-        >
-          {`Shared with ${file.shared_people.length} people`}
-        </Text>
-      </Tooltip>
+      <Text
+        size="sm"
+        css={{ flex: 1, textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}
+        on:click={openShare}
+      >
+        Manage Sharing ({file.shared_people.length})
+      </Text>
     {:else}
       <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>Public</Text>
     {/if}
@@ -242,7 +256,7 @@
   <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
-        <Title order={3}>Manage Shares</Title>
+        <Title order={3}>Share File</Title>
         {#if file.shared_people.length > 0}
           {#each file.shared_people as share}
             <Box class={getStyles()}>
@@ -259,15 +273,14 @@
             </Box>
           {/each}
         {:else}
-          <span>You haven't shared this file with anybody</span>
+          <Text>This file is not yet shared with anyone.</Text>
         {/if}
         <br />
         <Flex justify="space-around" align="center">
-          <label for="username">Username: </label>
-          <input id="username" name="username" bind:value={usernameShare} />
+          <TextInput label="Username" bind:value={usernameShare} />
         </Flex>
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={shareFile}>Add share</Button>
+          <Button variant="filled" on:click={shareFile}>Share</Button>
         </Flex>
         <br />
         <Flex justify="space-around" align="center">
