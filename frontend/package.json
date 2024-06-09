@@ -11,7 +11,7 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write . && eslint . --fix",
     "clean": "rimraf ./.svelte-kit ./build",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^5.0.1",
