@@ -56,7 +56,7 @@ jobs:
           npm run lint
 
   vitest:
-    name: Vite & Jest
+    name: Vitest
     runs-on: ubuntu-latest
 
     steps:
@@ -73,7 +73,7 @@ jobs:
           cd frontend
           npm i
 
-      - name: Run Vite & Jest
+      - name: Run Vitest
         run: |
           cd frontend
           npm run test
