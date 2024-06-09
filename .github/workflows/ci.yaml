@@ -150,6 +150,7 @@ jobs:
     needs:
       - mypy
       - ruff
+      - pytest
 
     steps:
       - name: Set up QEMU
