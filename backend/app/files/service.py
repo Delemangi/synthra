@@ -12,7 +12,7 @@ from ..auth.models import User
 from .constants import FILE_PATH
 from .exceptions import NO_ACCESS_EXCEPTION, NOT_FOUND_EXCEPTION, QUOTA_EXCEPTION
 from .models import File
-from .schemas import MetadataFileResponse
+from .schemas import MetadataFileResponse, ShareResponse
 
 
 async def upload_file_unencrypted(
@@ -39,7 +39,7 @@ async def upload_file_unencrypted(
             size=file.size,
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),
-            user=current_user,
+            user_id=current_user.id,
             shared=is_shared,
         )
 
@@ -73,6 +73,11 @@ async def get_all_files_user(
                 path=str(file.path),
                 size=file.size,  # type: ignore[arg-type]
                 encrypted=bool(file.encrypted),
+                shared=bool(file.shared),
+                shared_people=[
+                    ShareResponse(id=str(el.id), username=el.user.username)
+                    for el in file.shared_with
+                ],
                 timestamp=file.timestamp,  # type: ignore[arg-type]
                 expiration=file.expiration,  # type: ignore[arg-type]
             )
@@ -94,6 +99,8 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
             path=str(file.path),
             size=file.size,  # type: ignore[arg-type]
             encrypted=bool(file.encrypted),
+            shared=bool(file.shared),
+            shared_people=[],
             timestamp=file.timestamp,  # type: ignore[arg-type]
             expiration=file.expiration,  # type: ignore[arg-type]
         )
@@ -114,7 +121,14 @@ async def verify_file(
         if file.user.id == current_user.id:
             return str(file.name)
 
-        raise NO_ACCESS_EXCEPTION
+        if (
+            bool(file.shared)
+            and current_user is not None
+            and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
+        ):
+            raise NO_ACCESS_EXCEPTION
+
+        return str(file.name)
 
 
 async def verify_file_link(
@@ -130,7 +144,7 @@ async def verify_file_link(
         if (
             bool(file.shared)
             and current_user is not None
-            and current_user.id not in [share.user_id for share in file.shared_with]
+            and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
         ):
             raise NO_ACCESS_EXCEPTION
 

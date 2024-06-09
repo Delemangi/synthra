@@ -14,6 +14,23 @@ export const getFilesForSpecifiedUser = async (accessToken: string) => {
   return result.data;
 };
 
+export const addShareForFile = async (username: string, file_id: string) => {
+  await axios.post(
+    `${BASE_URL}/shares/create`,
+    JSON.stringify({ username: username, file_id: file_id }),
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+};
+
+export const deleteShareForFile = async (share_id: string) => {
+  await axios.delete(`${BASE_URL}/shares/delete/${share_id}`);
+};
+
 export const getMetadataFilePath = async (path: string) => {
   const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}/`);
 

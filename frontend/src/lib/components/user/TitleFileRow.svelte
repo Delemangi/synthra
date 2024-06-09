@@ -31,6 +31,7 @@
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Name</Text>
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Size (KB)</Text>
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Encryption</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Shared</Text>
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}
       >Uploaded Date</Text
     >

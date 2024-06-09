@@ -17,6 +17,7 @@
   import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../server/files';
 
   let filesToUpload: FileList | null = null;
+  let file_do_share: boolean = true;
 
   const sendData = async () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -31,7 +32,7 @@
     }
 
     try {
-      await sendFileForSpecifiedUser(accessToken, filesToUpload[0]);
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], file_do_share);
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -124,6 +125,8 @@
         <Title order={3}>Upload File</Title>
 
         <input type="file" name="filename" bind:files={filesToUpload} />
+        <label for="share">Private file</label>
+        <input type="checkbox" id="share" name="share" bind:checked={file_do_share} />
 
         <Flex justify="space-around" align="center">
           <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}

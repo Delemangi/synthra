@@ -67,6 +67,7 @@
       }
     } catch (error) {
       alert('The file does not exist, or has expired.');
+      window.location.href = '/';
     }
   });
 
@@ -80,6 +81,7 @@
 
     if (!accessToken) {
       alert('You need to be logged in.');
+      window.location.href = '/';
       return;
     }
 
