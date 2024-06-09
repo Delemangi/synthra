@@ -42,7 +42,10 @@
         "tamasfe.even-better-toml",
         "usernamehw.errorlens",
         "yoavbls.pretty-ts-errors"
-      ]
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/synthra/backend/.venv/bin/python"
+      }
     }
   }
 }

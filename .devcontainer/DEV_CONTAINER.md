@@ -5,11 +5,12 @@
 If you'd like to work on this project in a Dev Container, follow these steps:
 
 1. Install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
-2. Build and start the project in a Dev Container (`Dev Containers: Rebuild Container`)
-3. When prompted, install all recommended extensions for working with this project
-4. (Optional) Reload the extensions from the Python linters: `Ruff` and `MyPy`
+2. Build and start the project in a Dev Container with `Dev Containers: Rebuild Container`
+3. Once the build is done (which is shown in the terminal when you click `show logs`), run `Developer: Reload Window`
 
-You now have a working Dev Container. Within it is running a PostgreSQL database at all times, whose files are located in `.devcontainer/pg_data`, as well as all tooling (linters and such) which is required (or recommended) to work on this project.
+When building, the Poetry environment (in `backend/.venv`) gets rebuilt for Linux. When going back to the project locally, make sure to run `poetry install` again (if you are running Windows).
+
+You now have a working Dev Container. Within it is running a PostgreSQL database at all times, whose files are located in `.devcontainer/pg_data`, as well as all tooling (linters and such) which is recommended to work with on this project.
 
 ## Caveats
 

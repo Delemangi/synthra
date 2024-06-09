@@ -61,7 +61,6 @@
   "python.analysis.inlayHints.pytestParameters": true,
   "python.analysis.inlayHints.variableTypes": true,
   "python.analysis.typeCheckingMode": "basic",
-  "python.defaultInterpreterPath": "/synthra/backend/.venv/bin/python3.11",
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.terminal.focusAfterLaunch": true,
   "ruff.importStrategy": "fromEnvironment",
