@@ -43,8 +43,12 @@ For most users, just these few steps should be sufficient, provided that you are
 
 To setup your environment and the project for development:
 
-1. Run `poetry install` (while inside the `backend` folder)
+1. Run `poetry install --no-root` (while inside the `backend` folder)
 2. Run `pre-commit install`
+
+### Tests
+
+To run the tests for the backend, run `poetry run pytest`.
 
 ### Installation (Docker Setup)
 
@@ -73,7 +77,7 @@ Once you have all these dependencies installed, then:
 #### Backend
 
 1. Navigate to the `backend` folder: `cd backend`
-2. Run `poetry install`
+2. Run `poetry install --no-root`
 
 #### Frontend
 
