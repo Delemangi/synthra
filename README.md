@@ -1,6 +1,6 @@
 # Synthra
 
-Synthra is a file hosting application built using [FastAPI](https://github.com/tiangolo/fastapi) (with Python 3.11) and [SvelteKit](https://github.com/sveltejs/kit), with [PostgreSQL](https://github.com/postgres/postgres), [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) and [Alembic](https://github.com/sqlalchemy/alembic).
+Synthra is a file hosting application built using [FastAPI](https://github.com/tiangolo/fastapi) (with Python >= 3.11) and [SvelteKit](https://github.com/sveltejs/kit), with [PostgreSQL](https://github.com/postgres/postgres), [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) and [Alembic](https://github.com/sqlalchemy/alembic).
 
 This repository contains both the frontend and the backend of the project in their respective folders.
 
@@ -20,6 +20,9 @@ Authors:
 ## Features
 
 - File hosting
+- File previews
+- File whitelist
+- Encryption
 - User registration and login
 - Intuitive interface
 - Support for webhooks
@@ -58,7 +61,6 @@ While building the frontend, the environment variable `VITE_BASE_URL` should be 
 
 1. Run `git clone git@github.com:Delemangi/synthra.git` (or `git clone https://github.com/Delemangi/synthra.git`)
 2. Run `docker compose build`
-   - If you need the Docker image built for a machine running ARM architecture, then use the `PLATFORM` build argument as such: `docker compose build --build-arg PLATFORM=linux/arm64`
 
 ### Installation (Manual Setup)
 
@@ -90,7 +92,7 @@ Once you have all these dependencies installed, then:
 ### Running (Docker Setup)
 
 1. Copy or rename the `.env.sample` file to `.env`, and edit it to your liking, or leave it as is
-2. Run `docker compose up`
+2. Run `docker compose up -d`
 
 ### Running (Manual Setup)
 
@@ -99,7 +101,7 @@ Once you have all these dependencies installed, then:
 3. Start the backend service
    1. Open the project in your terminal
    2. Run `cd backend`
-   3. Run `poetry run uvicorn app.main:app --host 0.0.0.0 --port 80 [--reload]` - the last parameter is optional, in case you want hot reloading
+   3. Run `python -m app.main`
 4. Start the frontend service
    1. Open the project in your terminal
    2. Run `cd frontend`
