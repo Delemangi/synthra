@@ -6,15 +6,15 @@
 - [ ] Roles
 - [ ] Quotas
 - [x] Administration Panel
-- [ ] Rich Viewer
+- [x] File Preview
 - [x] Webhooks
 - [ ] Encryption
-- [ ] Protected Files
+- [x] Protected Files
 - [ ] 2FA
 - [ ] URL Shortening
 - [ ] Responsiveness
 - [ ] Localization
-- [ ] Tests
+- [x] Tests
 - [x] Database Migrations
 - [x] CI/CD
   - [x] Docker
@@ -30,7 +30,7 @@
   - [x] CI - Dependency Updates & Dependabot
   - [x] CI - GitLab Mirror
   - [x] CI - Security Vulnerabilities
-  - [ ] CI - Tests
+  - [x] CI - Tests
   - [x] Dev Container
   - [x] Watchtower
 - [x] Documentation
