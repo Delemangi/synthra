@@ -49,5 +49,5 @@ def client() -> Generator[TestClient, None, None]:
 
 @pytest.fixture
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac: # type: ignore[arg-type]
         yield ac
