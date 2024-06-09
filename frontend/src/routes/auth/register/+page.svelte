@@ -1,14 +1,13 @@
 <script lang="ts">
   import { Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
-  import { register } from '../../../server/auth';
   import { onMount } from 'svelte';
+  import { register } from '../../../server/auth';
+  import { isFieldSuitable } from '../../../utils/functions';
 
   let username = '';
   let password = '';
   let repeatPassword = '';
-
-  const checkField = (field: string) => field.length >= 5 && field.length <= 24;
 
   const handleSubmit = async () => {
     if (password !== repeatPassword) {
@@ -52,7 +51,10 @@
   <TextInput label="Repeat Password" bind:value={repeatPassword} type="password" />
   <br />
   <div style="display: flex; justify-content: center;">
-    <Button on:click={handleSubmit} disabled={!checkField(username) || !checkField(password)}>
+    <Button
+      on:click={handleSubmit}
+      disabled={!isFieldSuitable(username) || !isFieldSuitable(password)}
+    >
       Register
     </Button>
   </div>
