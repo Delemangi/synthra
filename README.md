@@ -51,7 +51,15 @@ To setup your environment and the project for development:
 
 ### Tests
 
-To run the tests for the backend, run `poetry run pytest`.
+### Tests (Backend)
+
+1. Run `cd backend`
+2. Run `poetry run pytest`
+
+### Tests (Frontend)
+
+1. Run `cd frontend`
+2. Run `npm run test`
 
 ### Installation (Docker Setup)
 
