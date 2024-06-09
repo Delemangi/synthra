@@ -8,7 +8,6 @@ from ..auth.service import get_user_by_username
 from ..database import get_async_session
 from ..exceptions import USER_NOT_FOUND_EXCEPTION
 from ..files.service import get_all_files_user
-from ..webhooks.schemas import SendWebhook
 from .models import Share
 from .schemas import CreateShare
 from .service import create_share, delete_share
@@ -40,7 +39,7 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
     return "Created a test share"
 
 
-@router.post("/create", response_model=SendWebhook)
+@router.post("/create", response_model=None)
 async def create_webhook_route(
     share: CreateShare,
     session: Annotated[AsyncSession, Depends(get_async_session)],

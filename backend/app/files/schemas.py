@@ -4,6 +4,14 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
+class ShareResponse(BaseModel):
+    id: str
+    username: str
+
+    class Config:
+        from_attributes = True
+
+
 class FileUploaded(BaseModel):
     filename: str | None
     username: str
@@ -15,6 +23,8 @@ class MetadataFileResponse(BaseModel):
     path: str
     size: int
     encrypted: bool
+    shared: bool
+    shared_people: list[ShareResponse]
     timestamp: datetime
     expiration: datetime
 

@@ -41,7 +41,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
 
 def make_app() -> FastAPI:
-    app = FastAPI(lifespan=lifespan)
+    app = FastAPI(lifespan=lifespan, debug=True)
 
     # CORS Middleware
     app.add_middleware(
