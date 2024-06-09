@@ -5,8 +5,10 @@
   import {
     Box,
     Button,
+    Checkbox,
     Flex,
     Overlay,
+    Text,
     Title,
     createStyles,
     type DefaultTheme
@@ -17,7 +19,7 @@
   import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../server/files';
 
   let filesToUpload: FileList | null = null;
-  let file_do_share: boolean = true;
+  let privateFile = true;
 
   const sendData = async () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -32,7 +34,7 @@
     }
 
     try {
-      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], file_do_share);
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], privateFile);
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -125,13 +127,16 @@
         <Title order={3}>Upload File</Title>
 
         <input type="file" name="filename" bind:files={filesToUpload} />
-        <label for="share">Private file</label>
-        <input type="checkbox" id="share" name="share" bind:checked={file_do_share} />
+
+        <Flex justify="center" align="center" gap="md">
+          <Checkbox bind:checked={privateFile}></Checkbox>
+          <Text>Private?</Text>
+        </Flex>
 
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}
-            >Submit</Button
-          >
+          <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}>
+            Submit
+          </Button>
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
         </Flex>
       </Flex>
