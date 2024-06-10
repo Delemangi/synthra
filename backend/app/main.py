@@ -4,7 +4,7 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from .auth.router import router as auth_router
 from .database import run_migrations
@@ -43,16 +43,6 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 def make_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, debug=True)
 
-    # CORS Middleware
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*"],
-    )
-
     # URL Normalizer Middleware
     app.add_middleware(SlashNormalizerMiddleware)
 
@@ -65,6 +55,15 @@ def make_app() -> FastAPI:
     async def root() -> str:
         return "Hello! The application is running."
 
+    # CORS Middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+    )
     return app
 
 

@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getFilesForSpecifiedUser = async (accessToken: string) => {
-  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files/`, {
+  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
@@ -41,8 +41,8 @@ export const getMetadataFilePath = async (path: string) => {
 export const sendFileForSpecifiedUser = async (
   accessToken: string,
   file: File,
+  password: string = '',
   isShared: boolean = false,
-  password: string = ''
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -52,21 +52,20 @@ export const sendFileForSpecifiedUser = async (
   const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
       authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
     }
   });
 
   return result.data;
 };
 
-export const getFileByPath = async (accessToken: string, path: string, password: string) => {
-  const formData = new FormData();
-  formData.append('file_password', password);
-
-  const result = await axios.post(`${BASE_URL}/files/download/${path}/`, formData, {
+export const getFileByPath = async (accessToken: string, path: string, password: string = '') => {
+  // const formData = new FormData();
+  const result = await axios.get(`${BASE_URL}/files/download/${path}`, {
     responseType: 'blob',
     headers: {
-      authorization: `Bearer ${accessToken}`
+      authorization: `Bearer ${accessToken}`,
+      'Password': password,
     }
   });
 

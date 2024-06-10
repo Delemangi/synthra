@@ -21,6 +21,7 @@ from .service import (
     get_all_files_user,
     get_metadata_path,
     upload_file,
+    verify_and_decrypt_file,
     verify_file,
     verify_file_link,
 )
@@ -84,18 +85,19 @@ async def get_all_files(
     return await get_all_files_user(current_user, session)
 
 
-@router.post("/download/{path}")
+@router.get("/download/{path}")
 async def get_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-    file_password: str = Form(...),
+    password: str = Header(None),
 ) -> FileResponse:
-    print(f"Path {path}")
-    filename = await verify_file(path, current_user, session)
-    print(f"Filename: {filename}")
-    full_path = decrypt_file(path, file_password, current_user)
-    return FileResponse(full_path, filename=filename)
+    # print(f"Path {path}")
+    # print(f"Password {password}")
+    # filename = await verify_file(path, current_user, session)
+    # print(f"Filename: {filename}")
+    full_path = await verify_and_decrypt_file(path, current_user, session, password)
+    return FileResponse(full_path, status_code=200)
 
 
 @router.get("/download-link/{path}")

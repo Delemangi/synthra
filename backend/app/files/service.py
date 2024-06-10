@@ -143,6 +143,17 @@ async def verify_file(
         return str(file.name)
 
 
+async def verify_and_decrypt_file(
+    path: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: AsyncSession,
+    password: str | None = None,
+) -> str:
+    _ = await verify_file(path, current_user, session)
+    print("verified")
+    return decrypt_file(path, password, current_user)
+
+
 async def verify_file_link(
     path: str, session: AsyncSession, current_user: User | None = None, password: str | None = None
 ) -> str:
@@ -172,6 +183,7 @@ async def delete_file(
 ) -> None:
     async with session.begin():
         await session.execute(delete(File).where(File.path == path))
+        await session.commit()
 
     path_to_delete = Path(FILE_PATH) / path
     if path_to_delete.exists():
@@ -186,9 +198,9 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
         return file.scalar_one_or_none()
 
 
-def decrypt_file(path: str, password: str | None, current_user: User) -> str:
+def decrypt_file(path: str, password: str | None, current_user: User) -> Path:
     if password is None or password == "":
-        return (Path(FILE_PATH) / path).name
+        return Path(FILE_PATH) / path
 
     key = derive_key(password, current_user.id.bytes)
     fernet = Fernet(key)
@@ -206,7 +218,7 @@ def decrypt_file(path: str, password: str | None, current_user: User) -> str:
     with Path.open(decrypted_file_tmp_path, "wb") as f:
         f.write(decoded_file)
 
-    return f"{uuid.uuid4()}{path}"
+    return decrypted_file_tmp_path
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
