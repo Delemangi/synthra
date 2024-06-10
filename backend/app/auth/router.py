@@ -1,12 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..schemas import RequestStatus
-from .exceptions import CREDENTIALS_EXCEPTION
+from .exceptions import AUTHENTICATION_2FA_EXCEPTION, CREDENTIALS_EXCEPTION
 from .schemas import Code2FA, Token, User
 from .service import (
     authenticate_user,
@@ -15,6 +15,7 @@ from .service import (
     oauth2_scheme,
     remove_token,
     update_2fa_code,
+    verify_2fa_code,
 )
 
 router = APIRouter(tags=["auth"])
@@ -36,11 +37,15 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: Annotated[AsyncSession, Depends(get_async_session)],
+    code_2fa: str = Form(None),
 ) -> dict[str, str]:
     user = await authenticate_user(form_data.username, form_data.password, session)
 
     if not user:
         raise CREDENTIALS_EXCEPTION
+
+    if not verify_2fa_code(user, code_2fa):
+        raise AUTHENTICATION_2FA_EXCEPTION
 
     access_token = await create_access_token(session, data={"sub": str(user.username)})
     return {"access_token": access_token, "token_type": "bearer"}

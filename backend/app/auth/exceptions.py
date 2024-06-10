@@ -15,3 +15,7 @@ EXPIRED_CREDENTIALS_EXCEPTION = HTTPException(
 USERNAME_TAKEN_EXCEPTION = HTTPException(
     status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="Username already taken."
 )
+
+AUTHENTICATION_2FA_EXCEPTION = HTTPException(
+    status_code=status.HTTP_302_FOUND, detail="User found. 2FA authentication required."
+)
