@@ -7,13 +7,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_async_session
 from ..schemas import RequestStatus
 from .exceptions import CREDENTIALS_EXCEPTION
-from .schemas import Token, User
+from .schemas import Code2FA, Token, User
 from .service import (
     authenticate_user,
     create_access_token,
     create_user,
     oauth2_scheme,
     remove_token,
+    update_2fa_code,
 )
 
 router = APIRouter(tags=["auth"])
@@ -60,3 +61,18 @@ async def register(
 ) -> RequestStatus:
     user = await create_user(user_schema.username, user_schema.password, 30, session)
     return RequestStatus(message=f"User {user.username} registered successfully")
+
+
+@router.post("/2fa")
+async def get_2fa_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> Code2FA:
+    user = await authenticate_user(form_data.username, form_data.password, session)
+
+    if not user:
+        raise CREDENTIALS_EXCEPTION
+
+    code_2fa = await update_2fa_code(user, session)
+
+    return Code2FA(code=code_2fa)

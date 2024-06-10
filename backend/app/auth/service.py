@@ -4,10 +4,11 @@ from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
+import pyotp
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
-from sqlalchemy import ColumnElement, and_, delete, select
+from sqlalchemy import ColumnElement, and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
@@ -56,6 +57,14 @@ async def authenticate_user(username: str, password: str, session: AsyncSession)
         lambda u: and_(u.username == username, u.password == stored_password),
         session,
     )
+
+
+async def update_2fa_code(user: User, session: AsyncSession) -> str:
+    code = pyotp.random_base32()
+    await session.execute(update(User).where(User.id == user.id).values(code_2fa=code))
+    await session.commit()
+
+    return code
 
 
 async def create_access_token(

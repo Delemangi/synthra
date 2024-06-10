@@ -34,6 +34,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@svelte-put/qr": "^1.2.1",
     "@svelteuidev/composables": "^0.15.6",
     "@svelteuidev/core": "^0.15.6",
     "axios": "^1.7.2",
