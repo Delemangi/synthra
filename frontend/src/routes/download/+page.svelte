@@ -5,6 +5,7 @@
     Button,
     Flex,
     Text,
+    TextInput,
     Title,
     createStyles,
     type DefaultTheme
@@ -42,6 +43,7 @@
   let filePath: string | null = null;
   let fileMetadata: FileMetadata | null = null;
   let fileUrl: string | null = null;
+  let downloadFilePassword: string = '';
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -60,11 +62,7 @@
         return;
       }
 
-      let retrievedFile = await getFileByPath(accessToken, filePath);
 
-      if (retrievedFile) {
-        fileUrl = URL.createObjectURL(retrievedFile);
-      }
     } catch (error) {
       alert('The file does not exist, or has expired.');
       window.location.href = '/';
@@ -72,6 +70,17 @@
   });
 
   const downloadFile = async () => {
+
+    if(filePath == null) {
+      alert('An error occurred while downloading the file.');
+      return;
+    }
+
+    let retrievedFile = await getFileByPath(localStorage.getItem('accessToken'), filePath, downloadFilePassword);
+
+    if (retrievedFile) {
+      fileUrl = URL.createObjectURL(retrievedFile);
+    }
     if (!filePath) {
       alert('An error occurred while downloading the file.');
       return;
@@ -109,7 +118,7 @@
 </script>
 
 <div class={classes.root}>
-  <Flex direction="column" align="center">
+  <Flex direction="column" align="center" justify="space-around">
     <Title order={3}>Download File</Title>
 
     {#if fileMetadata}
@@ -121,7 +130,13 @@
       <Text>Loading...</Text>
     {/if}
 
-    <Button on:click={downloadFile}>Download</Button>
+    {#if fileMetadata?.encrypted}
+      <TextInput
+        placeholder="Enter the password to download the file"
+        bind:value={downloadFilePassword}
+      />
+    {/if}
+    <Button on:click={downloadFile} disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button>
     <br />
     {#if fileUrl && isFileTypeSupported(filePath)}
       <div

@@ -101,22 +101,6 @@ async def get_file(
     )
 
 
-@router.get("/download-link/{path}")
-async def get_file_link(
-    path: str,
-    session: Annotated[AsyncSession, Depends(get_async_session)],
-    current_user: Annotated[User, Depends(get_current_user)],
-    password: Annotated[str | None, Header()],
-) -> StreamingResponse:
-    file = await verify_and_decrypt_file(path, current_user, session, password)
-    file_object = io.BytesIO(file)
-    return StreamingResponse(
-        file_object,
-        media_type="application/octet-stream",
-        headers={"Content-Disposition": f"attachment; filename={path}"},
-    )
-
-
 @router.get("/metadata/{path}", response_model=MetadataFileResponse)
 async def get_file_metadata(
     path: str,

@@ -303,18 +303,15 @@
 {#if isDownloadWindowVisible}
   <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
-      <Flex direction="column" align="space-evenly" gap="md" justify="center">
+      <Flex direction="column" align="space-evenly" gap="l" justify="center">
         <Title order={3}>Download File</Title>
-        <input type="text" name="filepassword" bind:value={downloadFilePassword}/>
-
-        <Flex justify="space-around" align="center">
+          <TextInput type="text" name="filepassword" bind:value={downloadFilePassword}/>
           <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
             Submit
           </Button>
           <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>
             Close
           </Button>
-        </Flex>
       </Flex>
     </Box>
   </Overlay>
