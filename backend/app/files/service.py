@@ -148,9 +148,8 @@ async def verify_and_decrypt_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: AsyncSession,
     password: str | None = None,
-) -> str:
+) -> bytes:
     _ = await verify_file(path, current_user, session)
-    print("verified")
     return decrypt_file(path, password, current_user)
 
 
@@ -198,27 +197,22 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
         return file.scalar_one_or_none()
 
 
-def decrypt_file(path: str, password: str | None, current_user: User) -> Path:
+def decrypt_file(path: str, password: str | None, current_user: User) -> bytes:
+    with Path.open(Path(FILE_PATH) / path, "rb") as f:
+        contents = f.read()
+
     if password is None or password == "":
-        return Path(FILE_PATH) / path
+        return contents
 
     key = derive_key(password, current_user.id.bytes)
     fernet = Fernet(key)
-
-    with Path.open(Path(FILE_PATH) / path, "rb") as f:
-        contents = f.read()
 
     try:
         decoded_file = fernet.decrypt(contents)
     except InvalidToken as err:
         raise NO_ACCESS_EXCEPTION from err
 
-    decrypted_file_tmp_path = Path(FILE_PATH) / f"{uuid.uuid4()}{path}"
-
-    with Path.open(decrypted_file_tmp_path, "wb") as f:
-        f.write(decoded_file)
-
-    return decrypted_file_tmp_path
+    return decoded_file
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
