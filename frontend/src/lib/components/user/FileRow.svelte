@@ -59,10 +59,8 @@
   });
 
   const downloadFile = () => {
-    if(file.encrypted)
-      isDownloadWindowVisible = true;
-    else
-      getFile();
+    if (file.encrypted) isDownloadWindowVisible = true;
+    else getFile();
   };
   const getFile = async () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -195,7 +193,6 @@
   });
 
   $: ({ classes, getStyles } = useStyles());
-  $: ({ classes, getStyles } = useStyles());
 </script>
 
 <Box class={getStyles()}>
@@ -305,13 +302,11 @@
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="l" justify="center">
         <Title order={3}>Download File</Title>
-          <TextInput type="text" name="filepassword" bind:value={downloadFilePassword}/>
-          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
-            Submit
-          </Button>
-          <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>
-            Close
-          </Button>
+        <TextInput type="text" name="filepassword" bind:value={downloadFilePassword} />
+        <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
+          Submit
+        </Button>
+        <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>Close</Button>
       </Flex>
     </Box>
   </Overlay>
