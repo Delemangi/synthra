@@ -163,7 +163,7 @@ async def verify_file_link(
         if file is None:
             raise NOT_FOUND_EXCEPTION
 
-        if file.encrypted and password is None:  # type: ignore
+        if bool(file.encrypted) and password is None:
             raise NOT_FOUND_EXCEPTION
 
         if (

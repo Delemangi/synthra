@@ -42,7 +42,7 @@ export const sendFileForSpecifiedUser = async (
   accessToken: string,
   file: File,
   password: string = '',
-  isShared: boolean = false,
+  isShared: boolean = false
 ) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -52,19 +52,23 @@ export const sendFileForSpecifiedUser = async (
   const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
       authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'multipart/form-data'
     }
   });
 
   return result.data;
 };
 
-export const getFileByPath = async (accessToken: string | null, path: string, password: string | null = null) => {
+export const getFileByPath = async (
+  accessToken: string | null,
+  path: string,
+  password: string | null = null
+) => {
   const result = await axios.get(`${BASE_URL}/files/download/${path}`, {
     responseType: 'blob',
     headers: {
       authorization: `Bearer ${accessToken}`,
-      'Password': password,
+      Password: password
     }
   });
 

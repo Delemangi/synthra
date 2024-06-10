@@ -61,8 +61,6 @@
         alert('You need to be logged in.');
         return;
       }
-
-
     } catch (error) {
       alert('The file does not exist, or has expired.');
       window.location.href = '/';
@@ -70,13 +68,16 @@
   });
 
   const downloadFile = async () => {
-
-    if(filePath == null) {
+    if (filePath == null) {
       alert('An error occurred while downloading the file.');
       return;
     }
 
-    let retrievedFile = await getFileByPath(localStorage.getItem('accessToken'), filePath, downloadFilePassword);
+    let retrievedFile = await getFileByPath(
+      localStorage.getItem('accessToken'),
+      filePath,
+      downloadFilePassword
+    );
 
     if (retrievedFile) {
       fileUrl = URL.createObjectURL(retrievedFile);
@@ -136,7 +137,10 @@
         bind:value={downloadFilePassword}
       />
     {/if}
-    <Button on:click={downloadFile} disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button>
+    <Button
+      on:click={downloadFile}
+      disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button
+    >
     <br />
     {#if fileUrl && isFileTypeSupported(filePath)}
       <div

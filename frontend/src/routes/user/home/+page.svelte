@@ -37,7 +37,7 @@
 
     try {
       await sendFileForSpecifiedUser(accessToken, filesToUpload[0], filePassword, privateFile);
-      filePassword = ''
+      filePassword = '';
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -137,14 +137,19 @@
           <Text>Private?</Text>
         </Flex>
         <Flex justify="center" align="center" gap="md">
-          <Checkbox bind:checked={passwordLock} on:change={() => filePassword = ''}></Checkbox>
+          <Checkbox bind:checked={passwordLock} on:change={() => (filePassword = '')}></Checkbox>
           <Text>Lock with password?</Text>
         </Flex>
         {#if passwordLock}
-          <input type="text" name="filepassword" bind:value={filePassword} required/>
+          <input type="text" name="filepassword" bind:value={filePassword} required />
         {/if}
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={sendData} disabled={(!filesToUpload?.length) || ((filesToUpload?.length) && (passwordLock) && (!filePassword?.length))}>
+          <Button
+            variant="filled"
+            on:click={sendData}
+            disabled={!filesToUpload?.length ||
+              (filesToUpload?.length && passwordLock && !filePassword?.length)}
+          >
             Submit
           </Button>
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
