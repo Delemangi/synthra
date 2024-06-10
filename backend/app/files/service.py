@@ -36,7 +36,7 @@ async def upload_file(
     async with session.begin():
         contents = await file.read()
 
-        if password is not None:
+        if password is not None and password != "":
             key = derive_key(password, current_user.id.bytes)
             fernet = Fernet(key)
             contents = fernet.encrypt(contents)
@@ -47,7 +47,7 @@ async def upload_file(
         file_db = File(
             name=file.filename,
             path=file_path,
-            encrypted=password is not None,
+            encrypted=password is not None and password != "",
             size=file.size,
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),
@@ -171,6 +171,9 @@ async def verify_file_link(
             and current_user is not None
             and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
         ):
+            raise NO_ACCESS_EXCEPTION
+
+        if bool(file.encrypted) and (password is None or password == ""):
             raise NO_ACCESS_EXCEPTION
 
         return str(file.name)

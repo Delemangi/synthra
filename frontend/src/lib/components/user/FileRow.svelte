@@ -305,7 +305,6 @@
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Download File</Title>
-
         <input type="text" name="filepassword" bind:value={downloadFilePassword}/>
 
         <Flex justify="space-around" align="center">

@@ -20,6 +20,8 @@
 
   let filesToUpload: FileList | null = null;
   let privateFile = true;
+  let passwordLock = false;
+  let filePassword = '';
 
   const sendData = async () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -34,8 +36,8 @@
     }
 
     try {
-      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], uploadFilePassword, privateFile);
-      uploadFilePassword = ''
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], filePassword, privateFile);
+      filePassword = ''
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -74,7 +76,6 @@
   $: ({ classes, getStyles } = useStyles());
 
   let userFiles: FileMetadata[] = [];
-  let uploadFilePassword = '';
 
   let visible = false;
 
@@ -135,10 +136,15 @@
           <Checkbox bind:checked={privateFile}></Checkbox>
           <Text>Private?</Text>
         </Flex>
-        <input type="text" name="filepassword" bind:value={uploadFilePassword}/>
-
+        <Flex justify="center" align="center" gap="md">
+          <Checkbox bind:checked={passwordLock} on:change={() => filePassword = ''}></Checkbox>
+          <Text>Lock with password?</Text>
+        </Flex>
+        {#if passwordLock}
+          <input type="text" name="filepassword" bind:value={filePassword} required/>
+        {/if}
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}>
+          <Button variant="filled" on:click={sendData} disabled={(!filesToUpload?.length) || ((filesToUpload?.length) && (passwordLock) && (!filePassword?.length))}>
             Submit
           </Button>
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
