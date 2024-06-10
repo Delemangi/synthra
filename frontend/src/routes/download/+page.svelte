@@ -11,6 +11,8 @@
   } from '@svelteuidev/core';
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
+  import { SUPPORTED_FILE_TYPES } from '../../utils/constants';
+  import { isFileTypeSupported } from '../../utils/functions';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -41,8 +43,6 @@
   let fileMetadata: FileMetadata | null = null;
   let fileUrl: string | null = null;
 
-  const validExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.txt'];
-
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     filePath = urlParams.get('file');
@@ -67,18 +67,9 @@
       }
     } catch (error) {
       alert('The file does not exist, or has expired.');
+      window.location.href = '/';
     }
   });
-
-  const isValidFileType = (url: string | null) => {
-    if (url == null) {
-      return false;
-    }
-
-    const extension = url.slice(((url.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase();
-
-    return validExtensions.includes(`.${extension}`);
-  };
 
   const downloadFile = async () => {
     if (!filePath) {
@@ -90,6 +81,7 @@
 
     if (!accessToken) {
       alert('You need to be logged in.');
+      window.location.href = '/';
       return;
     }
 
@@ -131,7 +123,7 @@
 
     <Button on:click={downloadFile}>Download</Button>
     <br />
-    {#if fileUrl && isValidFileType(filePath)}
+    {#if fileUrl && isFileTypeSupported(filePath)}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
       >
@@ -145,7 +137,9 @@
     {:else}
       <div style="text-align: center;">
         <Text>
-          The file must be one of the following types to be previewed: {validExtensions.join(', ')}
+          The file must be one of the following types to be previewed: {SUPPORTED_FILE_TYPES.join(
+            ', '
+          )}
         </Text>
       </div>
     {/if}

@@ -6,13 +6,20 @@
     Flex,
     Overlay,
     Text,
+    TextInput,
     Title,
     Tooltip,
     createStyles,
     type theme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { DoubleArrowRight, Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
-  import { deleteFileByPath, getFileByPath } from '../../../server/files';
+  import {
+    addShareForFile,
+    deleteFileByPath,
+    deleteShareForFile,
+    getFileByPath
+  } from '../../../server/files';
   import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
 
@@ -21,6 +28,8 @@
     'test',
     1,
     'test',
+    'test',
+    [],
     new Date(2021, 1, 1),
     new Date(2021, 1, 1),
     'test'
@@ -36,10 +45,7 @@
         backgroundColor: '$gray50',
         textAlign: 'center',
         padding: '$10',
-        borderRadius: '$md',
-        '&:hover': {
-          backgroundColor: '$gray100'
-        }
+        borderRadius: '$md'
       },
       flexOverlay: {
         display: 'flex',
@@ -92,6 +98,8 @@
   };
 
   let shareTooltipText = 'Share';
+  let visible = false;
+  let usernameShare = '';
   let isDownloadWindowVisible = false;
   let downloadFilePassword = '';
 
@@ -148,6 +156,36 @@
     }
   };
 
+  const shareFile = async () => {
+    try {
+      await addShareForFile(usernameShare, file.id);
+      window.location.reload();
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 404) {
+        alert('That user does not exist.');
+        return;
+      }
+
+      alert('An error occurred while sharing the file.');
+    }
+  };
+
+  const deleteShare = async (id: string) => {
+    await deleteShareForFile(id);
+    window.location.reload();
+  };
+
+  const openShare = () => {
+    if (file.shared) {
+      visible = true;
+    }
+  };
+
   const dateTimeFormat = new Intl.DateTimeFormat('en-UK', {
     year: 'numeric',
     month: 'long',
@@ -156,6 +194,7 @@
     minute: 'numeric'
   });
 
+  $: ({ classes, getStyles } = useStyles());
   $: ({ classes, getStyles } = useStyles());
 </script>
 
@@ -170,6 +209,17 @@
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {file.encrypted ? 'Yes' : 'No'}
     </Text>
+    {#if file.shared}
+      <Text
+        size="sm"
+        css={{ flex: 1, textAlign: 'center', textDecoration: 'underline', cursor: 'pointer' }}
+        on:click={openShare}
+      >
+        Manage Sharing ({file.shared_people.length})
+      </Text>
+    {:else}
+      <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>Public</Text>
+    {/if}
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {dateTimeFormat.format(new Date(file.timestamp))}
     </Text>
@@ -210,6 +260,45 @@
     </Flex>
   </Flex>
 </Box>
+
+{#if visible}
+  <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
+    <Box class={getStyles()}>
+      <Flex direction="column" align="space-evenly" gap="md" justify="center">
+        <Title order={3}>Share File</Title>
+        {#if file.shared_people.length > 0}
+          {#each file.shared_people as share}
+            <Box class={getStyles()}>
+              <Flex align="center" justify="space-evenly" style="height: 100%;">
+                <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
+                  {share.username}
+                </Text>
+                <Tooltip openDelay={10} label="Delete">
+                  <ActionIcon color="red" variant="filled" on:click={() => deleteShare(share.id)}>
+                    <Trash size={20} />
+                  </ActionIcon>
+                </Tooltip>
+              </Flex>
+            </Box>
+          {/each}
+        {:else}
+          <Text>This file is not yet shared with anyone.</Text>
+        {/if}
+        <br />
+        <Flex justify="space-around" align="center">
+          <TextInput label="Username" bind:value={usernameShare} />
+        </Flex>
+        <Flex justify="space-around" align="center">
+          <Button variant="filled" on:click={shareFile}>Share</Button>
+        </Flex>
+        <br />
+        <Flex justify="space-around" align="center">
+          <Button variant="light" on:click={() => (visible = false)}>Close</Button>
+        </Flex>
+      </Flex>
+    </Box>
+  </Overlay>
+{/if}
 
 {#if isDownloadWindowVisible}
   <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>

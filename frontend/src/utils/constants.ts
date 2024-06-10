@@ -38,3 +38,5 @@ export const HOME_SCREEN_ITEMS = [
   ),
   new HomeScreenInfo('ShareX support', 'Full ShareX support!', 'ShareX', 'light', 'cyan')
 ];
+
+export const SUPPORTED_FILE_TYPES = ['.pdf', '.png', '.jpg', '.jpeg', '.mp4', '.mp3', '.txt'];

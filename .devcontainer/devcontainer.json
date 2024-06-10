@@ -1,14 +1,51 @@
 {
-  "forwardPorts": [
-    8002,
-    8001,
-    8000,
-    5432,
-    5173,
-    3000
-  ],
   "dockerComposeFile": "./docker-compose.yaml",
+  "forwardPorts": [
+    3000,
+    5173,
+    5432,
+    8000,
+    8001,
+    8002
+  ],
+  "name": "Synthra",
+  "postCreateCommand": ".devcontainer/create.sh",
   "service": "dev",
   "workspaceFolder": "/synthra",
-  "name": "Synthra"
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "ardenivanov.svelte-intellisense",
+        "charliermarsh.ruff",
+        "dbaeumer.vscode-eslint",
+        "donjayamanne.python-extension-pack",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "foxundermoon.shell-format",
+        "github.copilot",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "htmlhint.vscode-htmlhint",
+        "kevinrose.vsc-python-indent",
+        "me-dutour-mathieu.vscode-github-actions",
+        "meganrogge.template-string-converter",
+        "ms-azuretools.vscode-docker",
+        "ms-python.debugpy",
+        "ms-python.mypy-type-checker",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-vscode-remote.remote-containers",
+        "sonarsource.sonarlint-vscode",
+        "stylelint.vscode-stylelint",
+        "svelte.svelte-vscode",
+        "tamasfe.even-better-toml",
+        "usernamehw.errorlens",
+        "yoavbls.pretty-ts-errors"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/synthra/backend/.venv/bin/python"
+      }
+    }
+  }
 }

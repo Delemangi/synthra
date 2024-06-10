@@ -15,9 +15,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
 from .constants import FILE_PATH
-from .exceptions import no_access_exception, not_found_exception, quota_exception
+from .exceptions import NO_ACCESS_EXCEPTION, NOT_FOUND_EXCEPTION, QUOTA_EXCEPTION
 from .models import File
-from .schemas import MetadataFileResponse
+from .schemas import MetadataFileResponse, ShareResponse
 
 
 async def upload_file(
@@ -28,7 +28,7 @@ async def upload_file(
     password: str | None = None,
 ) -> str:
     if not current_user.has_remaining_quota():
-        raise quota_exception
+        raise QUOTA_EXCEPTION
 
     file_path = f"{uuid.uuid4()}{file.filename}"
     path = Path(FILE_PATH) / file_path
@@ -51,7 +51,7 @@ async def upload_file(
             size=file.size,
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),
-            user=current_user,
+            user_id=current_user.id,
             shared=is_shared,
         )
 
@@ -85,6 +85,11 @@ async def get_all_files_user(
                 path=str(file.path),
                 size=file.size,  # type: ignore[arg-type]
                 encrypted=bool(file.encrypted),
+                shared=bool(file.shared),
+                shared_people=[
+                    ShareResponse(id=str(el.id), username=el.user.username)
+                    for el in file.shared_with
+                ],
                 timestamp=file.timestamp,  # type: ignore[arg-type]
                 expiration=file.expiration,  # type: ignore[arg-type]
             )
@@ -98,7 +103,7 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         return MetadataFileResponse(
             id=file.id,  # type: ignore[arg-type]
@@ -106,6 +111,8 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
             path=str(file.path),
             size=file.size,  # type: ignore[arg-type]
             encrypted=bool(file.encrypted),
+            shared=bool(file.shared),
+            shared_people=[],
             timestamp=file.timestamp,  # type: ignore[arg-type]
             expiration=file.expiration,  # type: ignore[arg-type]
         )
@@ -121,12 +128,19 @@ async def verify_file(
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         if file.user.id == current_user.id:
             return str(file.name)
 
-        raise no_access_exception
+        if (
+            bool(file.shared)
+            and current_user is not None
+            and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
+        ):
+            raise NO_ACCESS_EXCEPTION
+
+        return str(file.name)
 
 
 async def verify_file_link(
@@ -137,17 +151,17 @@ async def verify_file_link(
         file = files.scalar_one_or_none()
 
         if file is None:
-            raise not_found_exception
+            raise NOT_FOUND_EXCEPTION
 
         if file.encrypted and password is None:  # type: ignore
-            raise no_access_exception
+            raise NOT_FOUND_EXCEPTION
 
         if (
-            file.shared  # type: ignore
-            and current_user is not None  # type: ignore
-            and current_user.id not in [share.user_id for share in file.shared_with]
-        ):  # type: ignore
-            raise no_access_exception
+            bool(file.shared)
+            and current_user is not None
+            and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
+        ):
+            raise NO_ACCESS_EXCEPTION
 
         return str(file.name)
 
@@ -163,7 +177,7 @@ async def delete_file(
     if path_to_delete.exists():
         path_to_delete.unlink()
     else:
-        raise not_found_exception
+        raise NOT_FOUND_EXCEPTION
 
 
 async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | None:
@@ -185,7 +199,7 @@ def decrypt_file(path: str, password: str | None, current_user: User) -> str:
     try:
         decoded_file = fernet.decrypt(contents)
     except InvalidToken as err:
-        raise no_access_exception from err
+        raise NO_ACCESS_EXCEPTION from err
 
     decrypted_file_tmp_path = Path(FILE_PATH) / f"{uuid.uuid4()}{path}"
 

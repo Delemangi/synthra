@@ -55,6 +55,29 @@ jobs:
           cd frontend
           npm run lint
 
+  vitest:
+    name: Vitest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm i
+
+      - name: Run Vitest
+        run: |
+          cd frontend
+          npm run test
+
   ruff:
     name: Ruff
     runs-on: ubuntu-latest
@@ -72,7 +95,7 @@ jobs:
         run: |
           pip install poetry
           cd backend
-          poetry install
+          poetry install --no-root
 
       - name: Run Ruff
         run: |
@@ -96,12 +119,36 @@ jobs:
         run: |
           pip install poetry
           cd backend
-          poetry install
+          poetry install --no-root
 
       - name: Run MyPy
         run: |
           cd backend
           poetry run mypy .
+
+  pytest:
+    name: PyTest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Poetry
+        run: |
+          pip install poetry
+          cd backend
+          poetry install --no-root
+
+      - name: Run PyTest
+        run: |
+          cd backend
+          poetry run pytest
 
   sonarcloud:
     name: SonarCloud
@@ -126,6 +173,7 @@ jobs:
     needs:
       - mypy
       - ruff
+      - pytest
 
     steps:
       - name: Set up QEMU
@@ -154,6 +202,7 @@ jobs:
     needs:
       - svelte
       - eslint
+      - vitest
 
     steps:
       - name: Set up QEMU

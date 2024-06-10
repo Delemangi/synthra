@@ -16,6 +16,7 @@
   import { onMount } from 'svelte';
   import { clearSession } from '../../../auth/session';
   import { getWebhooksForSpecifiedUser, uploadWebhook } from '../../../server/webhooks';
+  import { URL_REGEX } from '../../../utils/regex';
 
   let name = '';
   let url = '';
@@ -86,8 +87,6 @@
       alert('An error occurred while fetching the webhooks.');
     }
   });
-
-  const URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
 </script>
 
 <div

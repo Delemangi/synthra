@@ -14,16 +14,40 @@ export const getFilesForSpecifiedUser = async (accessToken: string) => {
   return result.data;
 };
 
+export const addShareForFile = async (username: string, file_id: string) => {
+  await axios.post(
+    `${BASE_URL}/shares/create`,
+    JSON.stringify({ username: username, file_id: file_id }),
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+};
+
+export const deleteShareForFile = async (share_id: string) => {
+  await axios.delete(`${BASE_URL}/shares/delete/${share_id}`);
+};
+
 export const getMetadataFilePath = async (path: string) => {
   const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}/`);
 
   return result.data;
 };
 
-export const sendFileForSpecifiedUser = async (accessToken: string, file: File, password: string) => {
+// isShared is false by default (which means that everyone can see it)
+export const sendFileForSpecifiedUser = async (
+  accessToken: string,
+  file: File,
+  isShared: boolean = false,
+  password: string = ''
+) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('password', password);
+  formData.append('is_shared', isShared.toString());
 
   const result = await axios.post<FileUploaded>(`${BASE_URL}/files/`, formData, {
     headers: {
