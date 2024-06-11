@@ -23,6 +23,7 @@ Authors:
 - File previews
 - File whitelist
 - Encryption
+- 2FA
 - User registration and login
 - Intuitive interface
 - Support for webhooks
