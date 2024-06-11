@@ -21,3 +21,9 @@ class TokenData(BaseModel):
 
 class Code2FA(BaseModel):
     code: str
+
+
+class UserMetadata(BaseModel):
+    username: str
+    quota: int
+    is_2fa_enabled: bool

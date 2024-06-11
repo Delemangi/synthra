@@ -77,6 +77,11 @@ async def update_2fa_code(user: User, session: AsyncSession) -> str:
     return code
 
 
+async def remove_2fa_code(user: User, session: AsyncSession) -> None:
+    await session.execute(update(User).where(User.id == user.id).values(code_2fa=None))
+    await session.commit()
+
+
 async def create_access_token(
     session: AsyncSession,
     data: dict[str, str | int | datetime],

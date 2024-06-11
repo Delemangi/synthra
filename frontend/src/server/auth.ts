@@ -1,5 +1,6 @@
 import type { AccessToken } from '$lib/types/AccessToken';
 import type { Code2FA } from '$lib/types/Code2FA';
+import type { UserMetadata } from '$lib/types/UserMetadata';
 import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -39,6 +40,24 @@ export const get2faToken = async (username: string, password: string) => {
   formData.append('username', username);
   formData.append('password', password);
   const result = await axios.post<Code2FA>(`${BASE_URL}/auth/2fa`, formData);
+
+  return result;
+};
+
+export const remove2faToken = async (username: string, password: string) => {
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('password', password);
+  const result = await axios.post<Code2FA>(`${BASE_URL}/auth/2fa/disable`, formData);
+
+  return result;
+};
+export const getUserMetadata = async (token: string) => {
+  const result = await axios.get<UserMetadata>(`${BASE_URL}/auth/metadata`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  });
 
   return result;
 };
