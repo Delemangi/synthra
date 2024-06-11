@@ -8,9 +8,9 @@
 - [x] Administration Panel
 - [x] File Preview
 - [x] Webhooks
-- [ ] Encryption
+- [x] Encryption
 - [x] Protected Files
-- [ ] 2FA
+- [x] 2FA
 - [ ] URL Shortening
 - [ ] Responsiveness
 - [ ] Localization
