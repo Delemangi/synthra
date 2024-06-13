@@ -132,10 +132,7 @@
     {/if}
 
     {#if fileMetadata?.encrypted}
-      <TextInput
-        placeholder="Enter the password to download the file"
-        bind:value={downloadFilePassword}
-      />
+      <TextInput placeholder="Password..." type="password" bind:value={downloadFilePassword} />
     {/if}
     <Button
       on:click={downloadFile}
