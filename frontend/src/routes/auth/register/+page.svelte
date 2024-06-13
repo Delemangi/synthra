@@ -60,6 +60,6 @@
   </div>
   <br />
   <Text align="center">
-    Already have an account? <a href="/auth/register">Login!</a>
+    Already have an account? <a href="/auth/login">Login!</a>
   </Text>
 </div>
