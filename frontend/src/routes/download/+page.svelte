@@ -10,6 +10,7 @@
     createStyles,
     type DefaultTheme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
   import { SUPPORTED_FILE_TYPES } from '../../utils/constants';
@@ -73,29 +74,30 @@
       return;
     }
 
-    let retrievedFile = await getFileByPath(
-      localStorage.getItem('accessToken'),
-      filePath,
-      downloadFilePassword
-    );
-
-    if (retrievedFile) {
-      fileUrl = URL.createObjectURL(retrievedFile);
-    }
-    if (!filePath) {
-      alert('An error occurred while downloading the file.');
-      return;
-    }
-
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (!accessToken) {
-      alert('You need to be logged in.');
-      window.location.href = '/';
-      return;
-    }
-
     try {
+      let retrievedFile = await getFileByPath(
+        localStorage.getItem('accessToken'),
+        filePath,
+        downloadFilePassword
+      );
+
+      if (retrievedFile) {
+        fileUrl = URL.createObjectURL(retrievedFile);
+      }
+
+      if (!filePath) {
+        alert('An error occurred while downloading the file.');
+        return;
+      }
+
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        alert('You need to be logged in.');
+        window.location.href = '/';
+        return;
+      }
+
       if (fileUrl == null) {
         throw Error();
       }
@@ -112,7 +114,22 @@
 
       // Firefox fix
       document.body.removeChild(a);
-    } catch {
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 404) {
+        alert('That file does not exist.');
+        return;
+      }
+
+      if (error.response?.status === 403) {
+        alert('Invalid password.');
+        return;
+      }
+
       alert('An error occurred while downloading the file.');
     }
   };
