@@ -70,5 +70,6 @@
   },
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.format.config.singleQuote": true,
-  "svelte.plugin.svelte.format.config.svelteStrictMode": true
+  "svelte.plugin.svelte.format.config.svelteStrictMode": true,
+  "vitest.disableWorkspaceWarning": true
 }

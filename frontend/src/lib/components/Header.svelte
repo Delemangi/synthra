@@ -1,6 +1,16 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { Button, Flex, Header, Switch, Title, createStyles, type theme } from '@svelteuidev/core';
+  import {
+    ActionIcon,
+    Button,
+    Flex,
+    Header,
+    Switch,
+    Title,
+    createStyles,
+    type theme
+  } from '@svelteuidev/core';
+  import { Person } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { clearSession } from '../../auth/session';
@@ -98,11 +108,21 @@
       {/if}
 
       {#if accessToken}
-        <Button variant="light">
-          <a class={classes.leftOptions} href="/" on:click={handleLogout}>
-            <Title order={3}>Logout</Title>
-          </a>
-        </Button>
+        <Flex align="center" gap="lg">
+          <Button variant="light">
+            <a class={classes.leftOptions} href="/" on:click={handleLogout}>
+              <Title order={3}>Logout</Title>
+            </a>
+          </Button>
+
+          <ActionIcon
+            variant={$selectedTab == 'account' ? 'filled' : 'light'}
+            color="blue"
+            on:click={() => (window.location.href = '/user/account')}
+          >
+            <Person size={20} />
+          </ActionIcon>
+        </Flex>
       {:else}
         <Button variant="light">
           <a class={classes.leftOptions} href="/auth/login">

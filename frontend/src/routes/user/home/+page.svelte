@@ -9,6 +9,7 @@
     Flex,
     Overlay,
     Text,
+    TextInput,
     Title,
     createStyles,
     type DefaultTheme
@@ -20,6 +21,8 @@
 
   let filesToUpload: FileList | null = null;
   let privateFile = true;
+  let passwordLock = false;
+  let filePassword = '';
 
   const sendData = async () => {
     const accessToken = localStorage.getItem('accessToken');
@@ -34,7 +37,8 @@
     }
 
     try {
-      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], privateFile);
+      await sendFileForSpecifiedUser(accessToken, filesToUpload[0], filePassword, privateFile);
+      filePassword = '';
       window.location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -73,6 +77,7 @@
   $: ({ classes, getStyles } = useStyles());
 
   let userFiles: FileMetadata[] = [];
+
   let visible = false;
 
   onMount(async () => {
@@ -100,6 +105,12 @@
       alert('An error occurred while fetching the files.');
     }
   });
+
+  let fileName: string | null = null;
+
+  const handleFileChange = () => {
+    fileName = filesToUpload?.[0].name ?? null;
+  };
 </script>
 
 <div
@@ -115,7 +126,6 @@
 </div>
 
 <TitleFileRow />
-
 {#each userFiles as file}
   <FileRow {file} />
 {/each}
@@ -126,15 +136,51 @@
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Upload File</Title>
 
-        <input type="file" name="filename" bind:files={filesToUpload} />
+        <div class="file-upload-wrapper">
+          <Flex direction="column" justify="center" gap="md">
+            <label for="file-upload" class="custom-file-upload">
+              <Text align="center">Choose File</Text>
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              name="filename"
+              bind:files={filesToUpload}
+              on:change={handleFileChange}
+            />
+          </Flex>
+
+          <Text align="center">
+            {#if filesToUpload}
+              {fileName}
+            {:else}
+              No file selected
+            {/if}
+          </Text>
+        </div>
 
         <Flex justify="center" align="center" gap="md">
           <Checkbox bind:checked={privateFile}></Checkbox>
           <Text>Private?</Text>
         </Flex>
-
+        <Flex justify="center" align="center" gap="md">
+          <Checkbox bind:checked={passwordLock} on:change={() => (filePassword = '')}></Checkbox>
+          <Text>Encrypt?</Text>
+        </Flex>
+        <TextInput
+          bind:value={filePassword}
+          required={passwordLock}
+          disabled={!passwordLock}
+          placeholder="Password..."
+          type="password"
+        />
         <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={sendData} disabled={!filesToUpload?.length}>
+          <Button
+            variant="filled"
+            on:click={sendData}
+            disabled={!filesToUpload?.length ||
+              (filesToUpload?.length && passwordLock && !filePassword?.length)}
+          >
             Submit
           </Button>
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
@@ -143,3 +189,36 @@
     </Box>
   </Overlay>
 {/if}
+
+<style>
+  .file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .custom-file-upload {
+    display: inline-block;
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  #file-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .custom-file-upload:hover {
+    background-color: #0056b3;
+  }
+</style>

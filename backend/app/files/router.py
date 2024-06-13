@@ -1,9 +1,10 @@
+import io
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, Form, Header, UploadFile
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.dependencies import get_current_user
@@ -19,9 +20,9 @@ from .service import (
     delete_file,
     get_all_files_user,
     get_metadata_path,
-    upload_file_unencrypted,
+    upload_file,
+    verify_and_decrypt_file,
     verify_file,
-    verify_file_link,
 )
 
 router = APIRouter(tags=["files"])
@@ -68,9 +69,10 @@ async def create_upload_file(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     file: UploadFile,
+    password: str = Form(""),
     is_shared: bool = Form(False),
 ) -> FileUploaded:
-    new_file = await upload_file_unencrypted(session, file, current_user, is_shared)
+    new_file = await upload_file(session, file, current_user, is_shared, password)
     return FileUploaded(filename=new_file, username=str(current_user.username))
 
 
@@ -87,19 +89,16 @@ async def get_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
-) -> FileResponse:
-    filename = await verify_file(path, current_user, session)
-    return FileResponse(FILE_PATH + path, filename=filename)
-
-
-@router.get("/download-link/{path}")
-async def get_file_link(
-    path: str,
-    session: Annotated[AsyncSession, Depends(get_async_session)],
-    current_user: Annotated[User, Depends(get_current_user)],
-) -> FileResponse:
-    filename = await verify_file_link(path, session, current_user)
-    return FileResponse(FILE_PATH + path, filename=filename)
+    password: str = Header(None),
+) -> StreamingResponse:
+    print(path)
+    file = await verify_and_decrypt_file(path, current_user, session, password)
+    file_object = io.BytesIO(file)
+    return StreamingResponse(
+        file_object,
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f"attachment; filename={path}"},
+    )
 
 
 @router.get("/metadata/{path}", response_model=MetadataFileResponse)

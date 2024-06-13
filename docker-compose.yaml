@@ -43,6 +43,8 @@ services:
         VITE_BASE_URL: ${VITE_BASE_URL}
     image: delemangi/synthra-frontend:latest
     container_name: synthra-frontend-dev
+    depends_on:
+      - backend
     restart: unless-stopped
     ports:
       - "3000:3000"

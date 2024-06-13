@@ -58,6 +58,11 @@
     };
   });
 
+  const downloadFile = () => {
+    if (file.encrypted) isDownloadWindowVisible = true;
+    else getFile();
+  };
+
   const getFile = async () => {
     const accessToken = localStorage.getItem('accessToken');
 
@@ -68,7 +73,7 @@
     }
 
     try {
-      let retrievedFile = await getFileByPath(accessToken, file.path);
+      let retrievedFile = await getFileByPath(accessToken, file.path, downloadFilePassword);
 
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
@@ -85,8 +90,25 @@
         document.body.removeChild(a);
 
         URL.revokeObjectURL(url);
+
+        isDownloadWindowVisible = false;
       }
-    } catch {
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 404) {
+        alert('That file does not exist.');
+        return;
+      }
+
+      if (error.response?.status === 403) {
+        alert('Invalid password.');
+        return;
+      }
+
       alert('An error occurred while downloading the file.');
     }
   };
@@ -94,6 +116,8 @@
   let shareTooltipText = 'Share';
   let visible = false;
   let usernameShare = '';
+  let isDownloadWindowVisible = false;
+  let downloadFilePassword = '';
 
   const copyToClipboard = () => {
     const baseUrl = window.location.origin;
@@ -239,7 +263,7 @@
         </ActionIcon>
       </Tooltip>
       <Tooltip openDelay={10} label="Download">
-        <ActionIcon variant="filled" on:click={getFile}>
+        <ActionIcon variant="filled" on:click={downloadFile}>
           <Download size={20} />
         </ActionIcon>
       </Tooltip>
@@ -285,6 +309,28 @@
         <br />
         <Flex justify="space-around" align="center">
           <Button variant="light" on:click={() => (visible = false)}>Close</Button>
+        </Flex>
+      </Flex>
+    </Box>
+  </Overlay>
+{/if}
+
+{#if isDownloadWindowVisible}
+  <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
+    <Box class={getStyles()}>
+      <Flex direction="column" align="space-evenly" gap="l" justify="center">
+        <Title order={3}>Download File</Title>
+        <TextInput
+          type="password"
+          name="filepassword"
+          bind:value={downloadFilePassword}
+          placeholder="Password..."
+        />
+        <Flex gap="lg" justify="space-between">
+          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
+            Submit
+          </Button>
+          <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>Close</Button>
         </Flex>
       </Flex>
     </Box>

@@ -1,8 +1,13 @@
+import base64
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
+from cryptography.fernet import Fernet, InvalidToken
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from fastapi import Depends, UploadFile
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,11 +20,12 @@ from .models import File
 from .schemas import MetadataFileResponse, ShareResponse
 
 
-async def upload_file_unencrypted(
+async def upload_file(
     session: AsyncSession,
     file: UploadFile,
     current_user: Annotated[User, Depends(get_current_user)],
     is_shared: bool = False,
+    password: str | None = None,
 ) -> str:
     if not current_user.has_remaining_quota():
         raise QUOTA_EXCEPTION
@@ -29,13 +35,19 @@ async def upload_file_unencrypted(
 
     async with session.begin():
         contents = await file.read()
+
+        if password is not None and password != "":
+            key = derive_key(password, current_user.id.bytes)
+            fernet = Fernet(key)
+            contents = fernet.encrypt(contents)
+
         with Path.open(path, "wb") as f:
             f.write(contents)
 
         file_db = File(
             name=file.filename,
             path=file_path,
-            encrypted=False,
+            encrypted=password is not None and password != "",
             size=file.size,
             timestamp=datetime.now(),
             expiration=datetime.now() + timedelta(days=14),
@@ -131,8 +143,18 @@ async def verify_file(
         return str(file.name)
 
 
+async def verify_and_decrypt_file(
+    path: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: AsyncSession,
+    password: str | None = None,
+) -> bytes:
+    _ = await verify_file(path, current_user, session)
+    return decrypt_file(path, password, current_user)
+
+
 async def verify_file_link(
-    path: str, session: AsyncSession, current_user: User | None = None
+    path: str, session: AsyncSession, current_user: User | None = None, password: str | None = None
 ) -> str:
     async with session:
         files = await session.execute(select(File).filter(File.path == path))
@@ -141,11 +163,17 @@ async def verify_file_link(
         if file is None:
             raise NOT_FOUND_EXCEPTION
 
+        if bool(file.encrypted) and password is None:
+            raise NOT_FOUND_EXCEPTION
+
         if (
             bool(file.shared)
             and current_user is not None
             and str(current_user.id) not in [str(share.user_id) for share in file.shared_with]
         ):
+            raise NO_ACCESS_EXCEPTION
+
+        if bool(file.encrypted) and (password is None or password == ""):
             raise NO_ACCESS_EXCEPTION
 
         return str(file.name)
@@ -157,6 +185,7 @@ async def delete_file(
 ) -> None:
     async with session.begin():
         await session.execute(delete(File).where(File.path == path))
+        await session.commit()
 
     path_to_delete = Path(FILE_PATH) / path
     if path_to_delete.exists():
@@ -169,3 +198,33 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
     async with session:
         file = await session.execute(select(File).filter(File.id == file_id))
         return file.scalar_one_or_none()
+
+
+def decrypt_file(path: str, password: str | None, current_user: User) -> bytes:
+    with Path.open(Path(FILE_PATH) / path, "rb") as f:
+        contents = f.read()
+
+    if password is None or password == "":
+        return contents
+
+    key = derive_key(password, current_user.id.bytes)
+    fernet = Fernet(key)
+
+    try:
+        decoded_file = fernet.decrypt(contents)
+    except InvalidToken as err:
+        raise NO_ACCESS_EXCEPTION from err
+
+    return decoded_file
+
+
+def derive_key(password: str, salt: bytes) -> bytes:
+    """Derive a secret key from the given password."""
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend(),
+    )
+    return base64.urlsafe_b64encode(kdf.derive(password.encode()))
