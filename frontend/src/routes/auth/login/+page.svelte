@@ -69,8 +69,6 @@
 {/if}
 
 {#if code2FAInput}
-  <h1>2FA authentication enabled</h1>
-  <p>Please open your authentication app and enter the code.</p>
   <div
     style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
   >
@@ -81,4 +79,8 @@
     </div>
     <br />
   </div>
+  <br />
+  <Text align="center" size="lg">2FA Authentication</Text>
+  <br />
+  <Text align="center">Please enter the code currently displayed in your authenticator app.</Text>
 {/if}

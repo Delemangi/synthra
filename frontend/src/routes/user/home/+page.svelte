@@ -9,6 +9,7 @@
     Flex,
     Overlay,
     Text,
+    TextInput,
     Title,
     createStyles,
     type DefaultTheme
@@ -104,6 +105,12 @@
       alert('An error occurred while fetching the files.');
     }
   });
+
+  let fileName: string | null = null;
+
+  const handleFileChange = () => {
+    fileName = filesToUpload?.[0].name ?? null;
+  };
 </script>
 
 <div
@@ -119,7 +126,6 @@
 </div>
 
 <TitleFileRow />
-
 {#each userFiles as file}
   <FileRow {file} />
 {/each}
@@ -130,7 +136,28 @@
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Upload File</Title>
 
-        <input type="file" name="filename" bind:files={filesToUpload} />
+        <div class="file-upload-wrapper">
+          <Flex direction="column" justify="center" gap="md">
+            <label for="file-upload" class="custom-file-upload">
+              <Text align="center">Choose File</Text>
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              name="filename"
+              bind:files={filesToUpload}
+              on:change={handleFileChange}
+            />
+          </Flex>
+
+          <Text align="center">
+            {#if filesToUpload}
+              {fileName}
+            {:else}
+              No file selected
+            {/if}
+          </Text>
+        </div>
 
         <Flex justify="center" align="center" gap="md">
           <Checkbox bind:checked={privateFile}></Checkbox>
@@ -138,11 +165,15 @@
         </Flex>
         <Flex justify="center" align="center" gap="md">
           <Checkbox bind:checked={passwordLock} on:change={() => (filePassword = '')}></Checkbox>
-          <Text>Lock with password?</Text>
+          <Text>Encrypt?</Text>
         </Flex>
-        {#if passwordLock}
-          <input type="text" name="filepassword" bind:value={filePassword} required />
-        {/if}
+        <TextInput
+          bind:value={filePassword}
+          required={passwordLock}
+          disabled={!passwordLock}
+          placeholder="Password..."
+          type="password"
+        />
         <Flex justify="space-around" align="center">
           <Button
             variant="filled"
@@ -158,3 +189,36 @@
     </Box>
   </Overlay>
 {/if}
+
+<style>
+  .file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .custom-file-upload {
+    display: inline-block;
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  #file-upload {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .custom-file-upload:hover {
+    background-color: #0056b3;
+  }
+</style>

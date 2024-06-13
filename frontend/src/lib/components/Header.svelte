@@ -108,7 +108,7 @@
       {/if}
 
       {#if accessToken}
-        <Flex align="center">
+        <Flex align="center" gap="lg">
           <Button variant="light">
             <a class={classes.leftOptions} href="/" on:click={handleLogout}>
               <Title order={3}>Logout</Title>
