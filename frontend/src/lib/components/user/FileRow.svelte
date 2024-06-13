@@ -62,6 +62,7 @@
     if (file.encrypted) isDownloadWindowVisible = true;
     else getFile();
   };
+
   const getFile = async () => {
     const accessToken = localStorage.getItem('accessToken');
 

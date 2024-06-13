@@ -10,10 +10,10 @@
     createStyles,
     type theme
   } from '@svelteuidev/core';
+  import { Person } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { clearSession } from '../../auth/session';
-  import { Person } from 'radix-icons-svelte';
 
   export let toggleTheme = () => {};
   export let currentTheme = 'light';
