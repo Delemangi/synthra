@@ -378,17 +378,17 @@ Here is an exhaustive list of dependencies utilized by the frontend and backend:
 Frontend:
 
 - `@sveltejs/adapter-node`
-- `@sveltejs/kit"`
+- `@sveltejs/kit`
 - `@sveltejs/vite-plugin-svelte`
 - `@typescript-eslint/eslint-plugin`
 - `@typescript-eslint/parser`
 - `eslint`
 - `eslint-config-prettier`
-- `eslint-plugin-svelte"`
+- `eslint-plugin-svelte`
 - `prettier`
 - `prettier-plugin-svelte`
 - `rimraf`
-- `svelte"`
+- `svelte`
 - `svelte-check`
 - `tslib`
 - `typescript`
