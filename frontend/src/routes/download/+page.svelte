@@ -14,7 +14,6 @@
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
   import { SUPPORTED_FILE_TYPES } from '../../utils/constants';
-  import { isFileTypeSupported } from '../../utils/functions';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -45,6 +44,7 @@
   let fileMetadata: FileMetadata | null = null;
   let fileUrl: string | null = null;
   let downloadFilePassword: string = '';
+  let isPreviewable: boolean = false;
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -57,6 +57,16 @@
     try {
       fileMetadata = await getMetadataFilePath(filePath);
       const accessToken = localStorage.getItem('accessToken');
+
+      let [retrievedFile, contentType] = await getFileByPath(
+        localStorage.getItem('accessToken'),
+        filePath,
+        downloadFilePassword
+      );
+
+      isPreviewable = contentType != 'application/octet-stream';
+
+      fileUrl = window.URL.createObjectURL(retrievedFile);
 
       if (!accessToken) {
         alert('You need to be logged in.');
@@ -75,7 +85,7 @@
     }
 
     try {
-      let retrievedFile = await getFileByPath(
+      let [retrievedFile] = await getFileByPath(
         localStorage.getItem('accessToken'),
         filePath,
         downloadFilePassword
@@ -156,7 +166,7 @@
       disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button
     >
     <br />
-    {#if fileUrl && isFileTypeSupported(filePath)}
+    {#if fileUrl && isPreviewable}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
       >
