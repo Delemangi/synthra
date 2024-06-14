@@ -64,7 +64,7 @@ export const getFileByPath = async (
   path: string,
   password: string | null = null
 ) => {
-  const result = await axios.get(`${BASE_URL}/files/download/${path}`, {
+  const result = await axios.get<Blob>(`${BASE_URL}/files/download/${path}`, {
     responseType: 'blob',
     headers: {
       authorization: `Bearer ${accessToken}`,
@@ -72,7 +72,10 @@ export const getFileByPath = async (
     }
   });
 
-  return new File([result.data], path, { type: result.data.type });
+  const contentType = result.headers['content-type'];
+  const file = new Blob([result.data], { type: contentType });
+
+  return [file, contentType];
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {

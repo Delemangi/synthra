@@ -153,6 +153,29 @@ async def verify_and_decrypt_file(
     return decrypt_file(path, password, current_user)
 
 
+def map_mimetype(extension: str) -> str:
+    return {
+        ".pdf": "application/pdf",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".gif": "image/gif",
+        ".mp3": "audio/mpeg",
+        ".wav": "audio/wav",
+        ".ogg": "audio/ogg",
+        ".mp4": "video/mp4",
+        ".avi": "video/x-msvideo",
+        ".mov": "video/quicktime",
+        ".wmv": "video/x-ms-wmv",
+        ".txt": "text/plain",
+        ".html": "text/html",
+        ".csv": "text/csv",
+        ".json": "application/json",
+        ".xml": "application/xml",
+        ".svg": "image/svg+xml",
+    }.get(extension, "application/octet-stream")
+
+
 async def verify_file_link(
     path: str, session: AsyncSession, current_user: User | None = None, password: str | None = None
 ) -> str:

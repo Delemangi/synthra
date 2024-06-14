@@ -10,10 +10,10 @@
     createStyles,
     type DefaultTheme
   } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
   import { getFileByPath, getMetadataFilePath } from '../../server/files';
   import { SUPPORTED_FILE_TYPES } from '../../utils/constants';
-  import { isFileTypeSupported } from '../../utils/functions';
 
   const useStyles = createStyles((theme: DefaultTheme) => {
     return {
@@ -44,6 +44,7 @@
   let fileMetadata: FileMetadata | null = null;
   let fileUrl: string | null = null;
   let downloadFilePassword: string = '';
+  let isPreviewable: boolean = false;
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -57,11 +58,23 @@
       fileMetadata = await getMetadataFilePath(filePath);
       const accessToken = localStorage.getItem('accessToken');
 
+      let [retrievedFile, contentType] = await getFileByPath(
+        localStorage.getItem('accessToken'),
+        filePath,
+        downloadFilePassword
+      );
+
+      console.log(contentType)
+      isPreviewable = contentType != 'application/octet-stream'
+
+      fileUrl = window.URL.createObjectURL(retrievedFile);
+
       if (!accessToken) {
         alert('You need to be logged in.');
         return;
       }
     } catch (error) {
+      console.log(error)
       alert('The file does not exist, or has expired.');
       window.location.href = '/';
     }
@@ -73,29 +86,30 @@
       return;
     }
 
-    let retrievedFile = await getFileByPath(
-      localStorage.getItem('accessToken'),
-      filePath,
-      downloadFilePassword
-    );
-
-    if (retrievedFile) {
-      fileUrl = URL.createObjectURL(retrievedFile);
-    }
-    if (!filePath) {
-      alert('An error occurred while downloading the file.');
-      return;
-    }
-
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (!accessToken) {
-      alert('You need to be logged in.');
-      window.location.href = '/';
-      return;
-    }
-
     try {
+      let [retrievedFile, contentType] = await getFileByPath(
+        localStorage.getItem('accessToken'),
+        filePath,
+        downloadFilePassword
+      );
+
+      if (retrievedFile) {
+        fileUrl = URL.createObjectURL(retrievedFile);
+      }
+
+      if (!filePath) {
+        alert('An error occurred while downloading the file.');
+        return;
+      }
+
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        alert('You need to be logged in.');
+        window.location.href = '/';
+        return;
+      }
+
       if (fileUrl == null) {
         throw Error();
       }
@@ -112,7 +126,22 @@
 
       // Firefox fix
       document.body.removeChild(a);
-    } catch {
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 404) {
+        alert('That file does not exist.');
+        return;
+      }
+
+      if (error.response?.status === 403) {
+        alert('Invalid password.');
+        return;
+      }
+
       alert('An error occurred while downloading the file.');
     }
   };
@@ -139,7 +168,7 @@
       disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button
     >
     <br />
-    {#if fileUrl && isFileTypeSupported(filePath)}
+    {#if fileUrl && isPreviewable}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
       >

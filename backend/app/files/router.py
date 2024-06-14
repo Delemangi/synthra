@@ -20,6 +20,7 @@ from .service import (
     delete_file,
     get_all_files_user,
     get_metadata_path,
+    map_mimetype,
     upload_file,
     verify_and_decrypt_file,
     verify_file,
@@ -92,12 +93,13 @@ async def get_file(
     password: str = Header(None),
 ) -> StreamingResponse:
     print(path)
-    file = await verify_and_decrypt_file(path, current_user, session, password)
+    file: bytes = await verify_and_decrypt_file(path, current_user, session, password)
     file_object = io.BytesIO(file)
+
     return StreamingResponse(
         file_object,
-        media_type="application/octet-stream",
-        headers={"Content-Disposition": f"attachment; filename={path}"},
+        media_type=map_mimetype("." + path.split(".")[-1]),
+        headers={"Content-Disposition": f'inline; filename="{path}"'},
     )
 
 
