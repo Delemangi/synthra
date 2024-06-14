@@ -56,7 +56,7 @@ async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> 
         size=1,
         timestamp=datetime.now(),
         expiration=datetime.now() + timedelta(days=14),
-        user=user,
+        user_id=user.id,
     )
 
     await create_file(session, file_db)
