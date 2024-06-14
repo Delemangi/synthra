@@ -256,7 +256,7 @@ While building the frontend, the environment variable `VITE_BASE_URL` should be 
 The manual setup requires that you have the following tools installed:
 
 - [Python](https://www.python.org/) >= v3.11
-- [Poetry](https://python-poetry.org/) (whichever version `pip` installs for you)
+- [Poetry](https://python-poetry.org/) (feel free to use whichever version `pip` installs for you)
 - [Node.js](https://nodejs.org/en) >= v20
 - [PostgreSQL](https://www.postgresql.org/) >= v16
 
@@ -325,6 +325,14 @@ The backend code (`app` folder) is divided up into Python modules (with folders 
 
 The backend's modules are `files` (for handling file related tasks, such as downloading, uploading, encrypting), `auth` (for authentication, logging in and registering), `shares` (for handling file sharing and whitelists) and `webhooks` (for webhooks). Each module contains its own endpoints (in `router.py`), services (in `service.py`), contants (in `contants.py`), PyDantic schemas (in `schemas.py`), HTTP exceptions (in `exceptions.py`), and several others unique to only one or some modules, but not all.
 
+FastAPI uses routers to improve how routes are specified. Routers can have a base path, on which all routes which are a part of that router, get their paths joined to the router's base path. Routes can also be specified outside of routers, but in this project, because of the clear separation of concerns, and also for code cleanliness, everything (except the root/base endpoint, which is made available for testing and health checks: `/`) resides within a router. In reality, each router actually represents one of the said modules from above (files, auth, shares and webhooks). All service logic resides within one of these, respectively.
+
+FastAPI also makes extensive use of dependency injection in routes. Using dependency injection, the database session object (with which queries are run), as well as the session token of the currently logged in user, are made available to all endpoints which need them. This provides an intuitive way of protecting endpoints which should only be available to logged in users.
+
+For specifying the request and response schemas of requests, we can use `PyDantic` schemas. These schemas are just classes which inherit from the library's base class, and represent a format of data. For each endpoint which adheres to the REST principles (i.e. returns JSON), a PyDantic schema can be used to represent what the request takes in, and what it responds with. On the frontend, TypeScript can be used to type these schemas as well, so that we have a type safe way of transmitting data between the frontend and the backend.
+
+Because FastAPI implements the ASGI (**Asynchronous** Server Gateway Interface), we can utilize the asynchronous nature to practically make everything non blocking and enable the application to have better performance than blocking frameworks out of the box.
+
 ![FastAPI Architecture](11.png)
 
 ### Frontend (Architecture)
@@ -346,6 +354,8 @@ The available routes of the application are:
 - `/user/account` - account route
 - `/user/home` - files view route
 - `/user/webhooks` - webhooks view route
+
+While Svelte is for single page applications (SPA), SvelteKit is based on Svelte, but offers several more features out of the box, such as server side rendering (SSR), folder (or file) based routing, directly defining API routes, code splitting. SvelteKit comes with different adapters for ease of building and deploying it on any platform (such as locally with Node, Vercel, Netlify, CloudFlare Workers and some more options). It is comparable to what `Next.js` is for `React`.
 
 ![SvelteKit Architecture](12.png)
 
@@ -377,60 +387,60 @@ Here is an exhaustive list of dependencies utilized by the frontend and backend:
 
 Frontend:
 
-- `@sveltejs/adapter-node`
-- `@sveltejs/kit`
-- `@sveltejs/vite-plugin-svelte`
-- `@typescript-eslint/eslint-plugin`
-- `@typescript-eslint/parser`
-- `eslint`
-- `eslint-config-prettier`
-- `eslint-plugin-svelte`
-- `prettier`
-- `prettier-plugin-svelte`
-- `rimraf`
-- `svelte`
-- `svelte-check`
-- `tslib`
-- `typescript`
-- `vite`
-- `vitest`
-- `@svelte-put/qr`
-- `@svelteuidev/composables`
-- `@svelteuidev/core`
-- `axios`
-- `radix-icons-svelte`
+- `@sveltejs/adapter-node` - For building the frontend application into a standalone runnable Node module
+- `@sveltejs/kit` - UI framework
+- `@sveltejs/vite-plugin-svelte` - Vite plugin for building the SvelteKit application
+- `@typescript-eslint/eslint-plugin` - ESLint plugin for supporting TypeScript rules
+- `@typescript-eslint/parser` - For allowing ESLint to parse and lint TypeScript projects
+- `eslint` - For linting the frontend application
+- `eslint-config-prettier` - Configuration for ESLint rules
+- `eslint-plugin-svelte` - ESLint plugin for Svelte projects
+- `prettier` - For code formatting
+- `prettier-plugin-svelte` - Prettier plugin for formatting Svelte projects
+- `rimraf` - For deleting previously built bundles (platform and OS agnostic rm -rf wrapper)
+- `svelte` - UI framework
+- `svelte-check` - Linter for Svelte related problems and syntax checking
+- `tslib` - TypeScript runtime utility library
+- `typescript` - JavaScript, but with types
+- `vite` - For building, bundling and minifying the application into a single executable module
+- `vitest` - For running unit and integration tests
+- `@svelte-put/qr` - For generating QR codes (2FA)
+- `@svelteuidev/composables` - For Svelte UI components
+- `@svelteuidev/core` - For Svelte UI components
+- `axios` - HTTP client, for sending requests
+- `radix-icons-svelte` - For Svelte UI icons
 
 Backend:
 
-- `fastapi`
-- `sqlalchemy`
-- `asyncpg`
-- `uvicorn`
-- `python-jose`
-- `passlib`
-- `python-multipart`
-- `pydantic-settings`
-- `APScheduler`
-- `discord-webhook`
-- `alembic`
-- `psycopg2-binary`
-- `pytest`
-- `pytest-asyncio`
-- `httpx`
-- `trio`
-- `bcrypt`
-- `aiosqlite`
-- `pytest-mock`
-- `cryptography`
-- `pyotp`
-- `mypy`
-- `ruff`
-- `pre-commit`
-- `types-python-jose`
-- `types-passlib`
-- `black`
-- `flake8`
-- `isort`
+- `fastapi` - Web server
+- `sqlalchemy` - Object relational mapper (ORM)
+- `asyncpg` - Asynchronous driver for PostgreSQL
+- `uvicorn` - ASGI compatible Python web server for FastAPI
+- `python-jose` - For signing and encryption of content
+- `passlib` - For password hashing
+- `python-multipart` - For streaming large files
+- `pydantic-settings` - For configuring PyDantic
+- `APScheduler` - For scheduling cronjobs
+- `discord-webhook` - For sending content to Discord webhooks
+- `alembic` - For creating and managing database schema migrations
+- `psycopg2-binary` - Synchronous driver for PostgreSQL (used by Alembic for creating migrations)
+- `pytest` - For unit and integration tests
+- `pytest-asyncio` - PyTest plugin for asynchronous tests
+- `httpx` - HTTP client, for sending requests
+- `trio` - For asynchronous work
+- `bcrypt` - For hashing passwords and verifying hashes
+- `aiosqlite` - Asynchronous driver for SQLite
+- `pytest-mock` - PyTest plugin for mocking services
+- `cryptography` - For cryptographic algorithms
+- `pyotp` - For creating OTP tokens from seeds
+- `mypy` - For code linting
+- `ruff` - For code linting and formatting
+- `pre-commit` - For pre-commit hooks
+- `types-python-jose` - Type stubs for the `python-jose` library
+- `types-passlib` - Type stubs for the `passlib` library
+- `black` - For code formatting
+- `flake8`- For code linting
+- `isort` - For code linting and formatting
 
 ## Screenshots
 
