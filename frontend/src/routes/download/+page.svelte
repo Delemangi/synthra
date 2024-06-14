@@ -64,7 +64,6 @@
         downloadFilePassword
       );
 
-      console.log(contentType);
       isPreviewable = contentType != 'application/octet-stream';
 
       fileUrl = window.URL.createObjectURL(retrievedFile);
@@ -74,7 +73,6 @@
         return;
       }
     } catch (error) {
-      console.log(error);
       alert('The file does not exist, or has expired.');
       window.location.href = '/';
     }
