@@ -72,7 +72,7 @@ async def create_file(session: AsyncSession, file: File) -> None:
 
 
 async def get_all_files_user(
-    current_user: Annotated[User, Depends(get_current_user)], session: AsyncSession
+    current_user: User, session: AsyncSession
 ) -> list[MetadataFileResponse]:
     async with session:
         result = await session.execute(select(File).filter(File.user_id == current_user.id))

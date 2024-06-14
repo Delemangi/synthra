@@ -8,7 +8,7 @@ import pyotp
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
-from sqlalchemy import ColumnElement, and_, delete, select, update
+from sqlalchemy import ColumnElement, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
@@ -53,10 +53,7 @@ async def authenticate_user(username: str, password: str, session: AsyncSession)
     if not is_password_correct:
         return None
 
-    return await get_user_by_filter(
-        lambda u: and_(u.username == username, u.password == stored_password),
-        session,
-    )
+    return user
 
 
 def verify_2fa_code(user: User, code: str | None) -> bool:
