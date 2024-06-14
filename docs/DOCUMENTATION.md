@@ -98,7 +98,7 @@ The backend application contains the following linters and formatters:
   - [Svelte Language Tools](https://github.com/sveltejs/language-tools) (linter & code formatter)
   - [ESLint](https://github.com/eslint/eslint) (linter)
   - [Prettier](https://github.com/prettier/prettier) (code formatter)
-- Both
+- General
   - [SonarLint](https://www.sonarsource.com) (linter) - available as a CI, and as an extension (plugin) for common IDEs
 
 The project also contains an `.editorconfig`, the universal configuration for code and text formatting.
