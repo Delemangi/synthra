@@ -41,7 +41,7 @@ Users are only able to upload so much data, so that the server does not get fill
 
 ### File Expiration
 
-Files can be set to expire after some time, at which point they get deleted from the server and their links are deactivated.
+Files are set to expire after some time, at which point they get deleted from the server and their links are deactivated.
 
 ### Two factor authentication (2FA)
 
