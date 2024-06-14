@@ -77,6 +77,8 @@ Synthra contains a frontend and a backend application in a monorepo pattern.
 
 The backend application is built using [FastAPI](https://github.com/tiangolo/fastapi), which is a pretty fast and lightweight Python web server, with supported Python versions including 3.11 and 3.12, [SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) as an object relational mapper (ORM), and [Alembic](https://github.com/sqlalchemy/alembic) for tracking the history of database migrations and automatically applying them.
 
+FastAPI implements the ASGI specification for Python web servers, and so it needs an ASGI server to run the application. We are using [Uvicorn](https://github.com/encode/uvicorn).
+
 The frontend application it built using [SvelteKit](https://github.com/sveltejs/kit), which is a web framework for building single page apps or server side rendering. It also includes a built in folder based router.
 
 The data is persisted into the [PostgreSQL](https://github.com/postgres/postgres) relational database, using the ORM and migration technologies from above.
