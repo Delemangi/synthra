@@ -103,7 +103,7 @@ The backend application contains the following linters and formatters:
 
 The project also contains an `.editorconfig`, the universal configuration for code and text formatting.
 
-For pre-commit hooks, the `pre-commit` PyPI package is being used. The linters have to pass before being able to create a commit.
+For pre-commit hooks, the `pre-commit` PyPI package is being used. The linters have to pass before being able to create a commit. If you wish to install the pre-commit hooks, run `poetry run pre-commit install` (after you've installed the backend's dependencies with Poetry).
 
 These linters are being ran in a CI. More details below.
 
