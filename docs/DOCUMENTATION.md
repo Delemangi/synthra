@@ -306,6 +306,8 @@ The backend code (`app` folder) is divided up into Python modules (with folders 
 
 The backend's modules are `files` (for handling file related tasks, such as downloading, uploading, encrypting), `auth` (for authentication, logging in and registering), `shares` (for handling file sharing and whitelists) and `webhooks` (for webhooks). Each module contains its own endpoints (in `router.py`), services (in `service.py`), contants (in `contants.py`), PyDantic schemas (in `schemas.py`), HTTP exceptions (in `exceptions.py`), and several others unique to only one or some modules, but not all.
 
+![FastAPI Architecture](11.png)
+
 ### Frontend (Architecture)
 
 The frontend code is separated into the `src` folder, while the tests are in the `test` folder. There is also some static content available in the `static` folder (content which gets included by the bundler always, such as a favicon or `robots.txt`). All other files specify project metadata, dependencies or Docker configuration.
@@ -325,6 +327,8 @@ The available routes of the application are:
 - `/user/account` - account route
 - `/user/home` - files view route
 - `/user/webhooks` - webhooks view route
+
+![SvelteKit Architecture](12.png)
 
 ## Route Protection
 
