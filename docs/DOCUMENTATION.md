@@ -407,10 +407,34 @@ Backend:
 
 ## Screenshots
 
+### Main Screen
+
 ![Screenshot](3.png)
+
+### Files List
 
 ![Screenshot](4.png)
 
+### 2FA
+
 ![Screenshot](5.png)
 
+### Preview
+
 ![Screenshot](6.png)
+
+### Login
+
+![Screenshot](7.png)
+
+### Register
+
+![Screenshot](8.png)
+
+### Webhooks List
+
+![Screenshot](9.png)
+
+### 2FA (Update)
+
+![Screenshot](10.png)
