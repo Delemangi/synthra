@@ -182,7 +182,7 @@ The CIs are GitHub Action workflows which are triggered on the branch `main` and
 
 The following CIs are created:
 
-- TS & Svelte (code build, linter)
+- TypeScript & Svelte (code build, linter)
 - ESLint & Prettier (linter)
 - Vitest (tests)
 - Ruff (linter)
