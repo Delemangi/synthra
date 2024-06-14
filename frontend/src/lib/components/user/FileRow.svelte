@@ -73,7 +73,7 @@
     }
 
     try {
-      let retrievedFile = await getFileByPath(accessToken, file.path, downloadFilePassword);
+      let [retrievedFile] = await getFileByPath(accessToken, file.path, downloadFilePassword);
 
       if (retrievedFile) {
         const url = URL.createObjectURL(retrievedFile);
