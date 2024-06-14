@@ -330,6 +330,10 @@ The available routes of the application are:
 
 ![SvelteKit Architecture](12.png)
 
+## Communication
+
+The communication between the frontend and the backend is done by sending HTTP requests from the frontend to the backend, and parsing the responses. The backend's URL is specified in the frontend during the build process, in which Vite takes in all environment variables prefixed with `VITE_`, and injects them into the frontend code. Since there are no environment variables in the browser, they have to be injected during the build time.
+
 ## Route Protection
 
 Most of the routes, both on the frontend, and the backend, are protected.
