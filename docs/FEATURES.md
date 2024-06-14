@@ -2,18 +2,16 @@
 
 - [x] Login & Register
 - [x] File Uploads & Downloads
+- [x] Dark Mode
 - [ ] Generate ShareX Configuration
-- [ ] Roles
-- [ ] Quotas
+- [x] Quotas
+- [x] File Expiration
 - [x] Administration Panel
 - [x] File Preview
 - [x] Webhooks
 - [x] Encryption
 - [x] Protected Files
 - [x] 2FA
-- [ ] URL Shortening
-- [ ] Responsiveness
-- [ ] Localization
 - [x] Tests
 - [x] Database Migrations
 - [x] CI/CD
