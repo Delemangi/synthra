@@ -1,4 +1,4 @@
-# Documentation
+# Synthra - Documentation
 
 ## General
 
