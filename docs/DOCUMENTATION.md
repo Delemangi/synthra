@@ -129,6 +129,8 @@ The repository contains several Docker Compose configurations:
 
 It is possible to run this outside a Docker environment, but it's not recommended. Use a Dev Container if you need to test features on the backend or frontend (using hot reloading).
 
+The Docker Compose configurations also expose some volumes: the backend application exposes a volume for the uploaded files and the database exposes a volume for its files. This is to ensure that, even if the containers are removed or turned off, the data will be persisted and no state will be lost.
+
 ## Environment Variables
 
 Here are the environment variables used by the project, as well as the default assigned values to them (as per the `.env.schema` file, which contains these default values):
