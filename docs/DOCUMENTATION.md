@@ -157,6 +157,21 @@ The project utilizes the following development workflow:
 
 For all pull requests, there is a GitHub Actions workflow defined that includes several checks. More details below.
 
+## Migrations
+
+When making a change to the database schema, a migration has to be created. It contains the changes to the database schema, so they can be applied in order.
+
+To create a migration, make sure that you have installed all of the dependencies on the backend, and:
+
+1. Sync your database with the latest migrations if it isn't already: `poetry run alembic upgrade head`
+2. Make a change in the models
+3. Create a new migration: `poetry run alembic revision --autogenerate -m "Migration name"`
+4. Run your new migration: `poetry run alembic upgrade head`
+
+The settings for the migrations are specified in `alemic.ini` and `env.py` in the `alembic` folder. They are set to pull the database connection string from the environment variables. Alembic requires no building, and instead just has to be ran to apply all migrations to the database before starting the FastAPI server. However, FastAPI will run all migrations before startup so you don't have to.
+
+It is also possible to reverse migrations by running `poetry run alembic downgrade -1`.
+
 ## CI/CD
 
 Synthra is making heavy use of continuous integrations (CIs) to verify the quality of the code being merged into the `main` branch.
