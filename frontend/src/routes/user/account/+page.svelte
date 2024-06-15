@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { UserMetadata } from '$lib/types/UserMetadata';
-  import { Anchor, Flex, Text } from '@svelteuidev/core';
+  import { Anchor, Button, Flex, Text } from '@svelteuidev/core';
   import { LockClosed, LockOpen2 } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
   import { getUserMetadata } from '../../../server/auth';
+  import { getPermanentToken } from '../../../server/sharex';
+  import { generateShareXTemplate } from '../../../utils/functions';
 
   let username: string | null = null;
   let user: UserMetadata | null = null;
@@ -26,6 +28,31 @@
 
     user = response.data;
   });
+
+  const generateShareXConfig = async () => {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
+      window.location.href = '/auth/login';
+      return;
+    }
+
+    const { access_token: shareXToken } = await getPermanentToken(accessToken);
+    const template = generateShareXTemplate(shareXToken, window.location.origin);
+
+    const stringifiedTemplate = JSON.stringify(template, null, 2);
+    const blob = new Blob([stringifiedTemplate], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'uploader.sxcu';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 </script>
 
 <Text size="lg" align="center">Hi, {username}!</Text>
@@ -53,4 +80,6 @@
       </Flex>
     </Anchor>
   {/if}
+
+  <Button on:click={generateShareXConfig}>Generate ShareX Configuration</Button>
 </Flex>
