@@ -107,6 +107,6 @@ async def fetch_user_data(
 ) -> UserMetadata:
     return UserMetadata(
         username=str(current_user.username),
-        quota=int(current_user.quota),  # type: ignore
+        quota=int(current_user.quota),
         is_2fa_enabled=(current_user.code_2fa is not None),
     )
