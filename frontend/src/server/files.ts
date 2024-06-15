@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getFilesForSpecifiedUser = async (accessToken: string) => {
-  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files`, {
+  const result = await axios.get<FileMetadata[]>(`${BASE_URL}/files/`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }
@@ -32,7 +32,7 @@ export const deleteShareForFile = async (share_id: string) => {
 };
 
 export const getMetadataFilePath = async (path: string) => {
-  const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}/`);
+  const result = await axios.get<FileMetadata>(`${BASE_URL}/files/metadata/${path}`);
 
   return result.data;
 };
@@ -45,6 +45,7 @@ export const sendFileForSpecifiedUser = async (
   isShared: boolean = false
 ) => {
   const formData = new FormData();
+
   formData.append('file', file);
   formData.append('password', password);
   formData.append('is_shared', isShared.toString());
@@ -79,7 +80,7 @@ export const getFileByPath = async (
 };
 
 export const deleteFileByPath = async (accessToken: string, path: string) => {
-  const result = await axios.delete(`${BASE_URL}/files/${path}/`, {
+  const result = await axios.delete(`${BASE_URL}/files/${path}`, {
     headers: {
       authorization: `Bearer ${accessToken}`
     }

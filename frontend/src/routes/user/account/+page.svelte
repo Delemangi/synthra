@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { UserMetadata } from '$lib/types/UserMetadata';
   import { Anchor, Flex, Text } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { LockClosed, LockOpen2 } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
   import { getUserMetadata } from '../../../server/auth';
@@ -17,14 +18,18 @@
       return;
     }
 
-    let response = await getUserMetadata(accessToken);
+    try {
+      const response = await getUserMetadata(accessToken);
 
-    if (response.status != 200) {
-      window.location.href = '/auth/login';
-      return;
+      user = response.data;
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      alert('An error occurred while fetching the user data.');
     }
-
-    user = response.data;
   });
 </script>
 

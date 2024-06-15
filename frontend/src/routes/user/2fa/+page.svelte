@@ -3,7 +3,7 @@
   import QR from '@svelte-put/qr/img/QR.svelte';
   import { Button, Flex, Text, TextInput } from '@svelteuidev/core';
   import { onMount } from 'svelte';
-  import { get2faToken, remove2faToken } from '../../../server/auth';
+  import { get2FAToken, remove2FAToken } from '../../../server/auth';
 
   let code: string | null = null;
   let username: string = '';
@@ -20,9 +20,9 @@
       }
 
       if (option == 'enable') {
-        code = (await get2faToken(username, password)).data.code;
+        code = (await get2FAToken(username, password)).data.code;
       } else if (option == 'disable') {
-        await remove2faToken(username, password);
+        await remove2FAToken(username, password);
         window.location.href = '/user/account';
         return;
       }

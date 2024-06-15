@@ -41,6 +41,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
 
 def make_app() -> FastAPI:
+    # set debug=True to enable verbose logging
     app = FastAPI(lifespan=lifespan, debug=True)
 
     # URL Normalizer Middleware
@@ -64,6 +65,7 @@ def make_app() -> FastAPI:
         allow_headers=["*"],
         expose_headers=["*"],
     )
+
     return app
 
 
