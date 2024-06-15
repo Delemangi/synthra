@@ -17,7 +17,11 @@ This documentation is very detailed, and if you do not want to read it, it is su
 
 ## Live Version
 
-The live version of the project is available here: <https://synthra.delemangi.com>
+The live version of the project is available here: <https://synthra.delemangi.com>. This is the version of the application on the `main` branch of the repository.
+
+## Code
+
+The code of this project is available at <https://github.com/Delemangi/synthra>. An alternative mirror for the source code is available at <https://gitlab.finki.ukim.mk/ioss/synthra/> (which also requires FCSE CAS login).
 
 ## Features
 
@@ -160,6 +164,8 @@ It is possible to run this outside a Docker environment, but it's not recommende
 
 The Docker Compose configurations also expose some volumes: the backend application exposes a volume for the uploaded files and the database exposes a volume for its files. This is to ensure that, even if the containers are removed or turned off, the data will be persisted and no state will be lost.
 
+You may spin up any of these Docker Compose configurations using `docker compose up -d`, provided that you have Docker (Desktop) up and running. By default, it takes `docker-compose.yaml` from the current working directory, but you can override the Docker Compose configuration file using the `-f` flag, as such: `docker compose up -f docker-compose.prod.yaml -d`. You may also take a look at the logs of the spun up containers using `docker compose logs -f`.
+
 ## Environment Variables
 
 Here are the environment variables used by the project, as well as the default assigned values to them (as per the `.env.schema` file, which contains these default values):
@@ -218,8 +224,8 @@ The following CIs are created:
 - MyPy (linter)
 - pytest (tests)
 - SonarCloud (linter)
-- Docker Backend (Docker image build & push to DockerHub)
-- Docker Frontend (Docker image build & push to DockerHub)
+- Backend Docker Image (Docker image build & push to DockerHub)
+- Frontend Docker Image (Docker image build & push to DockerHub)
 - GitLab mirror (code mirroring to another remote)
 - Dependabot (create pull requests to bump outdated dependencies)
 - CodeQL (security vulnerabilities)
@@ -246,15 +252,13 @@ Debugging configurations are available for both the frontend and backend applica
 
 You can view all of the endpoints on the `/docs` endpoint of the backend. If you are running the development `docker-compose.yaml`, you can view them on <http://localhost:8002/docs>, which is a Swagger OpenAPI instance. It includes a view like this:
 
-![Swagger](1.png)
-
 ## Quick Setup
 
 Check this section out if you wish to deploy the project locally to test it out. Otherwise, if you wish to test it out without deploying it locally, check out the next section.
 
 The quickest setup is the one using Docker. You will lose your sanity if you begin building and running this project manually. So:
 
-1. Install Docker (on Linux), or Docker Desktop (on Windows or MacOS)
+1. Install Docker (on Linux), or Docker Desktop (on Windows or MacOS), and run it
 2. Get the `docker-compose.prod.yaml` file (or `docker-compose.yaml`) from the repository
 3. If you chose the first option, rename it to `docker-compose.yaml`
 4. Get the `env.schema` file from the repository
@@ -275,10 +279,14 @@ You should probably use Docker for this. However, a non-Docker guide is availabl
 
 ### Docker (Installation)
 
+Ensure that you have Docker (on Linux), or Docker Desktop (on Windows or MacOS) installed and running.
+
 While building the frontend, the environment variable `VITE_BASE_URL` should be present, which is the URL to the API. Refer to the section `Environment Variables` for more information. Afterwards:
 
 1. Run `git clone git@github.com:Delemangi/synthra.git` (or `git clone https://github.com/Delemangi/synthra.git`)
 2. Run `docker compose build`
+
+The Docker images which will be built should correspond to your current platform on which you are building the image. Otherwise, you can specify a `--platform` flag on the build commands to choose a platform and architecture. Docker Compose configurations also support specifying the platform in each image set to be built from source locally.
 
 ### Manual (Installation)
 
@@ -288,6 +296,8 @@ The manual setup requires that you have the following tools installed:
 - [Poetry](https://python-poetry.org/) (feel free to use whichever version `pip` installs for you)
 - [Node.js](https://nodejs.org/en) >= v20
 - [PostgreSQL](https://www.postgresql.org/) >= v16
+
+Although older versions of these tools may work with Synthra, they are untested and it's recommended to stick to these versions, at least for Node.js and Python. The others are more flexible.
 
 Once you have all these dependencies installed, then:
 
@@ -331,8 +341,6 @@ You should probably use Docker for this. However, a non-Docker guide is availabl
 
 The project is structured as follows:
 
-![Project](2.png)
-
 - `.devcontainer` - Dev Container configuration
 - `.github` - GitHub repository configuration, as well as GitHub Actions workflows and CIs
 - `.vscode` - VS Code configuration, including extensions, settings and launch configurations (debuggers)
@@ -360,9 +368,7 @@ FastAPI also makes extensive use of dependency injection in routes. Using depend
 
 For specifying the request and response schemas of requests, we can use `PyDantic` schemas. These schemas are just classes which inherit from the library's base class, and represent a format of data. For each endpoint which adheres to the REST principles (i.e. returns JSON), a PyDantic schema can be used to represent what the request takes in, and what it responds with. On the frontend, TypeScript can be used to type these schemas as well, so that we have a type safe way of transmitting data between the frontend and the backend.
 
-Because FastAPI implements the ASGI (**Asynchronous** Server Gateway Interface), we can utilize the asynchronous nature to practically make everything non blocking and enable the application to have better performance than blocking frameworks out of the box.
-
-![FastAPI Architecture](11.png)
+Because FastAPI implements the ASGI (**Asynchronous** Server Gateway Interface), we can utilize the asynchronous nature to practically make everything non blocking and enable the application to have better performance than blocking (synchronous) frameworks out of the box.
 
 ### Frontend (Architecture)
 
@@ -385,8 +391,6 @@ The available routes of the application are:
 - `/user/webhooks` - webhooks view route
 
 While Svelte is for single page applications (SPA), SvelteKit is based on Svelte, but offers several more features out of the box, such as server side rendering (SSR), folder (or file) based routing, directly defining API routes, code splitting. SvelteKit comes with different adapters for ease of building and deploying it on any platform (such as locally with Node, Vercel, Netlify, CloudFlare Workers and some more options). It is comparable to what `Next.js` is for `React`.
-
-![SvelteKit Architecture](12.png)
 
 ## Communication
 
@@ -504,3 +508,19 @@ Backend:
 ### 2FA (Update)
 
 ![Screenshot](10.png)
+
+### Entire Architecture
+
+![Screenshot](2.png)
+
+### FastAPI Architecture
+
+![Screenshot](11.png)
+
+### SvelteKit Architecture
+
+![Screenshot](12.png)
+
+### Swagger (OpenAPI) Documentation
+
+![Screenshot](1.png)
