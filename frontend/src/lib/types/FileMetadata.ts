@@ -1,5 +1,6 @@
 export class FileMetadata {
   id: string;
+  author: string;
   name: string;
   size: number;
   encrypted: string;
@@ -11,6 +12,7 @@ export class FileMetadata {
 
   constructor(
     id: string,
+    author: string,
     name: string,
     size: number,
     encrypted: string,
@@ -21,6 +23,7 @@ export class FileMetadata {
     path: string
   ) {
     this.id = id;
+    this.author = author;
     this.name = name;
     this.size = size;
     this.encrypted = encrypted;

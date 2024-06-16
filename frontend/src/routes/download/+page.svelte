@@ -155,6 +155,7 @@
       <Box class={getStyles()}>
         <Text>File Name: {fileMetadata.name}</Text>
         <Text>File Size: {fileMetadata.size} bytes</Text>
+        <Text>File Author: {fileMetadata.author}</Text>
       </Box>
     {:else}
       <Text>Loading...</Text>
