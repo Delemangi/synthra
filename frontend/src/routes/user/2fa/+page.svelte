@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import QR from '@svelte-put/qr/img/QR.svelte';
-  import { Button, Flex, Text, TextInput } from '@svelteuidev/core';
+  import { Anchor, Button, Flex, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
   import { get2FAToken, remove2FAToken } from '../../../server/auth';
@@ -50,10 +50,16 @@
 
 {#if code == null}
   <div class="container">
-    <TextInput label="Password" bind:value={password} type="password" />
+    <TextInput
+      label="Password"
+      bind:value={password}
+      type="password"
+      required
+      placeholder="Password..."
+    />
     <br />
     <div class="button-container">
-      <Button on:click={fetchCode} disabled={!password.length}>Login</Button>
+      <Button on:click={fetchCode} disabled={!password.length}>Verify</Button>
     </div>
     <br />
   </div>
@@ -86,7 +92,7 @@
 
   <Flex justify="center">
     <Button>
-      <a href="/user/account">Back</a>
+      <Anchor href="/user/account">Back</Anchor>
     </Button>
   </Flex>
 {/if}

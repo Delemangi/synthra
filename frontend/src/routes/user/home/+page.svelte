@@ -135,7 +135,7 @@
 {/each}
 
 {#if visible}
-  <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
+  <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Upload File</Title>
@@ -153,7 +153,7 @@
               on:change={handleFileChange}
             />
           </Flex>
-
+          <br />
           <Text align="center">
             {#if filesToUpload}
               {fileName}
@@ -177,13 +177,14 @@
           disabled={!passwordLock}
           placeholder="Password..."
           type="password"
+          label="Password (at least 5 characters)"
         />
         <Flex justify="space-around" align="center">
           <Button
             variant="filled"
             on:click={sendData}
             disabled={!filesToUpload?.length ||
-              (filesToUpload?.length && passwordLock && !filePassword?.length)}
+              (filesToUpload?.length && passwordLock && filePassword.length < 5)}
           >
             Submit
           </Button>

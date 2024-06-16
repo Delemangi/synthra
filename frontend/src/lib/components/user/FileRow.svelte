@@ -61,8 +61,14 @@
   });
 
   const downloadFile = () => {
-    if (file.encrypted) isDownloadWindowVisible = true;
-    else getFile();
+    if (file.encrypted) {
+      isDownloadWindowVisible = true;
+      window.scrollTo(0, 0);
+
+      return;
+    }
+
+    getFile();
   };
 
   const getFile = async () => {
@@ -308,7 +314,7 @@
         {/if}
         <br />
         <Flex justify="space-around" align="center">
-          <TextInput label="Username" bind:value={usernameShare} />
+          <TextInput label="Username" bind:value={usernameShare} placeholder="Username..." />
         </Flex>
         <Flex justify="space-around" align="center">
           <Button variant="filled" on:click={shareFile}>Share</Button>
@@ -332,9 +338,10 @@
           name="filepassword"
           bind:value={downloadFilePassword}
           placeholder="Password..."
+          required
         />
         <Flex gap="lg" justify="space-between">
-          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
+          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword.length}>
             Submit
           </Button>
           <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>Close</Button>

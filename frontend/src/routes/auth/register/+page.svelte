@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Text, TextInput } from '@svelteuidev/core';
+  import { Anchor, Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
   import { register } from '../../../server/auth';
@@ -46,10 +46,29 @@
 <div
   style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
 >
-  <TextInput label="Username (between 5 and 24 characters)" bind:value={username} />
-  <TextInput label="Password (between 5 and 24 characters)" bind:value={password} type="password" />
-  <TextInput label="Repeat Password" bind:value={repeatPassword} type="password" />
+  <TextInput
+    label="Username (between 5 and 24 characters)"
+    bind:value={username}
+    required
+    placeholder="Username..."
+  />
+  <TextInput
+    label="Password (between 5 and 24 characters)"
+    bind:value={password}
+    type="password"
+    required
+    placeholder="Password..."
+  />
+  <TextInput
+    label="Repeat Password"
+    bind:value={repeatPassword}
+    type="password"
+    required
+    placeholder="Password..."
+  />
+
   <br />
+
   <div style="display: flex; justify-content: center;">
     <Button
       on:click={handleSubmit}
@@ -58,8 +77,10 @@
       Register
     </Button>
   </div>
+
   <br />
+
   <Text align="center">
-    Already have an account? <a href="/auth/login">Login!</a>
+    Already have an account? <Anchor href="/auth/login">Login!</Anchor>
   </Text>
 </div>
