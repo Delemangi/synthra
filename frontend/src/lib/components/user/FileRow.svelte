@@ -208,6 +208,7 @@
   const openShare = () => {
     if (file.shared) {
       visible = true;
+      window.scrollTo(0, 0);
     }
   };
 
