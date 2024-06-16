@@ -1,39 +1,10 @@
-import uuid
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
 from httpx import AsyncClient
 
-from app.auth.models import User
-from app.files.models import File
-from app.webhooks.models import Webhook
-
 from ..constants import HTTP_SUCCESS
-
-test_user = User(id=uuid.uuid4(), username="a", password="test")  # noqa: S106
-
-test_file = File(
-    id=uuid.uuid4(),
-    name="test_file.txt",
-    path="test/path",
-    size=1024,
-    encrypted=True,
-    shared=False,
-    expiration=datetime(2024, 12, 31, tzinfo=UTC),
-    timestamp=datetime.now(UTC),
-    user_id=test_user.id,
-)
-
-test_webhook = Webhook(
-    id=uuid.uuid4(),
-    url="http://example.com",
-    platform="Test",
-    active=True,
-    timestamp=datetime.now(UTC),
-    user_id=test_user.id,
-)
-
+from ..mocks import test_webhook
 
 # @pytest.mark.anyio
 # async def test_create_webhook_route(async_client: AsyncClient):
