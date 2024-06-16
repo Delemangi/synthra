@@ -10,11 +10,12 @@ from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy import ColumnElement, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from ..database import get_async_session
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
 from .exceptions import USERNAME_TAKEN_EXCEPTION
-from .models import LoggedInTokens, User
+from .models import LoggedInTokens, Role, User
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
 
@@ -22,11 +23,36 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
-async def create_user(
-    username: str, plain_password: str, quota: int, session: AsyncSession
-) -> User:
+async def get_user_role(session: AsyncSession) -> Role:
+    role = await session.execute(select(Role).where(Role.name == "user"))
+
+    scalar_role = role.scalar_one_or_none()
+
+    if scalar_role is None:
+        raise ValueError("Role 'user' not found")
+
+    return scalar_role
+
+
+async def get_admin_role(session: AsyncSession) -> Role:
+    role = await session.execute(select(Role).where(Role.name == "admin"))
+
+    scalar_role = role.scalar_one_or_none()
+
+    if scalar_role is None:
+        raise ValueError("Role 'admin' not found")
+
+    return scalar_role
+
+
+async def create_user(username: str, plain_password: str, session: AsyncSession) -> User:
     password = pwd_context.hash(plain_password)
-    user = User(username=username, password=password, quota=quota)
+
+    user_role = (
+        await get_admin_role(session) if username == "admin" else await get_user_role(session)
+    )
+
+    user = User(username=username, password=password, role_id=user_role.id)
 
     existing_user = await get_user_by_username(username, session)
 
@@ -137,7 +163,9 @@ async def get_user_by_id(user_id: UUID, session: AsyncSession) -> User | None:
 
 async def get_user_by_username(username: str, session: AsyncSession) -> User | None:
     async with session:
-        users = await session.execute(select(User).filter(User.username == username))
+        users = await session.execute(
+            select(User).options(joinedload(User.role)).filter(User.username == username)
+        )
         return users.scalar_one_or_none()
 
 

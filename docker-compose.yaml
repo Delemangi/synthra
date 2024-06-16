@@ -58,3 +58,5 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: test@test.com
       PGADMIN_DEFAULT_PASSWORD: test
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin

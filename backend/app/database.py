@@ -1,6 +1,8 @@
 import os
 from collections.abc import AsyncGenerator
+from datetime import datetime
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -10,6 +12,8 @@ from sqlalchemy.ext.asyncio import (
 
 from alembic import command
 from alembic.config import Config
+
+from .auth.models import Role
 
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -29,7 +33,7 @@ class DatabaseEngine:
 
 
 class AsyncSessionMaker:
-    _instance: None | async_sessionmaker[AsyncSession] = None
+    _instance: async_sessionmaker[AsyncSession] | None = None
 
     @classmethod
     def get_sessionmaker(cls: type["AsyncSessionMaker"]) -> async_sessionmaker[AsyncSession]:
@@ -51,3 +55,22 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 def run_migrations() -> None:
     alembic_cfg = Config("alembic.ini")
     command.upgrade(alembic_cfg, "head")
+
+
+async def initialize_database() -> None:
+    async with AsyncSessionMaker.get_sessionmaker()() as session:
+        await initialize_roles(session)
+
+
+async def initialize_roles(session: AsyncSession) -> None:
+    existing_roles = await session.execute(select(Role).limit(1))
+    if existing_roles.scalars().first() is not None:
+        return
+
+    roles = [
+        Role(name="admin", quota_size=1000000000, quota_files=50, timestamp=datetime.now()),
+        Role(name="user", quota_size=100000000, quota_files=10, timestamp=datetime.now()),
+    ]
+
+    session.add_all(roles)
+    await session.commit()

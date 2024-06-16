@@ -16,7 +16,6 @@ class User(Base):
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     avatar = Column(String, nullable=True)
-    quota = Column(Integer, nullable=True)
     timestamp = Column(DateTime(timezone=True), nullable=True)
 
     role_id = Column(UUID(as_uuid=True), ForeignKey("role.id"), nullable=True)
@@ -29,8 +28,14 @@ class User(Base):
     shared_files = relationship("Share", back_populates="user", lazy="selectin")
     code_2fa = Column(String, nullable=True)
 
-    def has_remaining_quota(self: Self) -> bool:
-        return bool(self.quota != 0)
+    def has_remaining_files_quota(self: Self) -> bool:
+        return self.role.quota_files is None or len(self.files) < self.role.quota_files
+
+    def has_remaining_size_quota(self: Self, size: int) -> bool:
+        return self.role.quota_size is None or self.get_used_space() + size < self.role.quota_size
+
+    def get_used_space(self: Self) -> int:
+        return sum(file.size for file in self.files)
 
 
 class Role(Base):

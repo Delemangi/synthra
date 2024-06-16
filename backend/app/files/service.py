@@ -9,7 +9,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from fastapi import Depends, UploadFile
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.dependencies import get_current_user
@@ -27,7 +27,10 @@ async def upload_file(
     is_shared: bool = False,
     password: str | None = None,
 ) -> str:
-    if not current_user.has_remaining_quota():
+    if not current_user.has_remaining_files_quota():
+        raise QUOTA_EXCEPTION
+
+    if not current_user.has_remaining_size_quota(file.size or 0):
         raise QUOTA_EXCEPTION
 
     file_path = f"{uuid.uuid4()}{file.filename}"
@@ -56,11 +59,6 @@ async def upload_file(
         )
 
         session.add(file_db)
-        update_statement = (
-            update(User).where(User.id == current_user.id).values(quota=User.quota - 1)
-        )
-
-        await session.execute(update_statement)
 
     return str(file_path)
 
