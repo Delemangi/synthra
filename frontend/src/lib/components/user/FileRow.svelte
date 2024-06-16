@@ -22,6 +22,7 @@
   } from '../../../server/files';
   import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
+  import { onMount } from 'svelte';
 
   export let file = new FileMetadata(
     'test',
@@ -61,8 +62,14 @@
   });
 
   const downloadFile = () => {
-    if (file.encrypted) isDownloadWindowVisible = true;
-    else getFile();
+    if (file.encrypted) {
+      isDownloadWindowVisible = true;
+      window.scrollTo(0, 0);
+
+      return;
+    }
+
+    getFile();
   };
 
   const getFile = async () => {
@@ -201,6 +208,7 @@
   const openShare = () => {
     if (file.shared) {
       visible = true;
+      window.scrollTo(0, 0);
     }
   };
 
@@ -210,6 +218,12 @@
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric'
+  });
+
+  let currentUsername: string | null = null;
+
+  onMount(() => {
+    currentUsername = localStorage.getItem('username');
   });
 
   $: ({ classes, getStyles } = useStyles());
@@ -288,10 +302,39 @@
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Share File</Title>
+
+        <Flex justify="space-around" align="center" direction="column" gap="md">
+          <TextInput
+            label="Username"
+            bind:value={usernameShare}
+            placeholder="Username..."
+            required
+          />
+
+          {#if currentUsername === usernameShare}
+            <Text color="red">You cannot share files with yourself.</Text>
+          {/if}
+
+          <Flex direction="row" justify="space-between" gap="lg">
+            <Button
+              variant="filled"
+              on:click={shareFile}
+              disabled={!usernameShare.length || currentUsername === usernameShare}
+            >
+              Share
+            </Button>
+
+            <Button variant="light" on:click={() => (visible = false)}>Close</Button>
+          </Flex>
+        </Flex>
+
+        <br />
+
+        <Title order={3}>Shared With</Title>
         {#if file.shared_people.length > 0}
           {#each file.shared_people as share}
-            <Box class={getStyles()}>
-              <Flex align="center" justify="space-evenly" style="height: 100%;">
+            <Box>
+              <Flex align="center" justify="space-evenly" style="height: 50%;">
                 <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
                   {share.username}
                 </Text>
@@ -306,17 +349,6 @@
         {:else}
           <Text>This file is not yet shared with anyone.</Text>
         {/if}
-        <br />
-        <Flex justify="space-around" align="center">
-          <TextInput label="Username" bind:value={usernameShare} />
-        </Flex>
-        <Flex justify="space-around" align="center">
-          <Button variant="filled" on:click={shareFile}>Share</Button>
-        </Flex>
-        <br />
-        <Flex justify="space-around" align="center">
-          <Button variant="light" on:click={() => (visible = false)}>Close</Button>
-        </Flex>
       </Flex>
     </Box>
   </Overlay>
@@ -332,9 +364,10 @@
           name="filepassword"
           bind:value={downloadFilePassword}
           placeholder="Password..."
+          required
         />
         <Flex gap="lg" justify="space-between">
-          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword?.length}>
+          <Button variant="filled" on:click={getFile} disabled={!downloadFilePassword.length}>
             Submit
           </Button>
           <Button variant="light" on:click={() => (isDownloadWindowVisible = false)}>Close</Button>

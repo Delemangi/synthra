@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button, Text, TextInput } from '@svelteuidev/core';
+  import { Anchor, Button, Text, TextInput } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
-  import { login } from '../../../server/auth';
   import { onMount } from 'svelte';
+  import { login } from '../../../server/auth';
 
   let username: string = '';
   let password: string = '';
@@ -55,15 +55,25 @@
   <div
     style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
   >
-    <TextInput label="Username" bind:value={username} />
-    <TextInput label="Password" bind:value={password} type="password" />
+    <TextInput label="Username" bind:value={username} required placeholder="Username..." />
+    <TextInput
+      label="Password"
+      bind:value={password}
+      type="password"
+      required
+      placeholder="Password..."
+    />
+
     <br />
+
     <div style="display: flex; justify-content: center;">
       <Button on:click={handleSubmit} disabled={!username.length || !password.length}>Login</Button>
     </div>
+
     <br />
+
     <Text align="center">
-      No account? <a href="/auth/register">Register!</a>
+      No account? <Anchor href="/auth/register">Register!</Anchor>
     </Text>
   </div>
 {/if}
@@ -72,15 +82,21 @@
   <div
     style="width: 300px; margin: auto; top: 50%; transform: translate(0, 30vh); border: 1px solid gray; padding: 10px; border-radius: 5px"
   >
-    <TextInput label="Code" bind:value={code2FA} />
+    <TextInput label="Code" bind:value={code2FA} required placeholder="Code..." />
+
     <br />
+
     <div style="display: flex; justify-content: center;">
       <Button on:click={handleSubmit} disabled={!code2FA?.length}>Submit</Button>
     </div>
     <br />
   </div>
+
   <br />
+
   <Text align="center" size="lg">2FA Authentication</Text>
+
   <br />
+
   <Text align="center">Please enter the code currently displayed in your authenticator app.</Text>
 {/if}

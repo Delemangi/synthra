@@ -159,13 +159,24 @@
     {/if}
 
     {#if fileMetadata?.encrypted}
-      <TextInput placeholder="Password..." type="password" bind:value={downloadFilePassword} />
+      <TextInput
+        placeholder="Password..."
+        type="password"
+        bind:value={downloadFilePassword}
+        required
+      />
+      <br />
     {/if}
+
     <Button
       on:click={downloadFile}
-      disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}>Download</Button
+      disabled={fileMetadata?.encrypted && !downloadFilePassword?.length}
     >
+      Download
+    </Button>
+
     <br />
+
     {#if fileUrl && isPreviewable}
       <div
         style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
@@ -182,7 +193,7 @@
         <Text>
           The file must be one of the following types to be previewed: {SUPPORTED_FILE_TYPES.join(
             ', '
-          )}
+          )}.
         </Text>
       </div>
     {/if}

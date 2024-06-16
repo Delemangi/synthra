@@ -108,13 +108,13 @@
 {/each}
 
 {#if visible}
-  <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
+  <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="md" justify="center">
         <Title order={3}>Add Webhook</Title>
 
-        <TextInput label="Name" bind:value={name} />
-        <TextInput label="URL" bind:value={url} />
+        <TextInput label="Name" bind:value={name} required placeholder="Name..." />
+        <TextInput label="URL" bind:value={url} required placeholder="URL..." />
 
         <Flex justify="space-around" align="center">
           <Button
