@@ -24,10 +24,7 @@
         backgroundColor: '$gray50',
         textAlign: 'center',
         padding: '$10',
-        borderRadius: '$md',
-        '&:hover': {
-          backgroundColor: '$gray100'
-        }
+        borderRadius: '$md'
       }
     };
   });

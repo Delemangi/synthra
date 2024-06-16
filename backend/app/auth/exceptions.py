@@ -19,3 +19,7 @@ USERNAME_TAKEN_EXCEPTION = HTTPException(
 AUTHENTICATION_2FA_EXCEPTION = HTTPException(
     status_code=status.HTTP_302_FOUND, detail="User found. 2FA authentication required."
 )
+
+NO_PERMISSION_EXCEPTION = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN, detail="You don't have enough permissions."
+)

@@ -44,7 +44,9 @@
         backgroundColor: theme.fn.themeColor('gray', 1),
         opacity: 1,
         padding: 20,
-        borderRadius: '$md'
+        borderRadius: '$md',
+        marginTop: '$3',
+        marginBottom: '$3'
       },
       flexOverlay: {
         display: 'flex',

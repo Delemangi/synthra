@@ -106,4 +106,11 @@
   <Text
     >{storageUsed} / {user?.size_quota ?? 0} B ({((storageUsed ?? 0) / 1000 / 1000).toFixed(2)} MB)
   </Text>
+
+  {#if user?.role === 'admin'}
+    <br />
+    <Title>Admin</Title>
+
+    <Anchor href="/admin/roles">Manage Roles</Anchor>
+  {/if}
 </Flex>

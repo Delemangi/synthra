@@ -14,7 +14,7 @@ from sqlalchemy.orm import joinedload
 
 from ..database import get_async_session
 from .constants import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM
-from .exceptions import USERNAME_TAKEN_EXCEPTION
+from .exceptions import NO_PERMISSION_EXCEPTION, USERNAME_TAKEN_EXCEPTION
 from .models import LoggedInTokens, Role, User
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "SECRET")
@@ -43,6 +43,28 @@ async def get_admin_role(session: AsyncSession) -> Role:
         raise ValueError("Role 'admin' not found")
 
     return scalar_role
+
+
+async def get_roles(current_user: User, session: AsyncSession) -> list[Role]:
+    if current_user.role.name != "admin":
+        raise NO_PERMISSION_EXCEPTION
+
+    roles = await session.execute(select(Role))
+
+    return list(roles.scalars().all())
+
+
+async def edit_role_quotas(
+    current_user: User, role_id: UUID, size: int, files: int, session: AsyncSession
+) -> None:
+    if current_user.role.name != "admin":
+        raise NO_PERMISSION_EXCEPTION
+
+    await session.execute(
+        update(Role).where(Role.id == role_id).values(quota_size=size, quota_files=files)
+    )
+
+    await session.commit()
 
 
 async def create_user(username: str, plain_password: str, session: AsyncSession) -> User:
