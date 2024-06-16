@@ -165,6 +165,7 @@
         bind:value={downloadFilePassword}
         required
       />
+      <br />
     {/if}
 
     <Button
@@ -192,7 +193,7 @@
         <Text>
           The file must be one of the following types to be previewed: {SUPPORTED_FILE_TYPES.join(
             ', '
-          )}
+          )}.
         </Text>
       </div>
     {/if}
