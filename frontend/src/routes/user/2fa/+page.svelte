@@ -2,11 +2,12 @@
   import { page } from '$app/stores';
   import QR from '@svelte-put/qr/img/QR.svelte';
   import { Button, Flex, Text, TextInput } from '@svelteuidev/core';
+  import { isAxiosError } from 'axios';
   import { onMount } from 'svelte';
   import { get2FAToken, remove2FAToken } from '../../../server/auth';
 
   let code: string | null = null;
-  let username: string = '';
+  let username: string | null = null;
   let password: string = '';
   let option: string | null = 'enable';
 
@@ -14,7 +15,7 @@
     try {
       let accessToken = localStorage.getItem('accessToken');
 
-      if (!accessToken) {
+      if (!accessToken || !username) {
         window.location.href = '/auth/login';
         return;
       }
@@ -27,27 +28,37 @@
         return;
       }
     } catch (error) {
-      console.error('Failed to update 2FA token:', error);
+      if (!isAxiosError(error)) {
+        alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 401) {
+        alert('Invalid password.');
+        return;
+      }
+
+      alert('An error occurred while sharing the file.');
     }
   };
 
   onMount(async () => {
     option = $page.url.searchParams.get('option');
+    username = localStorage.getItem('username');
   });
 </script>
 
 {#if code == null}
   <div class="container">
-    <TextInput label="Username" bind:value={username} />
     <TextInput label="Password" bind:value={password} type="password" />
     <br />
     <div class="button-container">
-      <Button on:click={fetchCode} disabled={!username.length || !password.length}>Login</Button>
+      <Button on:click={fetchCode} disabled={!password.length}>Login</Button>
     </div>
     <br />
   </div>
   <br />
-  <Text size="md" align="center">Please log in again to update the 2FA token.</Text>
+  <Text size="md" align="center">Please enter your password again to update the 2FA token.</Text>
 {/if}
 
 {#if code != null}

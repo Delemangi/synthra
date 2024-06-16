@@ -35,6 +35,8 @@
     'test'
   );
 
+  export let allowWebhooks: boolean;
+
   const useStyles = createStyles((theme: theme) => {
     return {
       root: {
@@ -243,7 +245,12 @@
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Send to Webhook">
-        <ActionIcon variant="filled" color="blue" on:click={sendToWebHooks}>
+        <ActionIcon
+          variant="filled"
+          color="blue"
+          on:click={sendToWebHooks}
+          disabled={!allowWebhooks}
+        >
           <DoubleArrowRight size={20} />
         </ActionIcon>
       </Tooltip>

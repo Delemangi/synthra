@@ -31,7 +31,7 @@ export const uploadWebhook = async (accessToken: string, platform: string, url: 
 
 export const sendWebhook = async (webhookId: string, fileId: string) => {
   const result = await axios.post(
-    `${BASE_URL}/webhooks/send?webhook_id=${webhookId}&file_id=${fileId}/`
+    `${BASE_URL}/webhooks/send?webhook_id=${webhookId}&file_id=${fileId}`
   );
 
   return result.data;

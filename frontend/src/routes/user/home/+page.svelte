@@ -18,6 +18,7 @@
   import { onMount } from 'svelte';
   import { clearSession } from '../../../auth/session';
   import { getFilesForSpecifiedUser, sendFileForSpecifiedUser } from '../../../server/files';
+  import { getWebhooksForSpecifiedUser } from '../../../server/webhooks';
 
   let filesToUpload: FileList | null = null;
   let privateFile = true;
@@ -77,7 +78,7 @@
   $: ({ classes, getStyles } = useStyles());
 
   let userFiles: FileMetadata[] = [];
-
+  let allowWebhooks = false;
   let visible = false;
 
   onMount(async () => {
@@ -90,6 +91,9 @@
 
     try {
       userFiles = await getFilesForSpecifiedUser(accessToken);
+      const webhooks = await getWebhooksForSpecifiedUser(accessToken);
+
+      allowWebhooks = webhooks.length > 0;
     } catch (error) {
       if (!isAxiosError(error)) {
         alert('An unknown error occurred.');
@@ -127,7 +131,7 @@
 
 <TitleFileRow />
 {#each userFiles as file}
-  <FileRow {file} />
+  <FileRow {file} {allowWebhooks} />
 {/each}
 
 {#if visible}
