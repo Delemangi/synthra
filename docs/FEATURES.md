@@ -3,7 +3,7 @@
 - [x] Login & Register
 - [x] File Uploads & Downloads
 - [x] Dark Mode
-- [ ] Generate ShareX Configuration
+- [x] Generate ShareX Configuration
 - [x] Quotas
 - [x] File Expiration
 - [x] Administration Panel
