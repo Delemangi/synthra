@@ -62,7 +62,7 @@ async def upload_file(
 
         await session.execute(update_statement)
 
-    return str(path)
+    return str(file_path)
 
 
 async def create_file(session: AsyncSession, file: File) -> None:
@@ -242,7 +242,6 @@ def decrypt_file(path: str, password: str | None, current_user: User) -> bytes:
 
 
 def derive_key(password: str, salt: bytes) -> bytes:
-    """Derive a secret key from the given password."""
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -250,4 +249,5 @@ def derive_key(password: str, salt: bytes) -> bytes:
         iterations=100000,
         backend=default_backend(),
     )
+
     return base64.urlsafe_b64encode(kdf.derive(password.encode()))

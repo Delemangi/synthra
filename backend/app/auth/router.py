@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Form
@@ -51,6 +52,19 @@ async def login_for_access_token(
         raise AUTHENTICATION_2FA_EXCEPTION
 
     access_token = await create_access_token(session, data={"sub": str(user.username)})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/get-sharex-token", response_model=Token)
+async def get_sharex_token(
+    current_user: Annotated[DbUser, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> dict[str, str]:
+    expires_delta = timedelta(days=365 * 10)
+
+    access_token = await create_access_token(
+        session, data={"sub": str(current_user.username)}, expires_delta=expires_delta
+    )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
