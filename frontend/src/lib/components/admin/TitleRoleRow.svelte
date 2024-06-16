@@ -11,7 +11,7 @@
         backgroundColor: '$gray20',
         textAlign: 'center',
         padding: '$10',
-        borderRadius: '$md',
+        borderRadius: '$md'
       },
       textStyle: {
         flex: 1,

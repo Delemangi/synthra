@@ -24,7 +24,7 @@
         backgroundColor: '$gray50',
         textAlign: 'center',
         padding: '$10',
-        borderRadius: '$md',
+        borderRadius: '$md'
       }
     };
   });
