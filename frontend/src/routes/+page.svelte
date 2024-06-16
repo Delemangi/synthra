@@ -1,7 +1,7 @@
 <script lang="ts">
   import { HOME_SCREEN_ITEMS } from '$lib';
   import Card from '$lib/components/homepage/Card.svelte';
-  import { Anchor, Button, Flex, Grid, createStyles } from '@svelteuidev/core';
+  import { Button, Flex, Grid, createStyles } from '@svelteuidev/core';
   import { onMount } from 'svelte';
 
   const useStyles = createStyles(() => {
