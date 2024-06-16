@@ -11,6 +11,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from fastapi import Depends, UploadFile
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
@@ -73,12 +74,19 @@ async def get_all_files_user(
     current_user: User, session: AsyncSession
 ) -> list[MetadataFileResponse]:
     async with session:
-        result = await session.execute(select(File).filter(File.user_id == current_user.id))
+        result = (
+            await session.execute(select(File).options(joinedload(File.user)))
+            if current_user.role.name == "admin"
+            else await session.execute(
+                select(File).options(joinedload(File.user)).filter(File.user_id == current_user.id)
+            )
+        )
         files = result.scalars().all()
 
         return [
             MetadataFileResponse(
                 id=file.id,  # type: ignore[arg-type]
+                author=file.user.username,
                 name=str(file.name),
                 path=str(file.path),
                 size=file.size,  # type: ignore[arg-type]
@@ -97,7 +105,9 @@ async def get_all_files_user(
 
 async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileResponse:
     async with session:
-        files = await session.execute(select(File).filter(File.path == path))
+        files = await session.execute(
+            select(File).options(joinedload(File.user)).filter(File.path == path)
+        )
         file = files.scalar_one_or_none()
 
         if file is None:
@@ -105,6 +115,7 @@ async def get_metadata_path(path: str, session: AsyncSession) -> MetadataFileRes
 
         return MetadataFileResponse(
             id=file.id,  # type: ignore[arg-type]
+            author=file.user.username,
             name=str(file.name),
             path=str(file.path),
             size=file.size,  # type: ignore[arg-type]
@@ -123,12 +134,13 @@ async def verify_file(
 ) -> str:
     async with session:
         files = await session.execute(select(File).filter(File.path == path))
+
         file = files.scalar_one_or_none()
 
         if file is None:
             raise NOT_FOUND_EXCEPTION
 
-        if file.user.id == current_user.id:
+        if current_user.role.name == "admin" or file.user.id == current_user.id:
             return str(file.name)
 
         if (

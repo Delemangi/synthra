@@ -27,6 +27,7 @@
   export let file = new FileMetadata(
     'test',
     'test',
+    'test',
     1,
     'test',
     'test',
@@ -233,6 +234,9 @@
   <Flex align="center" justify="space-evenly" style="height: 100%;">
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {file.name}
+    </Text>
+    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
+      {file.author}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
       {(file.size / 1000).toFixed(2)}

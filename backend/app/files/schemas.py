@@ -19,6 +19,7 @@ class FileUploaded(BaseModel):
 
 class MetadataFileResponse(BaseModel):
     id: uuid.UUID
+    author: str
     name: str
     path: str
     size: int
