@@ -22,12 +22,18 @@ Authors:
 - File hosting
 - File previews
 - File whitelist
+- File expiration
+- File quotas
+- Roles
 - Encryption
 - 2FA
 - User registration and login
 - Intuitive interface
 - Support for webhooks
+- Account panel
 - Administrative panel
+- ShareX integration
+- Themes
 
 See also [FEATURES.md](docs/FEATURES.md).
 

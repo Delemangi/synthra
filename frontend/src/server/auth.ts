@@ -101,3 +101,30 @@ export const editRole = async (
 
   return result.data;
 };
+
+export const getUsers = async (token: string) => {
+  const result = await axios.get<UserMetadata[]>(`${BASE_URL}/auth/users`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  });
+
+  return result.data;
+};
+
+export const editUser = async (token: string, username: string, role_name: string) => {
+  const result = await axios.post(
+    `${BASE_URL}/auth/users/edit`,
+    {
+      username,
+      role_name
+    },
+    {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  return result.data;
+};

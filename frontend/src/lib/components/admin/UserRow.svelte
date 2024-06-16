@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { RoleMetadata } from '$lib/types/RoleMetadata';
+  import type { UserMetadata } from '$lib/types/UserMetadata';
   import {
     ActionIcon,
     Box,
     Button,
     Flex,
-    NumberInput,
+    NativeSelect,
     Overlay,
     Text,
     Title,
@@ -14,13 +15,13 @@
     type theme
   } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
-  import { Update } from 'radix-icons-svelte';
+  import { StarFilled, Update } from 'radix-icons-svelte';
   import { clearSession } from '../../../auth/session';
-  import { editRole } from '../../../server/auth';
+  import { editUser } from '../../../server/auth';
 
-  export let role: RoleMetadata;
-  let filesQuota: number = role.quota_files;
-  let spaceQuota: number = role.quota_size;
+  export let user: UserMetadata;
+  export let roles: RoleMetadata[] = [];
+  let role: string;
 
   const useStyles = createStyles((theme: theme) => {
     return {
@@ -47,7 +48,7 @@
     };
   });
 
-  const saveRole = async () => {
+  const saveUser = async () => {
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
@@ -56,7 +57,13 @@
     }
 
     try {
-      await editRole(accessToken, role.id, spaceQuota, filesQuota);
+      await editUser(accessToken, user.username, role);
+
+      if (user.username === localStorage.getItem('username')) {
+        window.location.href = '/user/account';
+        return;
+      }
+
       location.reload();
     } catch (error) {
       if (!isAxiosError(error)) {
@@ -71,11 +78,11 @@
       }
 
       if (error.response?.status === 403) {
-        alert('You do not have permission to edit this role.');
+        alert('You do not have permission to edit this user.');
         return;
       }
 
-      alert('An error occurred while editing the role.');
+      alert('An error occurred while editing the user.');
     }
   };
 
@@ -87,13 +94,10 @@
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {role.name.toUpperCase()}
+      {user.username}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {role.quota_files}
-    </Text>
-    <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {role.quota_size}
+      {user.role.toUpperCase()}
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Edit">
@@ -109,25 +113,21 @@
   <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="l" justify="center">
-        <Title order={3}>Edit Role</Title>
-        <NumberInput
-          bind:value={filesQuota}
-          placeholder="Files..."
-          label="Files Quota"
-          invalid={filesQuota < 0}
-          hideControls
+        <Title order={3}>Edit User</Title>
+        <NativeSelect
+          placeholder="Role..."
+          label="Role"
+          description="Pick a role"
           required
-        />
-        <NumberInput
-          bind:value={spaceQuota}
-          placeholder="Space..."
-          label="Space Quota"
-          invalid={spaceQuota < 0}
-          hideControls
-          required
+          data={roles.map((role) => {
+            return { value: role.name, label: role.name.toUpperCase() };
+          })}
+          bind:value={role}
+          icon={StarFilled}
         />
         <Flex gap="lg" justify="space-between">
-          <Button variant="filled" on:click={saveRole}>Submit</Button>
+          <Button variant="filled" on:click={saveUser} disabled={!role}>Submit</Button>
+
           <Button variant="light" on:click={() => (overlayShown = false)}>Close</Button>
         </Flex>
       </Flex>

@@ -67,6 +67,34 @@ async def edit_role_quotas(
     await session.commit()
 
 
+async def get_users(current_user: User, session: AsyncSession) -> list[User]:
+    if current_user.role.name != "admin":
+        raise NO_PERMISSION_EXCEPTION
+
+    users = await session.execute(select(User).options(joinedload(User.role)))
+
+    return list(users.scalars().all())
+
+
+async def edit_user_role(
+    current_user: User, username: str, role_name: str, session: AsyncSession
+) -> None:
+    print(username, role_name)
+
+    if current_user.role.name != "admin":
+        raise NO_PERMISSION_EXCEPTION
+
+    role_query = await session.execute(select(Role).where(Role.name == role_name))
+    role = role_query.scalar_one_or_none()
+
+    if role is None:
+        raise ValueError("Role not found")
+
+    await session.execute(update(User).where(User.username == username).values(role_id=role.id))
+    await session.commit()
+    print("done")
+
+
 async def create_user(username: str, plain_password: str, session: AsyncSession) -> User:
     password = pwd_context.hash(plain_password)
 

@@ -41,9 +41,17 @@ Files have the option to be set to private or public. If the file is set to publ
 
 If the file is set to private, only the user who uploaded the file can see it initially. The user can then create a list of specific people who are allowed to view the file. The user cannot share private files to users which do not exist. These selected individuals can access the file through the link. Anyone not on this list will be unable to see or download or preview the file.
 
+### Roles
+
+In Synthra, accounts can be assigned one of two roles: USER or ADMIN. Users have the ability to interact with the application and upload files, but they cannot edit or delete content uploaded by other users. Admins, on the other hand, have full access to the application, including the ability to view, edit, and delete any content. Additionally, admins can manage user roles, assigning or changing roles as needed.
+
+### Admin Panel
+
+Admins have a dedicated section within the application where they can manage roles and assign them to accounts. This section is inaccessible to regular users.
+
 ### Quotas
 
-To ensure fair usage and maintain system performance, Synthra imposes a quota on file uploads. Each user has a limit on the total amount of files they can upload. This quota helps prevent any single user from consuming excessive storage resources.
+To ensure fair usage and maintain system performance, Synthra imposes a quota on file uploads. Each user has a limit on the total amount of files they can upload. This quota helps prevent any single user from consuming excessive storage resources. The quotas are placed on the number of files the user can upload, but also on the total disk space which the user can occupy. These quotas are defined in the roles.
 
 ### File Expiration
 
