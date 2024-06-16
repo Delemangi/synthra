@@ -4,6 +4,7 @@
   import { isAxiosError } from 'axios';
   import { LockClosed, LockOpen2 } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
+  import { clearSession } from '../../../auth/session';
   import { getUserMetadata } from '../../../server/auth';
   import { getFilesForSpecifiedUser } from '../../../server/files';
   import { getPermanentToken } from '../../../server/sharex';
@@ -31,6 +32,12 @@
     } catch (error) {
       if (!isAxiosError(error)) {
         alert('An unknown error occurred.');
+        return;
+      }
+
+      if (error.response?.status === 401) {
+        await clearSession();
+        window.location.href = '/auth/login';
         return;
       }
 
@@ -111,6 +118,7 @@
     <br />
     <Title>Admin</Title>
 
+    <Anchor href="/admin/users">Manage Users</Anchor>
     <Anchor href="/admin/roles">Manage Roles</Anchor>
   {/if}
 </Flex>

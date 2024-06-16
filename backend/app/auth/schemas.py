@@ -42,3 +42,8 @@ class UpdateRole(BaseModel):
     role_id: str
     size: int
     files: int
+
+
+class UpdateUser(BaseModel):
+    username: str
+    role_name: str
