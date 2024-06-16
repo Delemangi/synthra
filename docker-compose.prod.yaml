@@ -24,7 +24,7 @@ services:
       database:
         condition: service_healthy
     volumes:
-      - ./assets:/app/assets
+      - ./assets:/assets
     env_file:
       - .env
 
