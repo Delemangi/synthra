@@ -7,6 +7,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const login = async (username: string, password: string, code2FA: string | null) => {
   const formData = new FormData();
+
   formData.append('username', username);
   formData.append('password', password);
   formData.append('code_2fa', code2FA == null ? '' : code2FA);
@@ -35,25 +36,30 @@ export const logout = async (token: string) => {
   return result;
 };
 
-export const get2faToken = async (username: string, password: string) => {
+export const get2FAToken = async (username: string, password: string) => {
   const formData = new FormData();
+
   formData.append('username', username);
   formData.append('password', password);
+
   const result = await axios.post<Code2FA>(`${BASE_URL}/auth/2fa`, formData);
 
   return result;
 };
 
-export const remove2faToken = async (username: string, password: string) => {
+export const remove2FAToken = async (username: string, password: string) => {
   const formData = new FormData();
+
   formData.append('username', username);
   formData.append('password', password);
+
   const result = await axios.post<Code2FA>(`${BASE_URL}/auth/2fa/disable`, formData);
 
   return result;
 };
+
 export const getUserMetadata = async (token: string) => {
-  const result = await axios.get<UserMetadata>(`${BASE_URL}/auth/metadata`, {
+  const result = await axios.get<UserMetadata>(`${BASE_URL}/auth/fetch_user_data`, {
     headers: {
       authorization: `Bearer ${token}`
     }
