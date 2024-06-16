@@ -23,7 +23,8 @@ class DatabaseEngine:
     @classmethod
     def get_engine(cls: type["DatabaseEngine"]) -> AsyncEngine:
         if cls._instance is None:
-            cls._instance = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+            # set echo=True to enable verbose logging
+            cls._instance = create_async_engine(SQLALCHEMY_DATABASE_URL)
         return cls._instance
 
 

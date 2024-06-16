@@ -101,12 +101,12 @@ async def disable_2fa(
     return RequestStatus(message="2FA disabled successfully")
 
 
-@router.get("/fetch_user_data", response_model=str)
+@router.get("/fetch_user_data", response_model=UserMetadata)
 async def fetch_user_data(
     current_user: Annotated[DbUser, Depends(get_current_user)],
 ) -> UserMetadata:
     return UserMetadata(
         username=str(current_user.username),
-        quota=int(current_user.quota.value),
+        quota=int(current_user.quota),
         is_2fa_enabled=(current_user.code_2fa is not None),
     )
