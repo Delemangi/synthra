@@ -29,3 +29,16 @@ class UserMetadata(BaseModel):
     files_quota: int
     size_quota: int
     is_2fa_enabled: bool
+
+
+class RoleMetadata(BaseModel):
+    id: str
+    name: str
+    quota_size: int
+    quota_files: int
+
+
+class UpdateRole(BaseModel):
+    role_id: str
+    size: int
+    files: int

@@ -12,9 +12,6 @@
         textAlign: 'center',
         padding: '$10',
         borderRadius: '$md',
-        '&:hover': {
-          backgroundColor: '$gray50'
-        }
       },
       textStyle: {
         flex: 1,

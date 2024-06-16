@@ -25,9 +25,6 @@
         textAlign: 'center',
         padding: '$10',
         borderRadius: '$md',
-        '&:hover': {
-          backgroundColor: '$gray100'
-        }
       }
     };
   });

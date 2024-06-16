@@ -1,5 +1,6 @@
 import type { AccessToken } from '$lib/types/AccessToken';
 import type { Code2FA } from '$lib/types/Code2FA';
+import type { RoleMetadata } from '$lib/types/RoleMetadata';
 import type { UserMetadata } from '$lib/types/UserMetadata';
 import axios from 'axios';
 
@@ -66,4 +67,37 @@ export const getUserMetadata = async (token: string) => {
   });
 
   return result;
+};
+
+export const getRoles = async (token: string) => {
+  const result = await axios.get<RoleMetadata[]>(`${BASE_URL}/auth/roles`, {
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  });
+
+  return result.data;
+};
+
+export const editRole = async (
+  token: string,
+  roleId: string,
+  sizeQuota: number,
+  filesQuota: number
+) => {
+  const result = await axios.post(
+    `${BASE_URL}/auth/roles/edit`,
+    {
+      role_id: roleId,
+      size: sizeQuota,
+      files: filesQuota
+    },
+    {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  return result.data;
 };

@@ -49,7 +49,9 @@
         backgroundColor: '$gray50',
         textAlign: 'center',
         padding: '$10',
-        borderRadius: '$md'
+        borderRadius: '$md',
+        marginTop: '$3',
+        marginBottom: '$3'
       },
       flexOverlay: {
         display: 'flex',
@@ -359,7 +361,7 @@
 {/if}
 
 {#if isDownloadWindowVisible}
-  <Overlay opacity={0.9} color="#000" zIndex={5} center class={classes.flexOverlay}>
+  <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
     <Box class={getStyles()}>
       <Flex direction="column" align="space-evenly" gap="l" justify="center">
         <Title order={3}>Download File</Title>

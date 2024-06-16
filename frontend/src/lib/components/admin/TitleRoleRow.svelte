@@ -26,7 +26,8 @@
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Name</Text>
-    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>URL</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Files Quota</Text>
+    <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Space Quota</Text>
     <Text size="md" weight="bold" transform="uppercase" class={classes.textStyle}>Actions</Text>
   </Flex>
 </Box>
