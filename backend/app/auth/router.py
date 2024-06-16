@@ -10,13 +10,15 @@ from ..schemas import RequestStatus
 from .dependencies import get_current_user
 from .exceptions import AUTHENTICATION_2FA_EXCEPTION, CREDENTIALS_EXCEPTION
 from .models import User as DbUser
-from .schemas import Code2FA, RoleMetadata, Token, UpdateRole, User, UserMetadata
+from .schemas import Code2FA, RoleMetadata, Token, UpdateRole, UpdateUser, User, UserMetadata
 from .service import (
     authenticate_user,
     create_access_token,
     create_user,
     edit_role_quotas,
+    edit_user_role,
     get_roles,
+    get_users,
     oauth2_scheme,
     remove_2fa_code,
     remove_token,
@@ -163,3 +165,40 @@ async def edit_role(
     )
 
     return RequestStatus(message="Role quotas updated successfully")
+
+
+@router.get("/users", response_model=list[UserMetadata])
+async def users(
+    current_user: Annotated[DbUser, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> list[UserMetadata]:
+    users = await get_users(current_user, session)
+    print("/users")
+
+    return [
+        UserMetadata(
+            username=str(user.username),
+            role=str(user.role.name),
+            files_quota=int(user.role.quota_files),
+            size_quota=int(user.role.quota_size),
+            is_2fa_enabled=(user.code_2fa is not None),
+        )
+        for user in users
+    ]
+
+
+@router.post("/users/edit")
+async def edit_user(
+    update_input: UpdateUser,
+    current_user: Annotated[DbUser, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> RequestStatus:
+    print("/users/edit")
+    await edit_user_role(
+        current_user,
+        update_input.username,
+        update_input.role_name,
+        session,
+    )
+
+    return RequestStatus(message="User role updated successfully")
