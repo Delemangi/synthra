@@ -1,4 +1,5 @@
 import io
+import urllib.parse
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
@@ -97,10 +98,12 @@ async def get_file(
     file: bytes = await verify_and_decrypt_file(path, current_user, session, password)
     file_object = io.BytesIO(file)
 
+    filename = urllib.parse.quote(path)
+
     return StreamingResponse(
         file_object,
         media_type=map_mimetype("." + path.split(".")[-1]),
-        headers={"Content-Disposition": f'inline; filename="{path}"'},
+        headers={"Content-Disposition": f"inline; filename*=UTF-8''{filename}"},
     )
 
 
