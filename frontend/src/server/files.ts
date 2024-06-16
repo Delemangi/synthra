@@ -89,16 +89,16 @@ export const deleteFileByPath = async (accessToken: string, path: string) => {
   return result.data;
 };
 
-
 export const updateFileSecurityData = async (
   accessToken: string,
   fileId: string,
   isFileEncrypted: boolean,
   isFileShared: boolean,
   currentPassword: string | null,
-  newPassword: string | null,
+  newPassword: string | null
 ) => {
-  const result = await axios.post(`${BASE_URL}/files/${fileId}`,
+  const result = await axios.post(
+    `${BASE_URL}/files/${fileId}`,
     {
       is_encrypted: isFileEncrypted,
       is_shared: isFileShared,

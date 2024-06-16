@@ -13,7 +13,14 @@
     type theme
   } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
-  import { DoubleArrowRight, Download, ExternalLink, EyeOpen, LockClosed, Trash } from 'radix-icons-svelte';
+  import {
+    DoubleArrowRight,
+    Download,
+    ExternalLink,
+    EyeOpen,
+    LockClosed,
+    Trash
+  } from 'radix-icons-svelte';
   import {
     addShareForFile,
     deleteFileByPath,
@@ -218,8 +225,8 @@
   };
 
   const openSecurityBox = () => {
-      isSecurityBoxVisible = true;
-      window.scrollTo(0, 0);
+    isSecurityBoxVisible = true;
+    window.scrollTo(0, 0);
   };
 
   const dateTimeFormat = new Intl.DateTimeFormat('en-UK', {
@@ -396,5 +403,5 @@
 {/if}
 
 {#if isSecurityBoxVisible}
-  <SecuritySettingsWindow file={file} bind:visible={isSecurityBoxVisible}></SecuritySettingsWindow>
+  <SecuritySettingsWindow {file} bind:visible={isSecurityBoxVisible}></SecuritySettingsWindow>
 {/if}
