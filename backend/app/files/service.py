@@ -131,9 +131,11 @@ async def verify_file(
     path: str,
     current_user: Annotated[User, Depends(get_current_user)],
     session: AsyncSession,
-) -> str:
+) -> tuple[str, User]:
     async with session:
-        files = await session.execute(select(File).filter(File.path == path))
+        files = await session.execute(
+            select(File).options(joinedload(File.user)).filter(File.path == path)
+        )
 
         file = files.scalar_one_or_none()
 
@@ -141,7 +143,7 @@ async def verify_file(
             raise NOT_FOUND_EXCEPTION
 
         if current_user.role.name == "admin" or file.user.id == current_user.id:
-            return str(file.name)
+            return str(file.name), file.user
 
         if (
             bool(file.shared)
@@ -150,7 +152,7 @@ async def verify_file(
         ):
             raise NO_ACCESS_EXCEPTION
 
-        return str(file.name)
+        return str(file.name), file.user
 
 
 async def verify_and_decrypt_file(
@@ -159,8 +161,8 @@ async def verify_and_decrypt_file(
     session: AsyncSession,
     password: str | None = None,
 ) -> bytes:
-    _ = await verify_file(path, current_user, session)
-    return decrypt_file(path, password, current_user)
+    _, author = await verify_file(path, current_user, session)
+    return decrypt_file(path, password, author)
 
 
 def map_mimetype(extension: str) -> str:
@@ -233,14 +235,14 @@ async def get_file_by_id(file_id: uuid.UUID, session: AsyncSession) -> File | No
         return file.scalar_one_or_none()
 
 
-def decrypt_file(path: str, password: str | None, current_user: User) -> bytes:
+def decrypt_file(path: str, password: str | None, author_user: User) -> bytes:
     with Path.open(Path(FILE_PATH) / path, "rb") as f:
         contents = f.read()
 
     if password is None or password == "":
         return contents
 
-    key = derive_key(password, current_user.id.bytes)
+    key = derive_key(password, author_user.id.bytes)
     fernet = Fernet(key)
 
     try:
