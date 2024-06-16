@@ -141,8 +141,8 @@ async def roles(
         RoleMetadata(
             id=str(role.id),
             name=str(role.name),
-            quota_size=int(role.quota_size),
-            quota_files=int(role.quota_files),
+            quota_size=int(role.quota_size),  # type: ignore
+            quota_files=int(role.quota_files),  # type: ignore
         )
         for role in roles
     ]

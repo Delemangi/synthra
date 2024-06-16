@@ -1,5 +1,7 @@
 import io
+import logging
 import urllib.parse
+import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
@@ -17,12 +19,13 @@ from ..database import get_async_session
 from ..files.models import File
 from ..schemas import RequestStatus
 from .constants import FILE_PATH
-from .schemas import FileUploaded, MetadataFileResponse
+from .schemas import FileSecurityUpdate, FileUploaded, MetadataFileResponse
 from .service import (
     create_file,
     get_all_files_user,
     get_metadata_path,
     map_mimetype,
+    update_file_security,
     upload_file,
     verify_and_decrypt_file,
     verify_file,
@@ -124,3 +127,18 @@ async def verify_and_delete_file(
     filename = await verify_file(path, current_user, session)
     await delete_file(path, session)
     return RequestStatus(message=f"File {filename} deleted")
+
+
+@router.post("/{file_id}", response_model=MetadataFileResponse)
+async def edit_file_security(
+    file_id: uuid.UUID,
+    update_input: FileSecurityUpdate,
+    current_user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+) -> RequestStatus:
+    try:
+        await update_file_security(file_id, update_input, current_user, session)
+    except Exception as e:
+        logging.debug("Error updating file security")
+        logging.debug(e)
+    return RequestStatus(message="File updated successfully!")
