@@ -99,7 +99,7 @@
       }
 
       if (error.response?.status === 400) {
-        alert('Bad request');
+        alert('Bad request.');
         return;
       }
 
@@ -110,9 +110,6 @@
   onMount(() => {
     is_file_encrypted = Boolean(file.encrypted);
     is_file_shared = Boolean(file.shared);
-
-    console.log(is_file_encrypted);
-    console.log(is_file_shared);
   });
 
   $: ({ classes, getStyles } = useStyles());
@@ -121,7 +118,7 @@
 <Overlay opacity={1} color="#000" zIndex={5} center class={classes.flexOverlay}>
   <Box class={getStyles()}>
     <Flex direction="column" align="space-evenly" gap="md" justify="center">
-      <Title order={3}>File security</Title>
+      <Title order={3}>File Security</Title>
 
       <Flex justify="center" align="center" gap="md">
         <Checkbox bind:checked={is_file_shared}></Checkbox>
@@ -152,7 +149,7 @@
           disabled={delete_password}
           placeholder="Password..."
           type="password"
-          label="Please enter the new password"
+          label="New Password"
         />
       {/if}
       {#if file.encrypted}
@@ -160,16 +157,16 @@
           bind:value={current_file_password}
           placeholder="Password..."
           type="password"
-          label="Please enter the current password to save the changes"
+          label="Current Password"
         />
       {/if}
-      <Flex justify="space-around" align="center">
+      <Flex justify="space-around" align="center" gap="lg">
         <Button
           variant="filled"
           on:click={sendData}
           disabled={(file.encrypted && !current_file_password) ||
-            (changed_password && !new_file_password && !delete_password) ||
-            (!file.encrypted && is_file_encrypted && !new_file_password)}
+            (changed_password && new_file_password.length < 5 && !delete_password) ||
+            (!file.encrypted && is_file_encrypted && new_file_password.length < 5)}
         >
           Submit
         </Button>
