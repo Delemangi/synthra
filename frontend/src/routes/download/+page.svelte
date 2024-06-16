@@ -45,6 +45,7 @@
   let fileUrl: string | null = null;
   let downloadFilePassword: string = '';
   let isPreviewable: boolean = false;
+  let isImage: boolean = false;
 
   onMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,6 +66,7 @@
       );
 
       isPreviewable = contentType != 'application/octet-stream';
+      isImage = contentType.startsWith('image/');
 
       fileUrl = window.URL.createObjectURL(retrievedFile);
 
@@ -179,14 +181,22 @@
 
     {#if fileUrl && isPreviewable}
       <div
-        style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw; border: 2px solid #ccc;"
+        style="display: flex; justify-content: center; align-items: center; height: 80vh; width: 80vw;"
       >
-        <iframe
-          src={fileUrl}
-          frameborder="0"
-          style="width: 100%; height: 100%; border: none;"
-          title="File"
-        ></iframe>
+        {#if isImage}
+          <img
+            src={fileUrl}
+            alt="preview"
+            style="max-width: 100%; max-height: 100%; object-fit: contain;"
+          />
+        {:else}
+          <iframe
+            src={fileUrl}
+            frameborder="0"
+            style="width: 100%; height: 100%; border: 2px solid #ccc;"
+            title="File"
+          ></iframe>
+        {/if}
       </div>
     {:else}
       <div style="text-align: center;">
