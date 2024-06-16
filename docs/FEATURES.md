@@ -6,9 +6,11 @@
 - [x] Generate ShareX Configuration
 - [x] Quotas
 - [x] File Expiration
+- [x] Account Panel
 - [x] Administration Panel
 - [x] File Preview
 - [x] Webhooks
+- [x] Roles
 - [x] Encryption
 - [x] Protected Files
 - [x] 2FA
