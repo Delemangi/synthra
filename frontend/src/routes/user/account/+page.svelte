@@ -65,13 +65,6 @@
 
 <Flex justify="center" align="center" direction="column" gap="lg">
   {#if user?.is_2fa_enabled}
-    <Anchor href="/user/2fa/?option=enable">
-      <Flex justify="center" gap="md">
-        <LockClosed />
-        <Text>Enable 2FA</Text>
-      </Flex>
-    </Anchor>
-  {:else}
     <Anchor href="/user/2fa?option=disable">
       <Flex justify="center" gap="md">
         <LockOpen2 />
@@ -82,6 +75,13 @@
       <Flex justify="center" gap="md">
         <LockClosed />
         <Text>Update 2FA</Text>
+      </Flex>
+    </Anchor>
+  {:else}
+    <Anchor href="/user/2fa/?option=enable">
+      <Flex justify="center" gap="md">
+        <LockClosed />
+        <Text>Enable 2FA</Text>
       </Flex>
     </Anchor>
   {/if}
