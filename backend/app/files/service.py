@@ -15,6 +15,7 @@ from sqlalchemy.orm import joinedload
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
+from ..shares.models import Share
 from .constants import FILE_PATH
 from .exceptions import (
     BAD_REQUEST_EXCEPTION,
@@ -316,8 +317,7 @@ async def update_file_security(
         raise BAD_REQUEST_EXCEPTION
 
     if bool(file.shared) and not security_input.is_shared:
-        file.shared_with = []
-        await session.commit()
+        await session.execute(delete(Share).where(Share.file_id == file_id))
 
     await session.execute(
         update(File)
