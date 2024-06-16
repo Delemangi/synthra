@@ -96,13 +96,19 @@ Users can preview a variety of uploaded files, including images, text, audio, an
 
 The feature works by downloading the files to the frontend and embedding them in an iframe on the website.
 
-### Responsive
+### Responsiveness
 
-The user interface of the application is mobile friendly.
+Synthra is designed with a mobile-first approach, ensuring that the application provides a seamless and intuitive user experience across all devices. Whether you're accessing Synthra from a smartphone, tablet, or desktop computer, the interface dynamically adjusts to fit the screen size and orientation. This responsiveness ensures that all features and functionalities are easily accessible and user-friendly, regardless of the device you are using.
 
 ### Dark Mode Toggle
 
+Synthra includes a Dark Mode toggle feature, allowing users to switch between light and dark themes according to their preference. This feature enhances usability by providing a comfortable viewing experience in various lighting conditions, reducing eye strain and conserving device battery life.
+
 Please always use dark mode. Light mode is stupid.
+
+### ShareX Support
+
+Synthra integrates seamlessly with ShareX, a popular open-source screen capture and file sharing tool for Windows, providing users with a powerful and convenient way to upload images, text and files directly to their user account in Synthra. This feature allows users to generate a custom uploader configuration for ShareX directory from the user interface in the account settings, streamlining the process of sharing content.
 
 ## Technologies
 
@@ -112,7 +118,7 @@ The backend application is built using [FastAPI](https://github.com/tiangolo/fas
 
 FastAPI implements the ASGI specification for Python web servers, and so it needs an ASGI server to run the application. We are using [Uvicorn](https://github.com/encode/uvicorn).
 
-The frontend application it built using [SvelteKit](https://github.com/sveltejs/kit), which is a web framework for building single page apps or server side rendering. It also includes a built in folder based router.
+The frontend application it built using [SvelteKit](https://github.com/sveltejs/kit), which is a web framework for building single page apps or server side rendering. It also includes built-in folder based routing.
 
 The data is persisted into the [PostgreSQL](https://github.com/postgres/postgres) relational database, using the ORM and migration technologies from above.
 
@@ -391,6 +397,10 @@ The available routes of the application are:
 - `/user/webhooks` - webhooks view route
 
 While Svelte is for single page applications (SPA), SvelteKit is based on Svelte, but offers several more features out of the box, such as server side rendering (SSR), folder (or file) based routing, directly defining API routes, code splitting. SvelteKit comes with different adapters for ease of building and deploying it on any platform (such as locally with Node, Vercel, Netlify, CloudFlare Workers and some more options). It is comparable to what `Next.js` is for `React`.
+
+## ShareX
+
+Synthra is capable of generating a custom uploader configuration for ShareX, the popular screenshotting tool for Windows. Users may go into their account settings on Synthra, and find a button that says `Generate ShareX Configuration`. This will download a custom uploader configuration, which, provided that you have ShareX installed, can just be double clicked to be directly added to ShareX. Once it is added, when uploading something, you can choose to make it go directly to Synthra. Synthra supports uploading images, files and text. Text is uploaded as a `.txt` file containing the selected text. Once a file is uploaded, ShareX can copy the URL of the newly uploaded file (to the preview page) in the user's clipboard for ease of use.
 
 ## Communication
 
