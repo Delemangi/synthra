@@ -34,3 +34,10 @@ class MetadataFileResponse(BaseModel):
 
     def full_path(self: "MetadataFileResponse") -> str:
         return "/assets/" + self.path
+
+
+class FileSecurityUpdate(BaseModel):
+    is_encrypted: bool
+    current_password: str | None
+    new_password: str | None
+    is_shared: bool

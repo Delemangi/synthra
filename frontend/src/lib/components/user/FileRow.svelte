@@ -13,7 +13,14 @@
     type theme
   } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
-  import { DoubleArrowRight, Download, ExternalLink, EyeOpen, Trash } from 'radix-icons-svelte';
+  import {
+    DoubleArrowRight,
+    Download,
+    ExternalLink,
+    EyeOpen,
+    LockClosed,
+    Trash
+  } from 'radix-icons-svelte';
   import {
     addShareForFile,
     deleteFileByPath,
@@ -23,6 +30,7 @@
   import { getWebhooksForSpecifiedUser, sendWebhook } from '../../../server/webhooks';
   import { FileMetadata } from '../../types/FileMetadata';
   import { onMount } from 'svelte';
+  import SecuritySettingsWindow from './SecuritySettingsWindow.svelte';
 
   export let file = new FileMetadata(
     'test',
@@ -129,6 +137,7 @@
   let visible = false;
   let usernameShare = '';
   let isDownloadWindowVisible = false;
+  let isSecurityBoxVisible = false;
   let downloadFilePassword = '';
 
   const copyToClipboard = () => {
@@ -215,6 +224,11 @@
     }
   };
 
+  const openSecurityBox = () => {
+    isSecurityBoxVisible = true;
+    window.scrollTo(0, 0);
+  };
+
   const dateTimeFormat = new Intl.DateTimeFormat('en-UK', {
     year: 'numeric',
     month: 'long',
@@ -299,6 +313,11 @@
           <Trash size={20} />
         </ActionIcon>
       </Tooltip>
+      <Tooltip openDelay={10} label="Security">
+        <ActionIcon variant="filled" on:click={openSecurityBox}>
+          <LockClosed size={20} />
+        </ActionIcon>
+      </Tooltip>
     </Flex>
   </Flex>
 </Box>
@@ -381,4 +400,8 @@
       </Flex>
     </Box>
   </Overlay>
+{/if}
+
+{#if isSecurityBoxVisible}
+  <SecuritySettingsWindow {file} bind:visible={isSecurityBoxVisible}></SecuritySettingsWindow>
 {/if}

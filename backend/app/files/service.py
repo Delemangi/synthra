@@ -9,16 +9,22 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from fastapi import Depends, UploadFile
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
+from ..shares.models import Share
 from .constants import FILE_PATH
-from .exceptions import NO_ACCESS_EXCEPTION, NOT_FOUND_EXCEPTION, QUOTA_EXCEPTION
+from .exceptions import (
+    BAD_REQUEST_EXCEPTION,
+    NO_ACCESS_EXCEPTION,
+    NOT_FOUND_EXCEPTION,
+    QUOTA_EXCEPTION,
+)
 from .models import File
-from .schemas import MetadataFileResponse, ShareResponse
+from .schemas import FileSecurityUpdate, MetadataFileResponse, ShareResponse
 
 
 async def upload_file(
@@ -251,6 +257,77 @@ def decrypt_file(path: str, password: str | None, author_user: User) -> bytes:
         raise NO_ACCESS_EXCEPTION from err
 
     return decoded_file
+
+
+def encrypt_contents(contents: bytes, password: str, current_user: User) -> bytes:
+    key = derive_key(password, current_user.id.bytes)
+    fernet = Fernet(key)
+    return fernet.encrypt(contents)
+
+
+def validate_file(file: File, security_input: FileSecurityUpdate, current_user: User) -> None:
+    if str(file.user_id) != str(current_user.id) and str(current_user.role.name) != "admin":
+        raise NO_ACCESS_EXCEPTION
+
+    if bool(file.encrypted) and (
+        security_input.current_password is None or security_input.current_password == ""
+    ):
+        raise NO_ACCESS_EXCEPTION
+
+
+async def update_file_security(
+    file_id: uuid.UUID,
+    security_input: FileSecurityUpdate,
+    current_user: User,
+    session: AsyncSession,
+) -> None:
+    file = await get_file_by_id(file_id, session)
+
+    if file is None:
+        raise NOT_FOUND_EXCEPTION
+
+    validate_file(file, security_input, current_user)
+
+    if bool(file.encrypted):
+        contents: bytes = decrypt_file(
+            str(file.path), security_input.current_password, current_user
+        )
+    else:
+        contents = Path.open(Path(FILE_PATH) / str(file.path), "rb").read()
+    path = Path(FILE_PATH) / str(file.path)
+
+    if (
+        security_input.is_encrypted
+        and security_input.new_password is not None
+        and security_input.new_password != ""
+    ):
+        contents = encrypt_contents(contents, security_input.new_password, current_user)
+        Path(path).unlink()
+
+        with Path.open(path, "wb") as f:
+            f.write(contents)
+
+    elif bool(file.encrypted) and not security_input.is_encrypted:
+        with Path.open(path, "wb") as f:
+            f.write(contents)
+
+    elif (
+        not bool(file.encrypted)
+        and security_input.is_encrypted
+        and (security_input.new_password is None or security_input.new_password == "")
+    ):
+        raise BAD_REQUEST_EXCEPTION
+
+    if bool(file.shared) and not security_input.is_shared:
+        await session.execute(delete(Share).where(Share.file_id == file_id))
+
+    await session.execute(
+        update(File)
+        .where(File.id == file_id)
+        .values(encrypted=bool(security_input.is_encrypted), shared=security_input.is_shared)
+    )
+
+    await session.commit()
 
 
 def derive_key(password: str, salt: bytes) -> bytes:

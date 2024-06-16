@@ -20,7 +20,6 @@
 
     users = await getUsers(accessToken);
     roles = await getRoles(accessToken);
-    console.log('new roles', roles);
   });
 </script>
 
