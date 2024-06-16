@@ -1,5 +1,4 @@
 import asyncio
-import uuid
 from collections.abc import AsyncGenerator, Generator
 from unittest.mock import AsyncMock
 
@@ -12,6 +11,7 @@ from app.auth.dependencies import get_current_user
 from app.auth.models import User
 from app.database import get_async_session
 from app.main import make_app
+from test.mocks import test_user
 
 pytest_plugins = ("pytest_asyncio",)
 
@@ -34,7 +34,7 @@ def get_mock_async_session() -> Generator[AsyncMock, None, None]:
 
 
 def get_mock_current_user() -> User:
-    return User(id=uuid.uuid4(), username="a", password="test")  # noqa: S106
+    return test_user
 
 
 app.dependency_overrides[get_async_session] = get_mock_async_session

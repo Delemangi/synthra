@@ -7,6 +7,8 @@ from fastapi import APIRouter, Depends, Form, Header, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.files.service import delete_file
+
 from ..auth.dependencies import get_current_user
 from ..auth.models import User
 from ..auth.service import get_user_by_username
@@ -17,7 +19,6 @@ from .constants import FILE_PATH
 from .schemas import FileUploaded, MetadataFileResponse
 from .service import (
     create_file,
-    delete_file,
     get_all_files_user,
     get_metadata_path,
     map_mimetype,
