@@ -59,10 +59,10 @@
 <Box class={getStyles()}>
   <Flex align="center" justify="space-evenly" style="height: 100%;">
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {webhook.platform}
+      {webhook.platform.length > 50 ? `${webhook.platform.slice(0, 50)}...` : webhook.platform}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {webhook.url}
+      {webhook.url.length > 50 ? `${webhook.url.slice(0, 50)}...` : webhook.url}
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Delete">
