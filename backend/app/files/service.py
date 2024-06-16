@@ -317,6 +317,7 @@ async def update_file_security(
 
     if bool(file.shared) and not security_input.is_shared:
         file.shared_with = []
+        await session.commit()
 
     await session.execute(
         update(File)

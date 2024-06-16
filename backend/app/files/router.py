@@ -1,5 +1,4 @@
 import io
-import logging
 import urllib.parse
 import uuid
 from datetime import datetime, timedelta
@@ -129,16 +128,12 @@ async def verify_and_delete_file(
     return RequestStatus(message=f"File {filename} deleted")
 
 
-@router.post("/{file_id}", response_model=MetadataFileResponse)
+@router.post("/{file_id}", response_model=RequestStatus)
 async def edit_file_security(
     file_id: uuid.UUID,
     update_input: FileSecurityUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
 ) -> RequestStatus:
-    try:
-        await update_file_security(file_id, update_input, current_user, session)
-    except Exception as e:
-        logging.debug("Error updating file security")
-        logging.debug(e)
+    await update_file_security(file_id, update_input, current_user, session)
     return RequestStatus(message="File updated successfully!")
