@@ -91,9 +91,7 @@
   <br />
 
   <Flex justify="center">
-    <Button>
       <Anchor href="/user/account">Back</Anchor>
-    </Button>
   </Flex>
 {/if}
 
