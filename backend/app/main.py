@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from .auth.router import router as auth_router
-from .database import run_migrations
+from .database import initialize_database, run_migrations
 from .files.constants import FILE_PATH
 from .files.router import router as file_router
 from .jobs import schedule_jobs
@@ -19,30 +19,40 @@ from .webhooks.router import router as webhook_router
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    print("Starting...")
+    print("Starting...", flush=True)
 
-    print("Creating file storage directory...")
-    Path.mkdir(Path(FILE_PATH), exist_ok=True)
+    print("Creating file storage directory...", flush=True)
+    Path(FILE_PATH).mkdir(parents=True, exist_ok=True)
+    print("File storage directory created", flush=True)
 
-    print("Running migrations...")
+    print("Running migrations...", flush=True)
     run_migrations()
+    print("Migrations complete", flush=True)
 
-    print("Scheduling jobs...")
+    print("Initializing database...", flush=True)
+    await initialize_database()
+    print("Database initialized", flush=True)
+
+    print("Scheduling jobs...", flush=True)
     scheduler = schedule_jobs()
+    print("Jobs scheduled", flush=True)
 
-    print("Server started")
+    print("Server started", flush=True)
 
     yield
 
-    print("Shutting down...")
-    scheduler.shutdown(wait=False)
+    print("Shutting down...", flush=True)
 
-    print("Server stopped")
+    print("Stopping jobs...", flush=True)
+    scheduler.shutdown(wait=False)
+    print("Jobs stopped", flush=True)
+
+    print("Server stopped", flush=True)
 
 
 def make_app() -> FastAPI:
     # set debug=True to enable verbose logging
-    app = FastAPI(lifespan=lifespan, debug=True)
+    app = FastAPI(lifespan=lifespan)
 
     # URL Normalizer Middleware
     app.add_middleware(SlashNormalizerMiddleware)

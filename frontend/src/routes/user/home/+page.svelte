@@ -47,6 +47,11 @@
         return;
       }
 
+      if (error.response?.status === 403) {
+        alert('Your session has expired or you have reached your quota.');
+        return;
+      }
+
       alert('An error occurred while uploading the file.');
     }
   };

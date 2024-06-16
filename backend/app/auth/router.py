@@ -32,7 +32,7 @@ async def simple_test() -> str:
 
 @router.post("/create-test-user", response_model=str)
 async def test(session: Annotated[AsyncSession, Depends(get_async_session)]) -> str:
-    await create_user("a", "a", 30, session)
+    await create_user("a", "a", session)
 
     return "Created a test user"
 
@@ -81,7 +81,7 @@ async def logout(
 async def register(
     user_schema: User, session: Annotated[AsyncSession, Depends(get_async_session)]
 ) -> RequestStatus:
-    user = await create_user(user_schema.username, user_schema.password, 30, session)
+    user = await create_user(user_schema.username, user_schema.password, session)
     return RequestStatus(message=f"User {user.username} registered successfully")
 
 
@@ -121,6 +121,8 @@ async def fetch_user_data(
 ) -> UserMetadata:
     return UserMetadata(
         username=str(current_user.username),
-        quota=int(current_user.quota),
+        role=str(current_user.role.name),
+        files_quota=int(current_user.role.quota_files),
+        size_quota=int(current_user.role.quota_size),
         is_2fa_enabled=(current_user.code_2fa is not None),
     )

@@ -25,5 +25,7 @@ class Code2FA(BaseModel):
 
 class UserMetadata(BaseModel):
     username: str
-    quota: int
+    role: str
+    files_quota: int
+    size_quota: int
     is_2fa_enabled: bool

@@ -1,19 +1,20 @@
 <script lang="ts">
   import type { UserMetadata } from '$lib/types/UserMetadata';
-  import { Anchor, Button, Flex, Text } from '@svelteuidev/core';
+  import { Anchor, Button, Flex, Text, Title } from '@svelteuidev/core';
   import { isAxiosError } from 'axios';
   import { LockClosed, LockOpen2 } from 'radix-icons-svelte';
   import { onMount } from 'svelte';
   import { getUserMetadata } from '../../../server/auth';
+  import { getFilesForSpecifiedUser } from '../../../server/files';
   import { getPermanentToken } from '../../../server/sharex';
   import { generateShareXTemplate } from '../../../utils/functions';
 
-  let username: string | null = null;
   let user: UserMetadata | null = null;
+  let numberOfFiles: number | null = null;
+  let storageUsed: number | null = null;
 
   onMount(async () => {
     let accessToken = localStorage.getItem('accessToken');
-    username = localStorage.getItem('username');
 
     if (!accessToken) {
       window.location.href = '/auth/login';
@@ -22,6 +23,9 @@
 
     try {
       const response = await getUserMetadata(accessToken);
+      const files = await getFilesForSpecifiedUser(accessToken);
+      numberOfFiles = files.length;
+      storageUsed = files.reduce((acc, file) => acc + file.size, 0);
 
       user = response.data;
     } catch (error) {
@@ -60,10 +64,14 @@
   };
 </script>
 
-<Text size="lg" align="center">Hi, {username}!</Text>
-<br />
-
 <Flex justify="center" align="center" direction="column" gap="lg">
+  <Title>Account</Title>
+  <Text>Username: {user?.username}</Text>
+  <Text>Role: {user?.role.toUpperCase()}</Text>
+
+  <br />
+
+  <Title>2FA</Title>
   {#if user?.is_2fa_enabled}
     <Anchor href="/user/2fa?option=disable">
       <Flex justify="center" gap="md">
@@ -86,5 +94,16 @@
     </Anchor>
   {/if}
 
+  <br />
+
+  <Title>ShareX</Title>
   <Button on:click={generateShareXConfig}>Generate ShareX Configuration</Button>
+
+  <br />
+
+  <Title>Quotas</Title>
+  <Text>{numberOfFiles} / {user?.files_quota ?? 0} Files</Text>
+  <Text
+    >{storageUsed} / {user?.size_quota ?? 0} B ({((storageUsed ?? 0) / 1000 / 1000).toFixed(2)} MB)
+  </Text>
 </Flex>
