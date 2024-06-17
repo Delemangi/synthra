@@ -86,6 +86,11 @@
     }
   };
 
+  const openOverlay = () => {
+    overlayShown = true;
+    window.scrollTo(0, 0);
+  };
+
   let overlayShown = false;
 
   $: ({ classes, getStyles } = useStyles());
@@ -101,7 +106,7 @@
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Edit">
-        <ActionIcon variant="filled" color="blue" on:click={() => (overlayShown = true)}>
+        <ActionIcon variant="filled" color="blue" on:click={openOverlay}>
           <Update size={20} />
         </ActionIcon>
       </Tooltip>
