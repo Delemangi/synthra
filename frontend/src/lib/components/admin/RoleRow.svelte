@@ -93,7 +93,7 @@
       {role.quota_files}
     </Text>
     <Text size="sm" css={{ flex: 1, textAlign: 'center' }}>
-      {role.quota_size}
+      {role.quota_size} B
     </Text>
     <Flex justify="center" gap="xs" css={{ flex: 1 }}>
       <Tooltip openDelay={10} label="Edit">
