@@ -31,7 +31,7 @@ cryptography = "^42.0.8"
 pyotp = "^2.9.0"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.10.0"
+mypy = "^1.10.1"
 ruff = "^0.4.8"
 pre-commit = "^3.7.1"
 types-python-jose = "^3.3.4.20240106"
