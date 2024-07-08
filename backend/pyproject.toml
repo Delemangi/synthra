@@ -32,7 +32,7 @@ pyotp = "^2.9.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
-ruff = "^0.4.8"
+ruff = "^0.5.1"
 pre-commit = "^3.7.1"
 types-python-jose = "^3.3.4.20240106"
 types-passlib = "^1.7.7.20240327"
